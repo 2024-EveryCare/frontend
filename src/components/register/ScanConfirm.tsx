@@ -450,14 +450,14 @@ const ScanConfirm: React.FC = () => {
             {showIntakeCycle ? (
               <InputBtn
                 onClick={handleShowIntakeCycle}
-                className="w-[80%] h-[30px] mt-[3vh]"
+                className="w-[80%] h-[30px] mt-[3vh] hover:bg-blue-200 hover:text-white"
               >
                 확인
               </InputBtn>
             ) : (
               <InputBtn
                 onClick={handleShowIntakeCycle}
-                className="w-[80%] h-[30px] mt-[3vh]"
+                className="w-[80%] h-[30px] mt-[3vh] hover:bg-blue-200 hover:text-white"
               >
                 주기입력
               </InputBtn>
@@ -486,14 +486,14 @@ const ScanConfirm: React.FC = () => {
             {showHospital ? (
               <InputBtn
                 onClick={handleShowHospital}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 확인
               </InputBtn>
             ) : (
               <InputBtn
                 onClick={handleShowHospital}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 병원입력
               </InputBtn>
@@ -522,14 +522,14 @@ const ScanConfirm: React.FC = () => {
             {showDisease ? (
               <InputBtn
                 onClick={handleShowDisease}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 확인
               </InputBtn>
             ) : (
               <InputBtn
                 onClick={handleShowDisease}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 질병입력
               </InputBtn>
