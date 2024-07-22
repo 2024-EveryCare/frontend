@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import PillNextText from '../../components/register/PillNextText';
 import SaveBtn from './button/SaveBtn';
 import { RegisterContext } from '../../context/RegisterContext';
@@ -32,31 +38,25 @@ const PillRegister: React.FC = () => {
     setIntakeDaily,
     intakeCycle,
     setIntakeCycle,
+    morning,
+    setMorning,
+    lunch,
+    setLunch,
+    night,
+    setNight,
   } = useContext(RegisterContext);
 
-  // useEffect(() => {
-  //   console.log('context값 변경');
-  //   console.log(
-  //     disease,
-  //     hospital,
-  //     startDate,
-  //     endDate,
-  //     intakeCycle,
-  //     intakeDaily,
-  //   );
-  // }, [disease, hospital, startDate, endDate, intakeCycle, intakeDaily]);
+  useEffect(() => {
+    console.log('');
+  }, [morning, lunch, night]);
 
-  // useEffect(() => {
-  //   console.log('업데이트된 savedDrug(렌더링):', savedDrug);
-  // }, [savedDrug]); //다음 랜더링 주기에 반영이 되므로 useEffect로 확인
-
-  const [selectedBtn, setSelectedBtn] = useState<string | null>(null);
-  const [selectedStartDateBtn, setSelectedStartDateBtn] = useState<
-    string | null
-  >(null);
-  const [selectedEndDateBtn, setSelectedEndDateBtn] = useState<string | null>(
-    null,
-  );
+  const handleDailyBtn = (name: string) => {
+    if (name == 'morning') {
+      setMorning((pre) => !pre);
+    } else if (name == 'lunch') setLunch((pre) => !pre);
+    else setNight((pre) => !pre);
+    console.log('Daily 상태: ', morning, lunch, night);
+  };
 
   const handleIntakeCycle = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('intakecycle input.. : ');
@@ -78,11 +78,10 @@ const PillRegister: React.FC = () => {
     setEndDate(date);
   };
 
-  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const {
-      currentTarget: { name },
-    } = event;
-    setSelectedBtn(name);
+  const [intakeDailyBtn, setIntakeDailyBtn] = useState<boolean>(true);
+
+  const onClickIntakeDaily = () => {
+    setIntakeDailyBtn((pre) => !pre);
   };
   const onClickStartDate = (event: React.MouseEvent<HTMLButtonElement>) => {
     const {
@@ -157,56 +156,36 @@ const PillRegister: React.FC = () => {
           onSubmit={handleSubmit}
           className="w-100% flex flex-col justify-center items-center space-y-6"
         >
-          <div className="flex justify-center space-x-8 w-[100%] px-4">
-            <button
-              name="everyday"
-              onClick={onClick}
-              className={`w-[40%] h-[35px] mt-[30px] rounded-xl border-2 ${
-                selectedBtn === 'everyday'
-                  ? 'border-blue-200 text-white bg-blue-200'
-                  : 'border-blue-200 text-blue-500 bg-white'
-              } text-sm font-bold`}
+          {/* <div className="flex justify-center space-x-8 w-[100%] px-4">
+            <InputBtn
+              className="h-[35px] w-[80%] mt-[30px]"
+              onClick={onClickIntakeDaily}
             >
-              횟수
-            </button>
-
-            <button
-              name="interval"
-              onClick={onClick}
-              className={`w-[40%] h-[35px] mt-[30px] rounded-xl border-2 ${
-                selectedBtn === 'interval'
-                  ? 'border-blue-200 text-white bg-blue-200'
-                  : 'border-blue-200 text-blue-500 bg-white'
-              } text-sm font-bold`}
-            >
-              간격 일수
-            </button>
-          </div>
-          {selectedBtn === 'everyday' && (
-            <div className="mt-2 flex items-center space-x-1">
-              <p className="text-gray-400">하루에 몇 번 복약 하시나요?</p>
-              <input
-                type="text"
-                className="w-[55%] h-[2.5vh] rounded-xl border border-gray-700 text-gray-700 bg-white text-sm font-bold p-2"
-                onChange={handleIntakeDaily}
-                placeholder="복약 횟수"
-                value={intakeDaily}
-              />
+              주기 입력
+            </InputBtn>
+          </div> */}
+          {(intakeDailyBtn) ? (
+            <div className="w-[100%] h-[100px]  flex items-center space-x-1 justify-center gap-1 m-auto">
+              <InputBtn
+                className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white` : ''}`}
+                onClick={() => handleDailyBtn('morning')}
+              >
+                아침
+              </InputBtn>
+              <InputBtn
+                className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white` : ''}`}
+                onClick={() => handleDailyBtn('lunch')}
+              >
+                점심
+              </InputBtn>
+              <InputBtn
+                className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white` : ''}`}
+                onClick={() => handleDailyBtn('night')}
+              >
+                저녁
+              </InputBtn>
             </div>
-          )}
-
-          {selectedBtn === 'interval' && (
-            <div className="mt-2 flex items-center space-x-2">
-              <p className="text-gray-400">며칠마다 복약 하시나요?</p>
-              <input
-                type="text"
-                className="w-[55%] h-[2.5vh] rounded-xl border border-gray-700 text-gray-700 bg-white text-sm font-bold p-2"
-                onChange={handleIntakeCycle}
-                placeholder="간격 일수"
-                value={intakeCycle}
-              />
-            </div>
-          )}
+          ) : null}
         </form>
       </div>
       <div className="w-[100%] h-[22vh]">
@@ -239,7 +218,6 @@ const PillRegister: React.FC = () => {
             placeholderText="죵료일"
             selected={endDate}
             onChange={handleEndDate}
-            // onChange={handleEndDate}
             icon={
               <img
                 src={CalendarImg} // 외부 이미지의 URL을 지정합니다.
