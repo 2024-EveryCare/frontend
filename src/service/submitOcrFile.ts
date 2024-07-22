@@ -10,7 +10,6 @@ export const submitOcrFile = async (data: FormData) => {
     });
 
     // 콘솔에 응답 데이터 확인
-    console.log('응 니에미', response);
     console.log(response.data.data);
     console.log(response.data.data[0].drugName);
 

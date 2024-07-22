@@ -1,10 +1,11 @@
-import { http, HttpResponse } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 import ocrReturnDummy from '../dummy/register/ocrReturnDummy.json';
 
 export const ocrReturnhandler = [
   http.post('api/v1/medicines/photo/', async () => {
     const ocrReturnDummyData = await ocrReturnDummy;
     console.log('msw 서버... 응답 ... data : ', ocrReturnDummy);
+    await delay(5000);
     return HttpResponse.json({ data: ocrReturnDummyData });
     // return new HttpResponse(JSON.stringify(ocrReturnDummyData), {
     //   headers: { 'Content-Type': 'application/json' },

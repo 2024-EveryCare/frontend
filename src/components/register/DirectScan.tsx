@@ -1,47 +1,42 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import CustomHr from '../CustomHr';
 import RegisterIcon from '../../assets/register/Register3.png';
 import QR from '../../assets/register/QRImg.png';
 import BackBtn from './button/BackBtn';
-import axios from 'axios';
+import Loading from '../ocrLoading';
 import { useNavigate } from 'react-router';
-import {
-  RegisterContext,
-  RegisterContextProvider,
-} from '../../context/RegisterContext';
+import { RegisterContext } from '../../context/RegisterContext';
 import { submitOcrFile } from '../../service/submitOcrFile';
 
 const DirectScan: React.FC = () => {
-  const nevigate = useNavigate();
+  const navigate = useNavigate();
+  const { setOCRData, imgURL, setImgURL } = useContext(RegisterContext); // 상태관리에서 필요한 부분만 추출
+  const fileInputRef = useRef<HTMLInputElement>(null); // 파일 업로드(input 태그에 hidden 적용 후 안 보이게 한 후 간접적으로 이용)를 위해 사용
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const { setOCRData, imgURL, setImgURL } = useContext(RegisterContext); //상태관리에서 필요한 부분만 추출
-  //setOCRData => 처방전을 올리고 서버에서 값을 받으면 저장 후 다른 페이지 랜더링에 쓰일 예정
-  //imgURL => 사진 url추출 후 다른 페이지에서 랜더링 후 보여 줄 예정.
-  const fileInputRef = useRef<HTMLInputElement>(null); //파일 업로드(input태그에 hidden적용 후 안보이게 한 후 간접적으로 이용)를 위해 쓰임
+  const toggleLoading = () => {
+    setLoading((prev) => !prev); // 로딩 상태를 토글
+  };
 
   const preventDragOver = (e: React.DragEvent) => {
-    //파일 드랍을 하기 전 사진을 위에 올리는 과정에서 기본 이벤트가 생기는 현상 방지용.
-    console.log('드레그 오버 이벤트 제한');
+    // 파일 드랍을 하기 전 사진을 위에 올리는 과정에서 기본 이벤트가 생기는 현상 방지용
     e.preventDefault();
     e.stopPropagation();
   };
 
   const dropFile = async (e: React.DragEvent) => {
-    //파일 드랍시 이미지 업로드 로직
-    // 파일을 드레그 후 드랍할때 발생하는 함수.
+    // 파일 드랍 시 이미지 업로드 로직
     e.preventDefault();
-    e.stopPropagation(); // 기본적인 동작 억제. 이게 없다면 이미지가 "새창"으로 생기는 불상사 발생.
-    const OCRImgFile = e.dataTransfer.files; //드랍 된 파일 받기
+    e.stopPropagation(); // 기본적인 동작 억제
+    const OCRImgFile = e.dataTransfer.files; // 드랍된 파일 받기
     if (OCRImgFile.length > 0) {
-      //파일이 있다면
       if (fileInputRef.current) {
-        fileInputRef.current.files = OCRImgFile; // 위에 설정한 hidden 처리 한 input에 있는 current에 이미지 삽입.(input태그를 숨겨서 이렇게 넣어줌)
-        const formData = new FormData(); //백엔드에서 요청 데이터 형식. FormData 객체.
+        fileInputRef.current.files = OCRImgFile; // 위에 설정한 hidden 처리한 input에 있는 current에 이미지 삽입
+        const formData = new FormData(); // 백엔드에서 요청 데이터 형식
         formData.append('OCRImg', fileInputRef.current.files[0]);
-        console.log(formData);
+        toggleLoading(); // 로딩 시작
         try {
-          const data = await submitOcrFile(formData); //ocr 사진을 서버로 보낸 후 리턴 값 기다리기.
-          //submitOcrFile은 service 디렉터리에 있음.
+          const data = await submitOcrFile(formData); // OCR 사진을 서버로 보낸 후 리턴 값 기다리기
           setOCRData({
             drugName: data.drugName,
             intakeStart: data.intakeStart,
@@ -50,34 +45,40 @@ const DirectScan: React.FC = () => {
             hospital: data.hospital,
             disease: data.disease,
           });
-          const reader = new FileReader(); //url 생성을 위한 FileReader생성
+
+          const reader = new FileReader(); // URL 생성을 위한 FileReader 생성
           reader.onload = async function (event) {
-            //이미지가 로드 될때까지 기다림.
-            const imageUrl = event.target.result;
-            console.log('이미지 데이터 URL:', imageUrl);
+            const imageUrl = event.target?.result as string;
             await setImgURL(imageUrl);
           };
           reader.readAsDataURL(fileInputRef.current.files[0]);
-          console.log('서버로 부터 응답... data : ', response.data);
+
+          // 로딩 종료는 imageUrl 설정 후에 해야 합니다
+          await new Promise<void>((resolve) => {
+            reader.onloadend = () => resolve();
+          });
         } catch (error) {
           console.error('Error:', error);
+        } finally {
+          toggleLoading(); // 로딩 종료
         }
       }
     }
   };
 
   useEffect(() => {
-    //로컬에서 테스트 용으로 사진 업로드 시 바로 넘어가도록 하는 역할 도커 실핼 후 주석처리 요망.
+    // imgURL 상태가 변경될 때마다 리다이렉트
     if (imgURL) {
       console.log('Data response OK, redirecting...');
-      nevigate('/scan-confirm');
+      navigate('/scan-confirm');
     }
-  }, [imgURL, nevigate]);
+  }, [imgURL, navigate]);
+
   return (
-    <>
-      <BackBtn text="약봉투 등록하기"></BackBtn>
+    <div className="relative">
+      <BackBtn text="약봉투 등록하기" />
       <div className="min-h-[83vh] flex flex-col justify-center items-center overflow-hidden text-center">
-        {/* //최상단 < 약봉투 등록하기 */}
+        {/* 최상단 < 약봉투 등록하기 */}
         <div
           onDrop={dropFile}
           onDragOver={preventDragOver}
@@ -94,7 +95,7 @@ const DirectScan: React.FC = () => {
           <p>이곳에 이미지를 드래그하거나 파일을 업로드 하세요</p>
         </div>
 
-        <CustomHr></CustomHr>
+        <CustomHr />
         <div className="w-full flex justify-center items-center h-[32vh] text-[0.9rem] flex-col">
           <img src={QR} className="w-[50vh] h-[30vh]" />
           <div
@@ -105,15 +106,14 @@ const DirectScan: React.FC = () => {
               borderRadius: '20px',
               fontSize: '0.9rem',
               padding: '0.2rem',
-
-              //맨 하단 코멘트 스타일 및 코멘트 박스 스타일
             }}
           >
-            휴대폰으로 qr코드를 인식한 후 약 봉투를 스캔해주세요
+            휴대폰으로 QR 코드를 인식한 후 약 봉투를 스캔해주세요
           </div>
         </div>
       </div>
-    </>
+      {!loading ? null : <Loading></Loading>};
+    </div>
   );
 };
 
