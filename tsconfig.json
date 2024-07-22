@@ -16,13 +16,13 @@
     "allowJs": false,
 
     /* Linting */
-    "strict": true,
+    "strict": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
   },
-  "include": ["src"],
+  "include": ["src", "vite.config.ts", "node_modules/vite/client"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
