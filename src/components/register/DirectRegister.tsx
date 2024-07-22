@@ -44,7 +44,7 @@ const DirectRegister: React.FC = () => {
     lunch,
     setLunch,
     night,
-    setNight
+    setNight,
   } = useContext(RegisterContext);
 
   useEffect(() => {
@@ -359,7 +359,7 @@ const DirectRegister: React.FC = () => {
       <hr className="border-1 border-gray-300 m-auto w-[85%]" />
       <div className="flex h-[27vh] w-[100%]">
         <div className="flex flex-col w-full h-[30%] mt-[12%]">
-          {!clickedCycleBtn ? (
+          {(!clickedCycleBtn && !(morning || lunch || night)) ? (
             <>
               <p className="text-3xl w-[50%] font-black ml-[5%] mb-[2%]">
                 복용주기
@@ -406,10 +406,7 @@ const DirectRegister: React.FC = () => {
       <hr className="border-1 border-gray-300 m-auto w-[85%] mt-[10px]" />
 
       <div className="w-[100%] h-[15vh] flex flex-col justify-center">
-        <SaveBtn
-          className="m-auto h-[35px] w-[50%]"
-          onClick={() => handleRedirect('/direct-register')}
-        >
+        <SaveBtn className="m-auto h-[35px] w-[50%]" onClick={handleSubmitData}>
           저장하기
         </SaveBtn>
       </div>

@@ -164,7 +164,7 @@ const PillRegister: React.FC = () => {
               주기 입력
             </InputBtn>
           </div> */}
-          {intakeDailyBtn ? (
+          {(intakeDailyBtn) ? (
             <div className="w-[100%] h-[100px]  flex items-center space-x-1 justify-center gap-1 m-auto">
               <InputBtn
                 className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white` : ''}`}
