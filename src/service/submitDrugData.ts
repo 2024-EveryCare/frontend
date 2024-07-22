@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { useContext } from 'react';
-import { RegisterContext } from '../context/RegisterContext';
 
 export const submitDrugData = (
+  drugName,
   intakeStart,
   intakeEnd,
   intakeCycle,
@@ -11,7 +10,8 @@ export const submitDrugData = (
   disease,
 ) => {
   axios
-    .post('api/v1/medicines/photo/{memberId}', {
+    .post('api/v1/medicines/photo/memberid', {
+      drugName: drugName,
       intakeStart: intakeStart,
       intakeEnd: intakeEnd,
       intakeCycle: null,

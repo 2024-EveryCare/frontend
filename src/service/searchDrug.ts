@@ -6,4 +6,3 @@ export const searchDrug = async (drugName: string) => {
     .then((response) => response.data);
   return drugData;
 };
-

@@ -83,12 +83,9 @@ const PillSearch: React.FC = () => {
     }
   }, [searchedDrugData]);
 
-  const searchDrug = () => {
-    if (searchInputValue.trim() === '') {
-      alert('검색어를 입력해 주세요!');
-      return;
-    }
-    console.log('기존 약 내용', savedDrug);
+  const autoSave = () =>{
+    // 사용자가 저장하기를 안누르고 다른 약품을 검색 시 자동 저장을 하도록 해주는 부분.
+    console.log('기존 약 내용', savedDrug); 
     const updatedDrugs = [...savedDrug]; // 기존 저장된 약 데이터 복사
     for (let i = 0; i < checkboxRefs.current.length; i++) {
       const temp = checkboxRefs.current[i]?.checked;
@@ -109,7 +106,14 @@ const PillSearch: React.FC = () => {
     }
 
     setSavedDrug(updatedDrugs); // 한 번에 상태 업데이트
-    // http:127.0.0.1:8000/test/?query=${searchInputValue}
+  };
+
+  const searchDrug = () => {
+    if (searchInputValue.trim() === '') {
+      alert('검색어를 입력해 주세요!');
+      return;
+    }
+    autoSave(); //사용자가 약 선택후 저장하기를 누르지 않고 다른 약을 검색 할 시 자동저장
     axios
       // .get(`http://127.0.0.1:8000/test/?drugName`)
       .get(`http://127.0.0.1:8000/test/${searchInputValue}`)

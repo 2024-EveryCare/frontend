@@ -218,7 +218,6 @@ const PillRegister: React.FC = () => {
             placeholderText="죵료일"
             selected={endDate}
             onChange={handleEndDate}
-            // onChange={handleEndDate}
             icon={
               <img
                 src={CalendarImg} // 외부 이미지의 URL을 지정합니다.

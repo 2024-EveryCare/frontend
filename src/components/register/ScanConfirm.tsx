@@ -12,26 +12,17 @@ import './CustomDatePicker.css';
 import InputBtn from '../../components/register/button/InputBtn';
 import SaveBtn from '../../components/register/button/SaveBtn';
 import AddPillModal from './AddPillModal';
-import { formatDate } from '../../utils/date';
+import { formatDate, formatDateObject } from '../../utils/date';
 import axios from 'axios';
 import { RegisterContext } from '../../context/RegisterContext';
 import { searchDrug } from '../../service/searchDrug';
+import { submitDrugData } from '../../service/submitDrugData';
 
 const ScanConfirm: React.FC = () => {
-  const formatStartDate = (formatedDate) => {
-    const date = new Date(formatedDate);
-    setStartDate(date);
-  };
-
-  const formatEndDate = (formatedDate) => {
-    const date = new Date(formatedDate);
-    console.log(date);
-    setEndDate(date);
-  };
-
   const { OCRData, setOCRData, imgURL, setImgURL } =
     useContext(RegisterContext); // 처방전 인식 결과를 받아오는 전역변수 역할
   useEffect(() => {
+    //ocr데이터가 넘어올때 초기 새팅을 위한 useEffect
     const drugName = OCRData.drugName; // ocr로 받을때 약 정보는 한번에 배열로 받아서 직접입력하기 형식과 맞추려면 drugName배열을 다 풀어서 pcode,code,company가 있는 형식으로 맞춰줘야함. 안그러면 리스트에서 랜더링을 못함
     //OCRData는 객체이므로 바로 map으로 돌리기가 불가능.
     const parsedDrugData = drugName.map((drugName) => ({
@@ -43,12 +34,10 @@ const ScanConfirm: React.FC = () => {
 
     setSaveDrugData(parsedDrugData);
     setIntakeCycle(OCRData.intakeCycle);
-    formatStartDate(OCRData.intakeStart);
-    formatEndDate(OCRData.intakeEnd);
     setHospital(OCRData.hospital);
-    setShowHospital(true);
+    // setShowHospital(true); 결과가 있을때만 보여주기
     setDisease(OCRData.disease);
-    setShowDisease(true);
+    // setShowDisease(true); 결과가 있을때만 보여주기
   }, [OCRData]);
 
   const [showedDrugCount, setShowedDrugCount] = useState(0);
@@ -69,35 +58,16 @@ const ScanConfirm: React.FC = () => {
     console.log('입력중...');
   };
 
-  const searchMedi = () => {
+  const searchMedi = async () => {
     //서버로 inputValue값 넘길 로직 작성
     if (inputValue.trim() == '') {
       alert('감색어를 입력하세요!!');
       // 스페이스 같은 짓 못하도록 trim() 을 사용해서 공백문자 줄바꿈 제거 후 검증
       return;
     }
-    console.log('전송중,,');
-    console.log(inputValue);
-    axios
-      .get(`http://127.0.0.1:8000/test/${inputValue}`)
-      .then((response) => {
-        const data = response.data;
-        console.log('서버로 부터 응답 data : ', data);
-        console.log(typeof data);
-        console.log('서버 응답:', response.data.data);
-        console.log('서버 응답:', response.data.data[0].drugName);
-        const temp = response.data.data.map((drugList) => drugList);
-        setDrugData(temp);
-      })
-      .catch((error) =>
-        console.error('서버로 데이터를 보내는데 실패했습니다:', error),
-      );
+    const searchedDrugData = await searchDrug(inputValue);
+    setDrugData(searchedDrugData.data);
   };
-  // const { drugData: searchData } = useSearchDrug(inputValue); // useSearchDrug 훅 사용
-  // const searchMedi = () => {
-  //   // 모달창에서 약 추가.
-  //   console.log('응답해라 ', searchData);
-  // };
 
   const [saveDrugData, setSaveDrugData] = useState<DrugData[]>([]);
   const handleCheckboxChange = (index: number) => {
@@ -203,51 +173,20 @@ const ScanConfirm: React.FC = () => {
     disease: string;
   }
 
-  const [dataSubmit, setDataSubmit] = useState<submitData | boolean>(false);
-
-  useEffect(() => {
-    // console.log('동작 중....', startDate);
-    // console.log('동작 중....', endDate);
-    // console.log('admlamsdlkmaklsdmklasm', imgURL);
-    setShowedDrugCount(saveDrugData.length);
-    if (dataSubmit) {
-      const drugCode = saveDrugData.map((item) => item.drugCode);
-      axios
-        .put('http://127.0.0.1:8000/test/', {
-          drugCode: drugCode,
-          intakeStart: startDate,
-          intakeEnd: endDate,
-          intakeCycle: intakeCycle,
-          intakeDaily: intakeDaily,
-          hospital: hospital,
-          disease: disease,
-        })
-        .then((response) => {
-          console.log('서버 응답:', response.data);
-        });
-    }
-  }, [
-    dataSubmit,
-    disease,
-    endDate,
-    hospital,
-    intakeCycle,
-    intakeDaily,
-    saveDrugData,
-    startDate,
-  ]);
-
-  const handleDataSubmit = () => {
-    let splitDate = String(startDate).split(' '); // date가 datepicker 의 객체로 전달되어서 형변환 필요.
-    let formatedDate = formatDate(splitDate);
-    setStartDate(formatedDate);
-
-    splitDate = String(endDate).split(' '); // date가 datepicker 의 객체로 전달되어서 형변환 필요.
-    console.log(splitDate);
-    formatedDate = formatDate(splitDate);
-    setEndDate(formatedDate);
-    console.log('서버 전송', endDate, startDate);
-    setDataSubmit(true); //저장하기 버튼을 누르면 useEffect
+  const handleSubmitDrugData = async () => {
+    const intakeStart = await formatDateObject(startDate);
+    const intakeEnd = await formatDateObject(endDate);
+    const drugName = await saveDrugData.map((drugData) => drugData.drugName);
+    console.log(drugName);
+    submitDrugData(
+      drugName,
+      intakeStart,
+      intakeEnd,
+      intakeCycle,
+      intakeDaily,
+      hospital,
+      disease,
+    );
   };
   return (
     <>
@@ -539,7 +478,7 @@ const ScanConfirm: React.FC = () => {
         <div className="w-[100%] h-[15vh] flex flex-col justify-center">
           <SaveBtn
             className="m-auto h-[35px] w-[50%]"
-            onClick={() => handleRedirect('/direct-register')}
+            onClick={handleSubmitDrugData}
           >
             저장하기
           </SaveBtn>

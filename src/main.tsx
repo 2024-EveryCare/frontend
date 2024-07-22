@@ -15,7 +15,6 @@ import PillRegisterPage from './pages/register/PillRegisterPage';
 import CalendarPage from './pages/calendar/CalendarPage';
 import MainPg from './pages/mainPage/MainPg';
 import { RegisterContextProvider } from './context/RegisterContext';
-import { server } from './mocks/server';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import PillInfoSearchPage from './pages/pillinfosearch/PillInfoSearchPage';
 const queryClient = new QueryClient();
