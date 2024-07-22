@@ -12,7 +12,11 @@ import './CustomDatePicker.css';
 import InputBtn from '../../components/register/button/InputBtn';
 import SaveBtn from '../../components/register/button/SaveBtn';
 import AddPillModal from './AddPillModal';
-import { formatDate, formatDateObject } from '../../utils/date';
+import {
+  formatDate,
+  formatDateObject,
+  intakeDailyCalculator,
+} from '../../utils/date';
 import axios from 'axios';
 import { RegisterContext } from '../../context/RegisterContext';
 import { searchDrug } from '../../service/searchDrug';
@@ -39,7 +43,9 @@ const ScanConfirm: React.FC = () => {
     setDisease(OCRData.disease);
     // setShowDisease(true); 결과가 있을때만 보여주기
   }, [OCRData]);
-
+  const [morning, setMorning] = useState<boolean>(false);
+  const [lunch, setLunch] = useState<boolean>(false);
+  const [night, setNight] = useState<boolean>(false);
   const [showedDrugCount, setShowedDrugCount] = useState(0);
   const [inputValue, setInputValue] = useState<string>(''); // 모달창 input박스 안 데이터를 읽어오는 배열.
 
@@ -96,6 +102,13 @@ const ScanConfirm: React.FC = () => {
     });
     setSaveDrugData(updatedSaveDrugData);
     console.log(saveDrugData);
+  };
+  const handleDailyBtn = (name: string) => {
+    if (name == 'morning') {
+      setMorning((pre) => !pre);
+    } else if (name == 'lunch') setLunch((pre) => !pre);
+    else setNight((pre) => !pre);
+    console.log('Daily 상태: ', morning, lunch, night);
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -172,22 +185,41 @@ const ScanConfirm: React.FC = () => {
     hospital: string;
     disease: string;
   }
-
+  const [saveBtn, setSaveBtn] = useState<boolean>(false);
+  const [drugName, setDrugName] = useState<string[]>([]);
   const handleSubmitDrugData = async () => {
-    const intakeStart = await formatDateObject(startDate);
-    const intakeEnd = await formatDateObject(endDate);
-    const drugName = await saveDrugData.map((drugData) => drugData.drugName);
-    console.log(drugName);
-    submitDrugData(
-      drugName,
-      intakeStart,
-      intakeEnd,
-      intakeCycle,
-      intakeDaily,
-      hospital,
-      disease,
-    );
+    await setDrugName(await saveDrugData.map((drugData) => drugData.drugName));
+    await setIntakeDaily(await intakeDailyCalculator(morning, lunch, night));
+    if (
+      drugName.length &&
+      startDate &&
+      endDate &&
+      intakeDaily &&
+      hospital &&
+      disease
+    ) {
+      await setStartDate(await formatDateObject(startDate));
+      await setEndDate(await formatDateObject(endDate));
+      setSaveBtn((pre) => !pre);
+    } else {
+      console.log('값이 입력되지 않았습니다.');
+    }
   };
+
+  useEffect(() => {
+    if (saveBtn) {
+      submitDrugData(
+        drugName,
+        startDate,
+        endDate,
+        intakeCycle,
+        intakeDaily,
+        hospital,
+        disease,
+      );
+    }
+  }, [saveBtn]);
+
   return (
     <>
       <BackBtn text="처방전 확인"></BackBtn>
@@ -198,7 +230,11 @@ const ScanConfirm: React.FC = () => {
           className="h-[30%] w-[80%] m-[auto] mt-[10px] mb-[0] pt-[2vh]"
         />
         <p
-          style={{ textAlign: 'center', fontSize: '0.94rem', color: '#666666' }}
+          style={{
+            textAlign: 'center',
+            fontSize: '0.94rem',
+            color: '#666666',
+          }}
           className="mt-[0.5rem]"
         >
           등록한 처방전에서 개인정보는 저장되지 않습니다.
@@ -355,33 +391,25 @@ const ScanConfirm: React.FC = () => {
           ></PillNextText>
           <div>
             {showIntakeCycle ? (
-              <div className="flex justify-center items-center h-[6vh] mt-[1vh]">
-                <div className="w-[30%] h-[30px] flex justify-center items-center bg-blue-50 border-blue-200 border-[1px] text-gray-500 text-[8px] inline-block m-auto ml-auto mr-[2vh]">
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    placeholder="ex)1"
-                    className="text-[14px] text-right bg-blue-50"
-                    onChange={handleIntakeDaily}
-                  />
-                  <button className="w-[30%] text-blue-400 text-left font-bold">
-                    회 섭취
-                  </button>
-                </div>
-                <div className="w-[30%] h-[30px] flex justify-center items-center bg-blue-50 border-blue-200 border-[1px] text-gray-500 text-[8px] inline-block mr-auto ml-[2vh]">
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    placeholder="ex)0"
-                    className="text-[14px] text-right bg-blue-50"
-                    onChange={handleIntakeCycle}
-                  />
-                  <button className="w-[30%] text-blue-400 text-left font-bold">
-                    일 간격
-                  </button>
-                </div>
+              <div className="flex justify-center items-center h-[8vh] mt-[1vh] flex justify-center gap-3">
+                <InputBtn
+                  className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white` : ''}`}
+                  onClick={() => handleDailyBtn('morning')}
+                >
+                  아침
+                </InputBtn>
+                <InputBtn
+                  className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white` : ''}`}
+                  onClick={() => handleDailyBtn('lunch')}
+                >
+                  점심
+                </InputBtn>
+                <InputBtn
+                  className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white` : ''}`}
+                  onClick={() => handleDailyBtn('night')}
+                >
+                  저녁
+                </InputBtn>
               </div>
             ) : null}
           </div>

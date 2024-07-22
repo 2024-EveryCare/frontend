@@ -29,3 +29,4 @@ export const submitDrugData = (
       console.log('disease', disease);
     });
 };
+

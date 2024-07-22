@@ -71,3 +71,4 @@ export const intakeDailyCalculator = async (
   const response = binaryCycle.join('');
   return response;
 };
+
