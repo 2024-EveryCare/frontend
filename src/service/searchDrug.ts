@@ -1,8 +1,14 @@
 import axios from 'axios';
 
 export const searchDrug = async (drugName: string) => {
-  const drugData = await axios
-    .get(`http://127.0.0.1:8000/test/${drugName}`)
-    .then((response) => response.data);
-  return drugData;
+  const response = await axios.get(
+    `http://localhost:8080/api/v1/medicines/findName/${drugName}`,
+  );
+
+  console.log(response);
+  console.log(response.data);
+  console.log(response.data.data);
+  console.log(response.data.data.data);
+
+  return response.data.data;
 };
