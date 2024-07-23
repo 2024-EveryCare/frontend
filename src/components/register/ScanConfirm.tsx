@@ -22,6 +22,14 @@ import { RegisterContext } from '../../context/RegisterContext';
 import { searchDrug } from '../../service/searchDrug';
 import { submitDrugData } from '../../service/submitDrugData';
 
+interface DrugData {
+  drugName: string;
+  drugCode: string;
+  drugPcode: string;
+  drugCompany: string;
+  check: boolean;
+}
+
 const ScanConfirm: React.FC = () => {
   const { OCRData, setOCRData, imgURL, setImgURL } =
     useContext(RegisterContext); // 처방전 인식 결과를 받아오는 전역변수 역할
@@ -49,13 +57,7 @@ const ScanConfirm: React.FC = () => {
   const [showedDrugCount, setShowedDrugCount] = useState(0);
   const [inputValue, setInputValue] = useState<string>(''); // 모달창 input박스 안 데이터를 읽어오는 배열.
 
-  interface DrugData {
-    drugName: string;
-    drugCode: string;
-    drugPcode: string;
-    drugCompany: string;
-    check: boolean;
-  }
+
   const [drugData, setDrugData] = useState<DrugData>([]);
 
   const changeInputBox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,14 +179,6 @@ const ScanConfirm: React.FC = () => {
     setDisease(e.target.value);
   };
 
-  interface submitData {
-    drugName: [];
-    intakeStart: string;
-    intakeEnd: string;
-    intakeCycle: string;
-    hospital: string;
-    disease: string;
-  }
   const [saveBtn, setSaveBtn] = useState<boolean>(false);
   const [drugName, setDrugName] = useState<string[]>([]);
   const handleSubmitDrugData = async () => {

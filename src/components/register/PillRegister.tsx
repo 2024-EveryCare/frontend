@@ -124,11 +124,11 @@ const PillRegister: React.FC = () => {
           <ul className="flex m-auto h-[10vh] flex-wrap overflow-y-scroll">
             {savedDrug.map((showedDrug) => (
               <li className="w-[46%] h-[2.5vh] flex mt-2 ml-2 border border-gray-500 rounded-xl justify-center items-center text-sm text-gray-500 relative pt-4 pb-4 pr-4 text-center">
-                <p style={MediNameStyle}>{showedDrug.drugName}</p>
+                <p style={MediNameStyle}>{showedDrug}</p>
 
                 <button
                   className="w-4 h-4 border border-[#F5F5F5] rounded-[10px] text-[1rem] text-[#F56132] bg-[rgba(217, 217, 217, 0.58)] absolute right-[1%] top-[18%] font-bold"
-                  onClick={() => handleDeleteList(showedDrug.drugName)}
+                  onClick={() => handleDeleteList(showedDrug)}
                 >
                   -
                 </button>

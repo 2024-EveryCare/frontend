@@ -19,18 +19,18 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import PillInfoSearchPage from './pages/pillinfosearch/PillInfoSearchPage';
 const queryClient = new QueryClient();
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
-    return;
-  }
+// async function enableMocking() {
+//   if (process.env.NODE_ENV !== 'development') {
+//     return;
+//   }
 
-  const { worker } = await import('./mock/browsers');
+//   const { worker } = await import('./mock/browsers');
 
-  // `worker.start()` returns a Promise that resolves
-  // once the Service Worker is up and ready to intercept requests.
-  return worker.start();
-}
-enableMocking().then(() => {
+//   // `worker.start()` returns a Promise that resolves
+//   // once the Service Worker is up and ready to intercept requests.
+//   return worker.start();
+// }
+// enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
@@ -58,4 +58,4 @@ enableMocking().then(() => {
       </QueryClientProvider>
     </React.StrictMode>,
   );
-});
+// });

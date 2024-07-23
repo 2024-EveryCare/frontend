@@ -6,6 +6,7 @@ import SaveBtn from './button/SaveBtn';
 import { RegisterContext } from '../../context/RegisterContext';
 import { useNavigate } from 'react-router';
 import { parseJSON } from 'date-fns';
+import { searchDrug } from '../../service/searchDrug';
 
 const PillSearch: React.FC = () => {
   const nevigate = useNavigate();
@@ -13,16 +14,9 @@ const PillSearch: React.FC = () => {
     console.log('pill-search page redirect...');
     nevigate(path);
   };
-  interface DrugData {
-    drugName: string;
-    drugCode: string;
-    drugPcode: string;
-    drugCompany: string;
-    check: boolean;
-  }
 
   const { savedDrug, setSavedDrug } = useContext(RegisterContext);
-  const [searchedDrugData, setSearchedDrugData] = useState<DrugData[] | null>(
+  const [searchedDrugData, setSearchedDrugData] = useState<string[] | null>(
     null,
   );
   const [searchInputValue, setSearchInputValue] = useState<string>('');
@@ -60,9 +54,7 @@ const PillSearch: React.FC = () => {
     const drug = checkboxRefs.current[index]!.value; // 삭제 할 약의 값
     const { drugCode, ...restDrugData } = JSON.parse(drug); // 문자열로 바꾼후, 재구조화를 통해서 drugCode만 추출.
     console.log('drugCode:', drugCode);
-    const temp = savedDrug.filter(
-      (drugData: DrugData) => drugData.drugCode != drugCode,
-    ); // 지우려는 데이터를 뺀 나머지 항목을 다시 저장
+    const temp = savedDrug.filter((drugData: string[]) => drugData != drugCode); // 지우려는 데이터를 뺀 나머지 항목을 다시 저장
     setSavedDrug(temp);
   };
   const handleCheckboxBgChange2 = (index: number) => {
@@ -72,7 +64,7 @@ const PillSearch: React.FC = () => {
     const temp = checkboxRefs.current[index]?.value; //json형식으로 파싱되어 있는 value값을 받아옴
     const drug = JSON.parse(temp); // input값의 객체를 원래 DrugData객체로 다시 파싱해줌.
     // setSavedDrug(...savedDrug, drug);
-    setSavedDrug((preSavedDrug: DrugData) => [...preSavedDrug, drug]);
+    setSavedDrug((preSavedDrug: string[]) => [...preSavedDrug, drug]);
   };
 
   useEffect(() => {
@@ -83,9 +75,9 @@ const PillSearch: React.FC = () => {
     }
   }, [searchedDrugData]);
 
-  const autoSave = () =>{
+  const autoSave = () => {
     // 사용자가 저장하기를 안누르고 다른 약품을 검색 시 자동 저장을 하도록 해주는 부분.
-    console.log('기존 약 내용', savedDrug); 
+    console.log('기존 약 내용', savedDrug);
     const updatedDrugs = [...savedDrug]; // 기존 저장된 약 데이터 복사
     for (let i = 0; i < checkboxRefs.current.length; i++) {
       const temp = checkboxRefs.current[i]?.checked;
@@ -94,9 +86,7 @@ const PillSearch: React.FC = () => {
         const drug = JSON.parse(item); // JSON 문자열을 객체로 변환
 
         // 이미 있는지 확인
-        const exists = updatedDrugs.some(
-          (savedDrug) => savedDrug.drugCode === drug.drugCode,
-        );
+        const exists = updatedDrugs.some((savedDrug) => savedDrug === drug);
         if (!exists) {
           updatedDrugs.push(drug); // 새로운 약 데이터 추가
         }
@@ -108,25 +98,17 @@ const PillSearch: React.FC = () => {
     setSavedDrug(updatedDrugs); // 한 번에 상태 업데이트
   };
 
-  const searchDrug = () => {
+  const searchDrugs = async () => {
     if (searchInputValue.trim() === '') {
       alert('검색어를 입력해 주세요!');
       return;
     }
     autoSave(); //사용자가 약 선택후 저장하기를 누르지 않고 다른 약을 검색 할 시 자동저장
-    axios
-      // .get(`http://127.0.0.1:8000/test/?drugName`)
-      .get(`http://127.0.0.1:8000/test/${searchInputValue}`)
-      // .get(`http://127.0.0.1:8000/test/?drugName=${searchInputValue}`)
-      .then((response) => {
-        const data = response.data;
-        console.log('서버로 부터 응답 data : ', data);
-        console.log(typeof data);
-        setSearchedDrugData(response.data.data);
-      })
-      .catch((error) =>
-        console.error('서버로 데이터를 보내는데 실패했습니다:', error),
-      );
+    const response = await searchDrug(searchInputValue);
+    console.log(response);
+    // setSearchedDrugData(response.data[0].drugName); 로컬에서는 이렇게
+    setSearchedDrugData(response);
+    // 예외처리는 좀 나중에
   };
 
   const saveDrug = () => {
@@ -142,7 +124,7 @@ const PillSearch: React.FC = () => {
           onChange={handleSearchInputChange}
           className="w-[97%] h-[35px] border-blue-500 border rounded-2xl px-2"
         />
-        <button className="absolute right-[3%]" onClick={searchDrug}>
+        <button className="absolute right-[3%]" onClick={searchDrugs}>
           <img
             src={SearchIcon}
             alt="검색"
@@ -164,7 +146,7 @@ const PillSearch: React.FC = () => {
               onClick={() => handleCheckboxChange(index)}
               ref={(element) => (checkedBgRefs.current[index] = element)}
             >
-              <PillNextText headText={medicine.drugName} />
+              <PillNextText headText={medicine} />
               <hr className="border-none h-px w-[95%] bg-gray-500 m-auto mt-8 mb-[3px]" />
               <input
                 type="checkbox"

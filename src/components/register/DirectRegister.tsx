@@ -142,7 +142,7 @@ const DirectRegister: React.FC = () => {
   };
 
   const handleSubmitDrugData = async () => {
-    const drugName = await savedDrug.map((drugData) => drugData.drugName);
+    const drugName = await savedDrug.map((drugData) => drugData);
     await setDrugName(drugName);
     await setIntakeDaily(await intakeDailyCalculator(morning, lunch, night)); //비동기로 동작하지만, 값이 나올때까지 기다린 후 서버로 전송.
     if (
