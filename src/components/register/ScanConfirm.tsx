@@ -12,26 +12,21 @@ import './CustomDatePicker.css';
 import InputBtn from '../../components/register/button/InputBtn';
 import SaveBtn from '../../components/register/button/SaveBtn';
 import AddPillModal from './AddPillModal';
-import { formatDate } from '../../utils/date';
+import {
+  formatDate,
+  formatDateObject,
+  intakeDailyCalculator,
+} from '../../utils/date';
 import axios from 'axios';
 import { RegisterContext } from '../../context/RegisterContext';
 import { searchDrug } from '../../service/searchDrug';
+import { submitDrugData } from '../../service/submitDrugData';
 
 const ScanConfirm: React.FC = () => {
-  const formatStartDate = (formatedDate) => {
-    const date = new Date(formatedDate);
-    setStartDate(date);
-  };
-
-  const formatEndDate = (formatedDate) => {
-    const date = new Date(formatedDate);
-    console.log(date);
-    setEndDate(date);
-  };
-
   const { OCRData, setOCRData, imgURL, setImgURL } =
     useContext(RegisterContext); // 처방전 인식 결과를 받아오는 전역변수 역할
   useEffect(() => {
+    //ocr데이터가 넘어올때 초기 새팅을 위한 useEffect
     const drugName = OCRData.drugName; // ocr로 받을때 약 정보는 한번에 배열로 받아서 직접입력하기 형식과 맞추려면 drugName배열을 다 풀어서 pcode,code,company가 있는 형식으로 맞춰줘야함. 안그러면 리스트에서 랜더링을 못함
     //OCRData는 객체이므로 바로 map으로 돌리기가 불가능.
     const parsedDrugData = drugName.map((drugName) => ({
@@ -43,14 +38,14 @@ const ScanConfirm: React.FC = () => {
 
     setSaveDrugData(parsedDrugData);
     setIntakeCycle(OCRData.intakeCycle);
-    formatStartDate(OCRData.intakeStart);
-    formatEndDate(OCRData.intakeEnd);
     setHospital(OCRData.hospital);
-    setShowHospital(true);
+    // setShowHospital(true); 결과가 있을때만 보여주기
     setDisease(OCRData.disease);
-    setShowDisease(true);
+    // setShowDisease(true); 결과가 있을때만 보여주기
   }, [OCRData]);
-
+  const [morning, setMorning] = useState<boolean>(false);
+  const [lunch, setLunch] = useState<boolean>(false);
+  const [night, setNight] = useState<boolean>(false);
   const [showedDrugCount, setShowedDrugCount] = useState(0);
   const [inputValue, setInputValue] = useState<string>(''); // 모달창 input박스 안 데이터를 읽어오는 배열.
 
@@ -69,35 +64,16 @@ const ScanConfirm: React.FC = () => {
     console.log('입력중...');
   };
 
-  const searchMedi = () => {
+  const searchMedi = async () => {
     //서버로 inputValue값 넘길 로직 작성
     if (inputValue.trim() == '') {
       alert('감색어를 입력하세요!!');
       // 스페이스 같은 짓 못하도록 trim() 을 사용해서 공백문자 줄바꿈 제거 후 검증
       return;
     }
-    console.log('전송중,,');
-    console.log(inputValue);
-    axios
-      .get(`http://127.0.0.1:8000/test/${inputValue}`)
-      .then((response) => {
-        const data = response.data;
-        console.log('서버로 부터 응답 data : ', data);
-        console.log(typeof data);
-        console.log('서버 응답:', response.data.data);
-        console.log('서버 응답:', response.data.data[0].drugName);
-        const temp = response.data.data.map((drugList) => drugList);
-        setDrugData(temp);
-      })
-      .catch((error) =>
-        console.error('서버로 데이터를 보내는데 실패했습니다:', error),
-      );
+    const searchedDrugData = await searchDrug(inputValue);
+    setDrugData(searchedDrugData.data);
   };
-  // const { drugData: searchData } = useSearchDrug(inputValue); // useSearchDrug 훅 사용
-  // const searchMedi = () => {
-  //   // 모달창에서 약 추가.
-  //   console.log('응답해라 ', searchData);
-  // };
 
   const [saveDrugData, setSaveDrugData] = useState<DrugData[]>([]);
   const handleCheckboxChange = (index: number) => {
@@ -126,6 +102,13 @@ const ScanConfirm: React.FC = () => {
     });
     setSaveDrugData(updatedSaveDrugData);
     console.log(saveDrugData);
+  };
+  const handleDailyBtn = (name: string) => {
+    if (name == 'morning') {
+      setMorning((pre) => !pre);
+    } else if (name == 'lunch') setLunch((pre) => !pre);
+    else setNight((pre) => !pre);
+    console.log('Daily 상태: ', morning, lunch, night);
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -202,53 +185,41 @@ const ScanConfirm: React.FC = () => {
     hospital: string;
     disease: string;
   }
-
-  const [dataSubmit, setDataSubmit] = useState<submitData | boolean>(false);
+  const [saveBtn, setSaveBtn] = useState<boolean>(false);
+  const [drugName, setDrugName] = useState<string[]>([]);
+  const handleSubmitDrugData = async () => {
+    await setDrugName(await saveDrugData.map((drugData) => drugData.drugName));
+    await setIntakeDaily(await intakeDailyCalculator(morning, lunch, night));
+    if (
+      drugName.length &&
+      startDate &&
+      endDate &&
+      intakeDaily &&
+      hospital &&
+      disease
+    ) {
+      await setStartDate(await formatDateObject(startDate));
+      await setEndDate(await formatDateObject(endDate));
+      setSaveBtn((pre) => !pre);
+    } else {
+      console.log('값이 입력되지 않았습니다.');
+    }
+  };
 
   useEffect(() => {
-    // console.log('동작 중....', startDate);
-    // console.log('동작 중....', endDate);
-    // console.log('admlamsdlkmaklsdmklasm', imgURL);
-    setShowedDrugCount(saveDrugData.length);
-    if (dataSubmit) {
-      const drugCode = saveDrugData.map((item) => item.drugCode);
-      axios
-        .put('http://127.0.0.1:8000/test/', {
-          drugCode: drugCode,
-          intakeStart: startDate,
-          intakeEnd: endDate,
-          intakeCycle: intakeCycle,
-          intakeDaily: intakeDaily,
-          hospital: hospital,
-          disease: disease,
-        })
-        .then((response) => {
-          console.log('서버 응답:', response.data);
-        });
+    if (saveBtn) {
+      submitDrugData(
+        drugName,
+        startDate,
+        endDate,
+        intakeCycle,
+        intakeDaily,
+        hospital,
+        disease,
+      );
     }
-  }, [
-    dataSubmit,
-    disease,
-    endDate,
-    hospital,
-    intakeCycle,
-    intakeDaily,
-    saveDrugData,
-    startDate,
-  ]);
+  }, [saveBtn]);
 
-  const handleDataSubmit = () => {
-    let splitDate = String(startDate).split(' '); // date가 datepicker 의 객체로 전달되어서 형변환 필요.
-    let formatedDate = formatDate(splitDate);
-    setStartDate(formatedDate);
-
-    splitDate = String(endDate).split(' '); // date가 datepicker 의 객체로 전달되어서 형변환 필요.
-    console.log(splitDate);
-    formatedDate = formatDate(splitDate);
-    setEndDate(formatedDate);
-    console.log('서버 전송', endDate, startDate);
-    setDataSubmit(true); //저장하기 버튼을 누르면 useEffect
-  };
   return (
     <>
       <BackBtn text="처방전 확인"></BackBtn>
@@ -259,7 +230,11 @@ const ScanConfirm: React.FC = () => {
           className="h-[30%] w-[80%] m-[auto] mt-[10px] mb-[0] pt-[2vh]"
         />
         <p
-          style={{ textAlign: 'center', fontSize: '0.94rem', color: '#666666' }}
+          style={{
+            textAlign: 'center',
+            fontSize: '0.94rem',
+            color: '#666666',
+          }}
           className="mt-[0.5rem]"
         >
           등록한 처방전에서 개인정보는 저장되지 않습니다.
@@ -416,33 +391,25 @@ const ScanConfirm: React.FC = () => {
           ></PillNextText>
           <div>
             {showIntakeCycle ? (
-              <div className="flex justify-center items-center h-[6vh] mt-[1vh]">
-                <div className="w-[30%] h-[30px] flex justify-center items-center bg-blue-50 border-blue-200 border-[1px] text-gray-500 text-[8px] inline-block m-auto ml-auto mr-[2vh]">
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    placeholder="ex)1"
-                    className="text-[14px] text-right bg-blue-50"
-                    onChange={handleIntakeDaily}
-                  />
-                  <button className="w-[30%] text-blue-400 text-left font-bold">
-                    회 섭취
-                  </button>
-                </div>
-                <div className="w-[30%] h-[30px] flex justify-center items-center bg-blue-50 border-blue-200 border-[1px] text-gray-500 text-[8px] inline-block mr-auto ml-[2vh]">
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    placeholder="ex)0"
-                    className="text-[14px] text-right bg-blue-50"
-                    onChange={handleIntakeCycle}
-                  />
-                  <button className="w-[30%] text-blue-400 text-left font-bold">
-                    일 간격
-                  </button>
-                </div>
+              <div className="flex justify-center items-center h-[8vh] mt-[1vh] flex justify-center gap-3">
+                <InputBtn
+                  className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white` : ''}`}
+                  onClick={() => handleDailyBtn('morning')}
+                >
+                  아침
+                </InputBtn>
+                <InputBtn
+                  className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white` : ''}`}
+                  onClick={() => handleDailyBtn('lunch')}
+                >
+                  점심
+                </InputBtn>
+                <InputBtn
+                  className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white` : ''}`}
+                  onClick={() => handleDailyBtn('night')}
+                >
+                  저녁
+                </InputBtn>
               </div>
             ) : null}
           </div>
@@ -450,14 +417,14 @@ const ScanConfirm: React.FC = () => {
             {showIntakeCycle ? (
               <InputBtn
                 onClick={handleShowIntakeCycle}
-                className="w-[80%] h-[30px] mt-[3vh]"
+                className="w-[80%] h-[30px] mt-[3vh] hover:bg-blue-200 hover:text-white"
               >
                 확인
               </InputBtn>
             ) : (
               <InputBtn
                 onClick={handleShowIntakeCycle}
-                className="w-[80%] h-[30px] mt-[3vh]"
+                className="w-[80%] h-[30px] mt-[3vh] hover:bg-blue-200 hover:text-white"
               >
                 주기입력
               </InputBtn>
@@ -486,14 +453,14 @@ const ScanConfirm: React.FC = () => {
             {showHospital ? (
               <InputBtn
                 onClick={handleShowHospital}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 확인
               </InputBtn>
             ) : (
               <InputBtn
                 onClick={handleShowHospital}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 병원입력
               </InputBtn>
@@ -522,14 +489,14 @@ const ScanConfirm: React.FC = () => {
             {showDisease ? (
               <InputBtn
                 onClick={handleShowDisease}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 확인
               </InputBtn>
             ) : (
               <InputBtn
                 onClick={handleShowDisease}
-                className="w-[80%] h-[30px]]"
+                className="w-[80%] h-[30px] hover:bg-blue-200 hover:text-white"
               >
                 질병입력
               </InputBtn>
@@ -539,7 +506,7 @@ const ScanConfirm: React.FC = () => {
         <div className="w-[100%] h-[15vh] flex flex-col justify-center">
           <SaveBtn
             className="m-auto h-[35px] w-[50%]"
-            onClick={() => handleRedirect('/direct-register')}
+            onClick={handleSubmitDrugData}
           >
             저장하기
           </SaveBtn>

@@ -39,7 +39,9 @@ export const RegisterContextProvider: React.FC = ({ children }) => {
   const [intakeDaily, setIntakeDaily] = useState<string>('');
   const [intakeCycle, setIntakeCycle] = useState<string>('');
   const [imgURL, setImgURL] = useState<string>('');
-
+  const [morning, setMorning] = useState<boolean>(false);
+  const [lunch, setLunch] = useState<boolean>(false);
+  const [night, setNight] = useState<boolean>(false);
   return (
     <RegisterContext.Provider
       value={{
@@ -61,6 +63,12 @@ export const RegisterContextProvider: React.FC = ({ children }) => {
         setIntakeCycle,
         imgURL,
         setImgURL,
+        morning,
+        setMorning,
+        lunch,
+        setLunch,
+        night,
+        setNight,
       }}
     >
       {children}

@@ -10,22 +10,20 @@ import './CustomDatePicker.css';
 import CalendarImg from '../../assets/calendar.png';
 import SaveBtn from './button/SaveBtn';
 import InputBtn from './button/InputBtn';
+import {
+  formatDate,
+  intakeCycleCalculator,
+  intakeDailyCalculator,
+} from '../../utils/date';
+import { submitDrugData } from '../../service/submitDrugData';
 
 const DirectRegister: React.FC = () => {
-  const { OCRData, setOCRData } = useContext(RegisterContext);
-  useEffect(() => {
-    console.log(OCRData);
-    console.log('asda');
-  }, [OCRData]);
-
-  const [selectedSick, setSelectedSick] = useState<boolean>(false);
-  const [sickConfirm, setSickConfirm] = useState<boolean>(false);
-
-  const [selectedHos, setSelectedHos] = useState<boolean>(false);
-  const [hosConfirm, setHosConfirm] = useState<boolean>(false);
-
+  const navigate = useNavigate(); //리다이렉트를 위한 useNavigate Hook
   const {
-    savedDrug,
+    //전역변수 context 불러오기
+    OCRData,
+    setOCRData,
+    savedDrug, //약물의 name,code,pcode,company등의 정보를 담고있음.
     setSavedDrug,
     startDate,
     setStartDate,
@@ -39,13 +37,33 @@ const DirectRegister: React.FC = () => {
     setIntakeDaily,
     intakeCycle,
     setIntakeCycle,
+    morning,
+    setMorning,
+    lunch,
+    setLunch,
+    night,
+    setNight,
   } = useContext(RegisterContext);
+  const [drugName, setDrugName] = useState<string[]>([]);
+
+  const [selectedSick, setSelectedSick] = useState<boolean>(false); //질병버튼 상태
+  const [sickConfirm, setSickConfirm] = useState<boolean>(false); //질병입력 후 확인. 상태
+
+  const [selectedHos, setSelectedHos] = useState<boolean>(false); //병원버튼 상태
+  const [hosConfirm, setHosConfirm] = useState<boolean>(false); //병원입력 후 확인. 상태
+
+  const [clickedDateBtn, setClickedDateBtn] = useState<boolean>(false); //복용일 버튼 상태
+  const [clickedDailyBtn, setClickedDailyBtn] = useState<boolean>(false); //아침, 점심, 저녁 복용횟수 상태
+
+  const [saveBtn, setSaveBtn] = useState<boolean>(false); //저장하기 버튼을 누르고 랜더링이 한번 일어나야 값들이 정상 저장 되므로 저장버튼 상태관리를 위한 배열
 
   const onClickSick = () => {
+    //질병버튼 핸들러
     setSelectedSick(true);
     setSickConfirm(false);
   };
   const onClickSickConfirm = () => {
+    //질병확인버튼 핸들러
     const trimmedValue = disease.trim();
     if (trimmedValue === '') {
       console.log('아무것도 입력되지 않았습니다.');
@@ -55,28 +73,25 @@ const DirectRegister: React.FC = () => {
       setSickConfirm(true);
     }
   };
-  const handleSickInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setDisease(event.target.value);
-    console.log(event.target.value);
-  };
-  const [clickedDateBtn, setClickedDateBtn] = useState<boolean>(false);
   const onClickDate = () => {
+    //날짜 확인 버튼 핸들러
     if (clickedDateBtn) {
       setClickedDateBtn(false);
       return;
     } else setClickedDateBtn(true);
   };
-  const [clickedCycleBtn, setClickedCycleBtn] = useState<boolean>(false);
-  const onClickCycle = () => {
-    setClickedCycleBtn((pre) => !pre);
+
+  const onClickDaily = () => {
+    //아침 점심 저녁 복용횟수 버튼 핸들러
+    setClickedDailyBtn((pre) => !pre);
   };
   const onClickHos = () => {
+    //병원입력 버튼 핸들러
     setSelectedHos(true);
     setHosConfirm(false);
   };
   const onClickHosConfirm = () => {
+    //병원 이름 입력 후 확인 핸들러
     const trimmedValue = hospital.trim();
     if (trimmedValue === '') {
       console.log('아무것도 입력되지 않았습니다.');
@@ -86,49 +101,180 @@ const DirectRegister: React.FC = () => {
       setHosConfirm(true);
     }
   };
+  const handleDailyBtn = (name: string) => {
+    //아침 점심 저녁 버튼 클릭 핸들러
+    if (name == 'morning') {
+      setMorning((pre) => !pre);
+    } else if (name == 'lunch') setLunch((pre) => !pre);
+    else setNight((pre) => !pre);
+    console.log('Daily 상태: ', morning, lunch, night);
+  };
+
+  const handleSickInputChange = (
+    //질병입력 박스 핸들러
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setDisease(event.target.value);
+    console.log(event.target.value);
+  };
+
   const handleHosInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //질병입력 박스 핸들러
     setHospital(event.target.value);
     console.log(event.target.value);
   };
 
-  const navigate = useNavigate();
-
   const handleRedirect = (path) => {
+    //리다이렉트
     console.log(path, 'redirecting ...');
     navigate(path);
   };
 
   const handleStartDate = (date: Date) => {
+    //시작일 날짜선택 핸들러
     console.log(date);
     setStartDate(date);
   };
   const handleEndDate = (date: Date) => {
+    //종료일 날짜선택 핸들러
     console.log(date);
     setEndDate(date);
   };
 
-  const handleIntakeCycle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newCycle = e.target.value;
-    console.log(newCycle);
-    setIntakeCycle(newCycle);
+  const handleSubmitDrugData = async () => {
+    const drugName = await savedDrug.map((drugData) => drugData.drugName);
+    await setDrugName(drugName);
+    await setIntakeDaily(await intakeDailyCalculator(morning, lunch, night)); //비동기로 동작하지만, 값이 나올때까지 기다린 후 서버로 전송.
+    if (
+      drugName.length &&
+      startDate &&
+      endDate &&
+      intakeDaily &&
+      hospital &&
+      disease
+    ) {
+      // 값이 없다면 안넘어가짐
+      await setStartDate((pre: Date) => formatDate(pre)); // 서버로 보낼때는 문자열 yyyy-mm-dd 로 파싱해야함으로 formatDate(util에 있음) 사용
+      await setEndDate((pre: Date) => formatDate(pre)); // 위에서 안바꾼 이유는, 미리 바꾸면 datepicker에서 랜더링이 불가(datepicker는 Date객체만 받음.)
+      setSaveBtn((pre) => !pre); // 위 조건들이 맞으면 상태 변경 후 아래 useEffect에서 서버로 전송
+    } else {
+      return;
+    }
   };
-  const handleIntakeDaily = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSum = e.target.value;
-    console.log(newSum);
-    setIntakeDaily(newSum);
-  };
-  const handleSubmitData = () => {
-    console.log('병원 : ', hospital);
-    console.log('질병 : ', disease);
-    console.log('약품 : ', savedDrug);
-    console.log('시작일, 종료일 : ', startDate, endDate);
-    console.log('주기, 총 합 : ', intakeCycle, intakeDaily);
-  };
+
+  useEffect(() => {
+    //OCR인식결과가 들어올 시 useEffect로 랜더링 후 화면 출력
+    console.log(OCRData);
+  }, [OCRData]);
+
+  useEffect(() => {
+    //저장버튼 클릭시 서버로 데이터 전송,
+    //따로 뺀 이유는 같이 넣으면 랜더링 주기가 안맞아서 최신화 된 값이 안나오므로 handleSubmitDrugData에서 await을 걸어 준 후
+    //값이 나오면 saveBtn상태 바뀌면서 전송하도록
+    if (saveBtn) {
+      submitDrugData(
+        drugName,
+        startDate,
+        endDate,
+        intakeCycle,
+        intakeDaily,
+        hospital,
+        disease,
+      );
+    }
+  }, [saveBtn]);
+
   return (
     <div className="h-[86vh] w-100% items-center overflow-auto">
+      <hr className="border-1 border-gray-300 m-auto w-[85%]" />
+      <div className="h-[22vh] w-[100%]">
+        <div className="flex flex-col h-[30%] mt-[12%]">
+          <p className="text-3xl font-black mb-[2%] ml-[5%]">약</p>
+          <p className="text-base text-gray-500 ml-[5%]">
+            복용하실 약을 입력해주세요.
+          </p>
+          <div className="flex justify-center space-x-7 mt-[5vh]">
+            <InputBtn
+              className="w-[38%] h-[37px] hover:bg-blue-200 hover:text-white"
+              onClick={() => handleRedirect('/pill-search')}
+            >
+              약 입력
+            </InputBtn>
+            <InputBtn
+              className="w-[38%] h-[37px] hover:bg-blue-200 hover:text-white"
+              onClick={() => handleRedirect('/pill-register')}
+            >
+              입력 확인
+            </InputBtn>
+          </div>
+        </div>
+      </div>
+      <hr className="border-1 border-gray-300 m-auto w-[85%]" />
+      <div className="w-[100%] h-[22vh]">
+        <div className="flex flex-col h-[30%] mt-[12%]">
+          {!selectedHos && !hospital.length ? (
+            <>
+              <p className="text-3xl w-[50%] font-black mb-[2%] ml-[5%]">
+                병원
+              </p>
+              <p className="text-base text-gray-500 ml-[5%]">
+                처방 받으신 병원을 입력해주세요.
+              </p>
+              <div className="flex justify-center w-full mt-[5vh]">
+                <InputBtn
+                  className="w-[50%] h-[37px] hover:bg-blue-200 hover:text-white"
+                  onClick={onClickHos}
+                >
+                  병원 입력
+                </InputBtn>
+              </div>
+            </>
+          ) : (
+            <div className="m-[3vh] flex items-center space-x-4">
+              <img
+                src={RegisterHos}
+                alt="hopital"
+                className="w-[41px] h-[34px]"
+              />
+              {hosConfirm ? (
+                <div className="relative w-[90%]">
+                  <p className="inline-block w-[70%] h-[40px] text-2xl text-gray-700 font-bold">
+                    {hospital}
+                  </p>
+                  <button
+                    name="sickConfirm"
+                    onClick={onClickHos}
+                    className="absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
+                  >
+                    수정
+                  </button>
+                </div>
+              ) : (
+                <div className="relative w-[90%]">
+                  <input
+                    type="text"
+                    value={hospital}
+                    onChange={handleHosInputChange}
+                    className="inline-block h-[40px] w-[70%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
+                    placeholder="병원명을 입력해주세요."
+                  />
+                  <button
+                    name="hosConfirm"
+                    onClick={onClickHosConfirm}
+                    className="inline-block absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
+                  >
+                    확인
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      <hr className="border-1 border-gray-300 m-auto w-[85%]" />
       <div className="flex h-[25vh] w-[100%]">
         <div className="flex flex-col w-full h-[30%] mt-[12%]">
-          {!selectedSick ? (
+          {!selectedSick && !disease ? (
             <>
               <p className="text-3xl w-[50%] font-black ml-[5%] mb-[2%]">
                 질병
@@ -137,7 +283,10 @@ const DirectRegister: React.FC = () => {
                 어떤 질병으로 약을 복용하시나요?
               </p>
               <div className="flex justify-center m-auto w-full mt-[5vh]">
-                <InputBtn className="w-[50%] h-[37px]" onClick={onClickSick}>
+                <InputBtn
+                  className="w-[50%] h-[37px] hover:bg-blue-200 hover:text-white"
+                  onClick={onClickSick}
+                >
                   질병 입력
                 </InputBtn>
               </div>
@@ -187,89 +336,7 @@ const DirectRegister: React.FC = () => {
       <hr className="border-1 border-gray-300 m-auto w-[85%]" />
       <div className="w-[100%] h-[22vh]">
         <div className="flex flex-col h-[30%] mt-[12%]">
-          {!selectedHos ? (
-            <>
-              <p className="text-3xl w-[50%] font-black mb-[2%] ml-[5%]">
-                병원
-              </p>
-              <p className="text-base text-gray-500 ml-[5%]">
-                처방 받으신 병원을 입력해주세요.
-              </p>
-              <div className="flex justify-center w-full mt-[5vh]">
-                <InputBtn className="w-[50%] h-[37px]" onClick={onClickHos}>
-                  병원 입력
-                </InputBtn>
-              </div>
-            </>
-          ) : (
-            <div className="m-[3vh] flex items-center space-x-4">
-              <img
-                src={RegisterHos}
-                alt="hopital"
-                className="w-[41px] h-[34px]"
-              />
-              {hosConfirm ? (
-                <div className="relative w-[90%]">
-                  <p className="inline-block w-[70%] h-[40px] text-2xl text-gray-700 font-bold">
-                    {hospital}
-                  </p>
-                  <button
-                    name="sickConfirm"
-                    onClick={onClickHos}
-                    className="absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
-                  >
-                    수정
-                  </button>
-                </div>
-              ) : (
-                <div className="relative w-[90%]">
-                  <input
-                    type="text"
-                    value={hospital}
-                    onChange={handleHosInputChange}
-                    className="inline-block h-[40px] w-[70%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
-                    placeholder="병원명을 입력해주세요."
-                  />
-                  <button
-                    name="hosConfirm"
-                    onClick={onClickHosConfirm}
-                    className="inline-block absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
-                  >
-                    확인
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <hr className="border-1 border-gray-300 m-auto w-[85%]" />
-      <div className="h-[22vh] w-[100%]">
-        <div className="flex flex-col h-[30%] mt-[12%]">
-          <p className="text-3xl font-black mb-[2%] ml-[5%]">약</p>
-          <p className="text-base text-gray-500 ml-[5%]">
-            복용하실 약을 입력해주세요.
-          </p>
-          <div className="flex justify-center space-x-7 mt-[5vh]">
-            <InputBtn
-              className="w-[38%] h-[37px]"
-              onClick={() => handleRedirect('/pill-search')}
-            >
-              약 입력
-            </InputBtn>
-            <InputBtn
-              className="w-[38%] h-[37px]"
-              onClick={() => handleRedirect('/pill-register')}
-            >
-              입력 확인
-            </InputBtn>
-          </div>
-        </div>
-      </div>
-      <hr className="border-1 border-gray-300 m-auto w-[85%]" />
-      <div className="w-[100%] h-[22vh]">
-        <div className="flex flex-col h-[30%] mt-[12%]">
-          {!clickedDateBtn ? (
+          {!clickedDateBtn && (!startDate || !endDate) ? (
             <>
               <p className="text-3xl w-[50%] font-black mb-[2%] ml-[5%]">
                 복용일
@@ -315,13 +382,16 @@ const DirectRegister: React.FC = () => {
           <div className="flex justify-center h-[10vh] w-full mt-[5vh]">
             {clickedDateBtn ? (
               <InputBtn
-                className="w-[50%] h-[37px] mb-[105px]"
+                className="w-[50%] h-[37px] mb-[105px] hover:bg-blue-200 hover:text-white"
                 onClick={onClickDate}
               >
                 확인
               </InputBtn>
             ) : (
-              <InputBtn className="w-[50%] h-[37px]" onClick={onClickDate}>
+              <InputBtn
+                className="w-[50%] h-[37px] hover:bg-blue-200 hover:text-white"
+                onClick={onClickDate}
+              >
                 복용일 입력
               </InputBtn>
             )}
@@ -331,7 +401,7 @@ const DirectRegister: React.FC = () => {
       <hr className="border-1 border-gray-300 m-auto w-[85%]" />
       <div className="flex h-[27vh] w-[100%]">
         <div className="flex flex-col w-full h-[30%] mt-[12%]">
-          {!clickedCycleBtn ? (
+          {!clickedDailyBtn && !(morning || lunch || night) ? (
             <>
               <p className="text-3xl w-[50%] font-black ml-[5%] mb-[2%]">
                 복용주기
@@ -341,46 +411,40 @@ const DirectRegister: React.FC = () => {
               </p>
             </>
           ) : (
-            <div>
-              <div className="flex justify-center items-center h-[6vh] mt-[1vh]">
-                <div className="w-[40%] h-[35px] flex justify-center rounded-2xl border-blue-200 border-[1px] text-gray-500 text-[8px] m-auto ml-auto">
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    placeholder="ex)1"
-                    className="text-[14px] text-right"
-                    onChange={handleIntakeDaily}
-                    value={intakeDaily}
-                  />
-                  <button className="w-[30%] text-blue-400 text-xs text-left font-bold">
-                    회 섭취
-                  </button>
-                </div>
-                <div className="w-[40%] h-[35px] flex justify-center rounded-2xl border-blue-200 border-[1px] text-gray-500 text-[8px] mr-auto">
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    placeholder="ex)0"
-                    className="text-[14px] text-right"
-                    onChange={handleIntakeCycle}
-                    value={intakeCycle}
-                  />
-                  <button className="w-[30%] text-blue-400 text-xs text-left font-bold">
-                    일 간격
-                  </button>
-                </div>
-              </div>
+            <div className="flex justify-center items-center h-[8vh] mt-[1vh] flex justify-center gap-3">
+              <InputBtn
+                className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white` : ''}`}
+                onClick={() => handleDailyBtn('morning')}
+              >
+                아침
+              </InputBtn>
+              <InputBtn
+                className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white` : ''}`}
+                onClick={() => handleDailyBtn('lunch')}
+              >
+                점심
+              </InputBtn>
+              <InputBtn
+                className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white` : ''}`}
+                onClick={() => handleDailyBtn('night')}
+              >
+                저녁
+              </InputBtn>
             </div>
           )}
           <div className="flex justify-center m-auto w-full mt-[5vh]">
-            {!clickedCycleBtn ? (
-              <InputBtn className="w-[50%] h-[37px]" onClick={onClickCycle}>
+            {!clickedDailyBtn ? (
+              <InputBtn
+                className="w-[50%] h-[37px] hover:bg-blue-200 hover:text-white"
+                onClick={onClickDaily}
+              >
                 주기입력
               </InputBtn>
             ) : (
-              <InputBtn className="w-[50%] h-[37px]" onClick={onClickCycle}>
+              <InputBtn
+                className="w-[50%] h-[37px] hover:bg-blue-200 hover:text-white"
+                onClick={onClickDaily}
+              >
                 확인
               </InputBtn>
             )}
@@ -392,7 +456,7 @@ const DirectRegister: React.FC = () => {
       <div className="w-[100%] h-[15vh] flex flex-col justify-center">
         <SaveBtn
           className="m-auto h-[35px] w-[50%]"
-          onClick={() => handleRedirect('/direct-register')}
+          onClick={handleSubmitDrugData}
         >
           저장하기
         </SaveBtn>
