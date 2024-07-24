@@ -7,5 +7,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    watch: {
+      usePolling: true, // 핫로딩을 위한 폴링 사용
+    },
   },
 });
