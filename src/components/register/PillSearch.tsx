@@ -7,6 +7,7 @@ import { RegisterContext } from '../../context/RegisterContext';
 import { useNavigate } from 'react-router';
 import { parseJSON } from 'date-fns';
 import { searchDrug } from '../../service/searchDrug';
+import { useSearchDrug } from '../../service/queries';
 
 const PillSearch: React.FC = () => {
   const nevigate = useNavigate();
@@ -26,6 +27,7 @@ const PillSearch: React.FC = () => {
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchData = e.target.value;
     setSearchInputValue(searchData);
+    setSearchBtn(true);
   };
 
   const handleCheckboxChange = (index: number) => {
@@ -97,12 +99,21 @@ const PillSearch: React.FC = () => {
 
     setSavedDrug(updatedDrugs); // 한 번에 상태 업데이트
   };
+  const [searchBtn, setSearchBtn] = useState<boolean>(false);
+  const { drugName: data, isLoading, error } = useSearchDrug(searchInputValue);
+  useEffect(() => {
+    if (data) {
+      setSearchedDrugData(data);
+      setSearchBtn(false);
+    }
+  }, [data]);
 
   const searchDrugs = async () => {
     if (searchInputValue.trim() === '') {
       alert('검색어를 입력해 주세요!');
       return;
     }
+    setSearchBtn((pre) => !pre);
     autoSave(); //사용자가 약 선택후 저장하기를 누르지 않고 다른 약을 검색 할 시 자동저장
     const response = await searchDrug(searchInputValue);
     console.log(response);
