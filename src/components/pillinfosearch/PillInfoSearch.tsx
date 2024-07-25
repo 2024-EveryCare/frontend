@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import SearchIcon from '../../assets/SearchIc.png';
-import PillNextText from '../register/PillNextText';
 import axios from 'axios';
-import SaveBtn from '../register/button/SaveBtn';
 import { RegisterContext } from '../../context/RegisterContext';
 import { useNavigate } from 'react-router';
+import PillNextText from '../register/PillNextText';
 
 const PillInfoSearch: React.FC = () => {
-  const nevigate = useNavigate();
-  const handleRedirect = (path) => {
-    console.log('pill-search page redirect...');
-    nevigate(path);
-  };
+  const navigate = useNavigate();
+
   interface DrugData {
     drugName: string;
-    drugCode: string;
-    drugPcode: string;
-    drugCompany: string;
+    imageUrl: string;
+    name: string;
+    mainIngredient: string;
+    companyName: string;
+    classification: string;
     check: boolean;
   }
 
@@ -26,11 +24,39 @@ const PillInfoSearch: React.FC = () => {
   );
   const [searchInputValue, setSearchInputValue] = useState<string>('');
   const [countDrug, setCountDrug] = useState<number>(0); // countDrug 타입 추가
+  const [autoCompleteData, setAutoCompleteData] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const checkboxRefs = useRef<(HTMLInputElement | null)[]>([]); // checkboxRefs 수정
   const checkedBgRefs = useRef<(HTMLLIElement | null)[]>([]);
+
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchData = e.target.value;
     setSearchInputValue(searchData);
+
+    if (searchData.length >= 2) {
+      axios
+        .get(
+          `http://localhost:8080/api/v1/medicines/findName/${encodeURIComponent(searchData)}`,
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            console.log('자동 완성 데이터: ', response);
+            setAutoCompleteData(response.data.data || []);
+            setShowDropdown(true);
+          } else {
+            setAutoCompleteData([]);
+            setShowDropdown(false);
+          }
+        })
+        .catch((error) => console.log('자동 완성 데이터 호출 실패', error));
+    } else {
+      setShowDropdown(false);
+    }
+  };
+
+  const handleDropdownClick = (drugName: string) => {
+    setSearchInputValue(drugName);
+    setShowDropdown(false);
   };
 
   const handleCheckboxChange = (index: number) => {
@@ -64,6 +90,7 @@ const PillInfoSearch: React.FC = () => {
     ); // 지우려는 데이터를 뺀 나머지 항목을 다시 저장
     setSavedDrug(temp);
   };
+
   const handleCheckboxBgChange2 = (index: number) => {
     // 선택 모드
     console.log(checkedBgRefs.current[index]);
@@ -83,6 +110,7 @@ const PillInfoSearch: React.FC = () => {
   }, [searchedDrugData]);
 
   const searchDrug = () => {
+    setShowDropdown(false);
     if (searchInputValue.trim() === '') {
       alert('검색어를 입력해 주세요!');
       return;
@@ -108,32 +136,34 @@ const PillInfoSearch: React.FC = () => {
     }
 
     setSavedDrug(updatedDrugs); // 한 번에 상태 업데이트
-    // http:127.0.0.1:8000/test/?query=${searchInputValue}
+
     axios
-      // .get(`http://127.0.0.1:8000/test/?drugName`)
-      .get(`http://127.0.0.1:8000/test/${searchInputValue}`)
-      // .get(`http://127.0.0.1:8000/test/?drugName=${searchInputValue}`)
+      .get(
+        `http://localhost:8080/api/v1/medicines/find-drug-info/${encodeURIComponent(searchInputValue)}`,
+      )
       .then((response) => {
         const data = response.data;
-        console.log('서버로 부터 응답 data : ', data);
-        console.log(typeof data);
-        setSearchedDrugData(response.data.data);
+        console.log('서버 응답 data : ', data);
+        setSearchedDrugData(response.data.data || []);
       })
       .catch((error) =>
         console.error('서버로 데이터를 보내는데 실패했습니다:', error),
       );
   };
 
-  const saveDrug = () => {
-    console.log(savedDrug);
-    handleRedirect('/pill-register');
+  const handleProductClick = (drug: DrugData) => {
+    navigate(`/pill-detail-search/${encodeURIComponent(drug.name)}`, {
+      state: { drugName: drug.name, imageUrl: drug.imageUrl },
+    });
   };
+
   return (
-    <div className="overflow-auto h-[80vh] mb-20">
-      <div className="w-[100%] relative flex justify-center mt-4">
+    <div className="h-[88vh] mb-20">
+      <div className="relative flex justify-center mt-4">
         <input
           type="text"
           placeholder="약 이름으로 입력해주세요."
+          value={searchInputValue}
           onChange={handleSearchInputChange}
           className="w-[97%] h-[35px] border-blue-500 border rounded-2xl px-2"
         />
@@ -144,37 +174,117 @@ const PillInfoSearch: React.FC = () => {
             className="w-[100%] h-[2.5vh] mt-0.5"
           />
         </button>
+        {showDropdown && autoCompleteData.length > 0 && (
+          <ul className="absolute top-10 w-[97%] bg-white border border-gray-300 rounded-md max-h-60 overflow-auto z-10">
+            {autoCompleteData.map((medicine, index) => (
+              <li
+                key={index}
+                onClick={() => handleDropdownClick(medicine)}
+                className="cursor-pointer px-4 py-2 hover:bg-blue-50"
+              >
+                {medicine}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="w-[100%] mt-[20px] ml-5 mb-2">
         <span>검색 결과</span>
         <span className="text-red-600 ml-2">{countDrug}</span>
       </div>
-      {/* <hr className="border-none h-px w-[95%] bg-gray-500 m-auto mb-[3px]" /> */}
-      <ul className="w-[100%] h-[50vh] overflow-auto">
-        {searchedDrugData &&
-          searchedDrugData.map((medicine, index) => (
-            <li
-              key={index}
-              onClick={() => handleCheckboxChange(index)}
-              ref={(element) => (checkedBgRefs.current[index] = element)}
-            >
-              <PillNextText headText={medicine.drugName} />
-              <hr className="border-none h-px w-[95%] bg-gray-500 m-auto mt-8 mb-[3px]" />
-              <input
-                type="checkbox"
-                className="hidden"
-                value={JSON.stringify(medicine)} // 서버로 보내줄때 약 이름을 주기로 해서 이름을 저장했음.
-                ref={(element) => (checkboxRefs.current[index] = element)}
-              />
-            </li>
-          ))}
-      </ul>
-      <div className="w-[100%] h-[15vh] flex flex-col justify-center">
-        <SaveBtn className="m-auto h-[35px] w-[50%]" onClick={saveDrug}>
-          검색하기
-        </SaveBtn>
-      </div>
+
+      {searchedDrugData && (
+        <div className="w-full h-[79vh] overflow-x-scroll overflow-y-scroll">
+          <table className="bg-white border min-w-full">
+            <thead>
+              <tr>
+                <th
+                  className="py-2 border-b text-center"
+                  style={{ minWidth: '130px' }}
+                >
+                  식별/포장
+                </th>
+                <th
+                  className="py-2 border-b text-center"
+                  style={{ minWidth: '200px' }}
+                >
+                  제품명
+                </th>
+                <th
+                  className="py-2 border-b text-center"
+                  style={{ minWidth: '150px' }}
+                >
+                  성분/함량
+                </th>
+                <th className="py-2 border-b text-center">회사명</th>
+                <th className="py-2 border-b text-center">구분</th>
+              </tr>
+            </thead>
+            <tbody>
+              {searchedDrugData.map((drug, index) => (
+                <tr
+                  key={index}
+                  className="text-center hover:bg-blue-50 cursor-pointer"
+                  onClick={() => handleProductClick(drug)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <td
+                    className="px-6 border-b"
+                    style={{ paddingTop: '20px', paddingBottom: '20px' }}
+                  >
+                    {drug.imageUrl ? (
+                      <img
+                        src={drug.imageUrl}
+                        alt={drug.name}
+                        className="w-12 h-12 object-cover mx-auto"
+                      />
+                    ) : (
+                      <div className="ml-5">
+                        <PillNextText />
+                      </div>
+                    )}
+                  </td>
+                  <td
+                    className="px-2 border-b"
+                    style={{
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {drug.name}
+                  </td>
+                  <td
+                    className="py-2 px-2 border-b"
+                    style={{
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {drug.mainIngredient}
+                  </td>
+                  <td
+                    className="py-2 px-3 border-b"
+                    style={{
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {drug.companyName}
+                  </td>
+                  <td
+                    className="py-2 px-6 border-b"
+                    style={{
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {drug.classification}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

@@ -17,6 +17,7 @@ import MainPg from './pages/mainPage/MainPg';
 import { RegisterContextProvider } from './context/RegisterContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import PillInfoSearchPage from './pages/pillinfosearch/PillInfoSearchPage';
+import PillDetailSearchPage from './pages/pillinfosearch/PillDetailSearchPage';
 const queryClient = new QueryClient();
 
 async function enableMocking() {
@@ -51,6 +52,10 @@ enableMocking().then(() => {
               <Route
                 path="/pill-info-search"
                 element={<PillInfoSearchPage />}
+              />
+              <Route
+                path="/pill-detail-search/:drugName"
+                element={<PillDetailSearchPage />}
               />
             </Routes>
           </Router>
