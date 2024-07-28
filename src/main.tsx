@@ -17,6 +17,7 @@ import MainPg from './pages/mainPage/MainPg';
 import { RegisterContextProvider } from './context/RegisterContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import PillInfoSearchPage from './pages/pillinfosearch/PillInfoSearchPage';
+import PillDetailSearchPage from './pages/pillinfosearch/PillDetailSearchPage';
 const queryClient = new QueryClient();
 
 // async function enableMocking() {
@@ -49,6 +50,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path="/pill-register" element={<PillRegisterPage />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/pill-info-search" element={<PillInfoSearchPage />} />
+            <Route
+              path="/pill-detail-search/:drugName"
+              element={<PillDetailSearchPage />}
+            />
           </Routes>
         </Router>
       </RegisterContextProvider>
