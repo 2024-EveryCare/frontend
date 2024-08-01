@@ -195,30 +195,32 @@ const PillInfoSearch: React.FC = () => {
       </div>
 
       {searchedDrugData && (
-        <div className="w-full h-[80vh] overflow-x-scroll overflow-y-scroll scrollbar-custom">
+        <div className="w-full h-[79vh] overflow-x-scroll overflow-y-scroll scrollbar-custom">
           <table className="bg-white border min-w-full">
             <thead>
               <tr>
                 <th
-                  className="py-2 border-b text-center"
+                  className="py-2 border-b text-center align-middle"
                   style={{ minWidth: '130px' }}
                 >
                   식별/포장
                 </th>
                 <th
-                  className="py-2 border-b text-center"
+                  className="py-2 border-b text-center align-middle"
                   style={{ minWidth: '200px' }}
                 >
                   제품명
                 </th>
                 <th
-                  className="py-2 border-b text-center"
+                  className="py-2 border-b text-center align-middle"
                   style={{ minWidth: '150px' }}
                 >
                   성분/함량
                 </th>
-                <th className="py-2 border-b text-center">회사명</th>
-                <th className="py-2 border-b text-center">구분</th>
+                <th className="py-2 border-b text-center align-middle">
+                  회사명
+                </th>
+                <th className="py-2 border-b text-center align-middle">구분</th>
               </tr>
             </thead>
             <tbody>
@@ -230,7 +232,7 @@ const PillInfoSearch: React.FC = () => {
                   style={{ cursor: 'pointer' }}
                 >
                   <td
-                    className="px-6 border-b"
+                    className="px-6 border-b align-middle"
                     style={{ paddingTop: '20px', paddingBottom: '20px' }}
                   >
                     {drug.imageUrl ? (
@@ -246,7 +248,7 @@ const PillInfoSearch: React.FC = () => {
                     )}
                   </td>
                   <td
-                    className="px-2 border-b"
+                    className="px-2 border-b align-middle"
                     style={{
                       whiteSpace: 'normal',
                       wordBreak: 'break-all',
@@ -255,7 +257,7 @@ const PillInfoSearch: React.FC = () => {
                     {drug.name}
                   </td>
                   <td
-                    className="py-2 px-2 border-b"
+                    className="py-2 px-2 border-b align-middle"
                     style={{
                       whiteSpace: 'normal',
                       wordBreak: 'break-all',
@@ -264,7 +266,7 @@ const PillInfoSearch: React.FC = () => {
                     {drug.mainIngredient}
                   </td>
                   <td
-                    className="py-2 px-3 border-b"
+                    className="py-2 px-3 border-b align-middle"
                     style={{
                       whiteSpace: 'nowrap',
                     }}
@@ -272,7 +274,7 @@ const PillInfoSearch: React.FC = () => {
                     {drug.companyName}
                   </td>
                   <td
-                    className="py-2 px-6 border-b"
+                    className="py-2 px-6 border-b align-middle"
                     style={{
                       whiteSpace: 'nowrap',
                     }}

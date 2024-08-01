@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { parseXML, formatPrecautions } from '../../utils/xmlParser'; // XML 파싱 유틸리티 함수 (아래 참조)
+import Loading from './Loading';
 
 const PillDetailSearch: React.FC<{ drugName: string; imageUrl: string }> = ({
   drugName,
@@ -27,7 +28,11 @@ const PillDetailSearch: React.FC<{ drugName: string; imageUrl: string }> = ({
   }, [drugName]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
