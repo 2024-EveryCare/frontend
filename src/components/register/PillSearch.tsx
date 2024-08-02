@@ -99,12 +99,18 @@ const PillSearch: React.FC = () => {
 
     setSavedDrug(updatedDrugs); // 한 번에 상태 업데이트
   };
-  const [searchBtn, setSearchBtn] = useState<boolean>(false);
-  const { drugName: data, isLoading, error } = useSearchDrug(searchInputValue);
+  const [searchBtn, setSearchBtn] = useState<boolean>(false); // 검색 버튼 상태
+  const {
+    drugName: data,
+    isLoading,
+    error,
+    getDrugData,
+  } = useSearchDrug(searchInputValue); // react-query훅, searchinputValue 인자 변경시 마다 실행.
   useEffect(() => {
     if (data) {
       setSearchedDrugData(data);
       setSearchBtn(false);
+      // console.log('확인용', getDrugData(searchInputValue));
     }
   }, [data]);
 
@@ -126,8 +132,13 @@ const PillSearch: React.FC = () => {
     console.log(savedDrug);
     handleRedirect('/pill-register');
   };
+
+  const test = () => {
+    const data = getDrugData('타이레놀');
+    console.log('테스트 용 ㅣ', data);
+  };
   return (
-    <div className="overflow-auto h-[80vh] mb-20">
+    <div className="overflow-auto h-[80vh] mb-2" onClick={test}>
       <div className="w-[100%] relative flex justify-center mt-4">
         <input
           type="text"
