@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-export const submitOcrFile = async (data: FormData) => {
+export const submitOcrFile = async (img: FormData) => {
   try {
     // Axios 요청
-    const response = await axios.post('api/v1/medicines/photo/', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    const response = await axios.post(
+      'http://localhost:8080/api/v1/medicines/photo',
+      img,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       },
-    });
+    );
 
     // 콘솔에 응답 데이터 확인
     console.log(response.data.data);
