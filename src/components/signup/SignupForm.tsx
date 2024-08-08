@@ -1,13 +1,13 @@
-import axios from 'axios';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useSignup } from '../../context/SignupContext';
 
 interface SignupData {
-  id: string;
+  email: string;
   emailOption: string;
   password: string;
-  password_confirm: string;
+  // password_confirm: string;
 }
 
 function SignupForm() {
@@ -21,19 +21,21 @@ function SignupForm() {
   } = useForm<SignupData>();
 
   const navigate = useNavigate();
+  const { setSignupData } = useSignup();
   const [emailOptions, setEmailOptions] = useState<string[]>([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const id = event.target.value;
-    setValue('id', id);
+    const email = event.target.value;
+    setValue('email', email);
 
-    if (id.length > 0) {
+    if (email.length > 0) {
       const options = [
-        `${id}@naver.com`,
-        `${id}@gmail.com`,
-        `${id}@daum.net`,
-        `${id}@hanmail.net`,
+        `${email}@naver.com`,
+        `${email}@gmail.com`,
+        `${email}@daum.net`,
+        `${email}@hanmail.net`,
       ];
       setEmailOptions(options);
     } else {
@@ -41,13 +43,29 @@ function SignupForm() {
     }
   };
 
+  const validatePassword = (password: string) => {
+    const passwordRegex =
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   const handleEmailOptionClick = (option: string) => {
-    setValue('id', option);
+    setValue('email', option);
     setEmailOptions([]);
   };
 
-  const onSubmit = async (data) => {
-    if (data.password !== data.password_confirm) {
+  const onSubmit = async (data: SignupData) => {
+    setErrorMessage(null);
+
+    if (!validatePassword(data.password)) {
+      setError('password', {
+        type: 'manual',
+        message: '비밀번호는 8자 이상, 영어, 숫자, 특수문자를 포함해야 합니다.',
+      });
+      return;
+    }
+
+    /* if (data.password !== data.password_confirm) {
       setError('password_confirm', {
         type: 'manual',
         message: '비밀번호가 일치하지 않습니다.',
@@ -55,44 +73,31 @@ function SignupForm() {
       return;
     } else {
       clearErrors('password_confirm');
-    }
+    } */
 
-    try {
-      const signupData: SignupData = {
-        id: data.id,
-        emailOption: data.id,
-        password: data.password,
-        password_confirm: data.password_confirm,
-      };
+    setSignupData((prevData) => ({
+      ...prevData,
+      email: data.email,
+      password: data.password,
+    }));
 
-      const response = await axios.post(
-        'https://jsonplaceholder.typicode.com/posts',
-        signupData,
-      );
-
-      console.log(response.data);
-
-      navigate('/signup2', { state: signupData });
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    navigate('/signup2');
   };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4">
       <div className="mb-6">
         <label
           className="block text-black text-sm font-bold pl-[3vh] mb-2"
-          htmlFor="id"
+          htmlFor="email"
         >
           아이디
         </label>
 
         <div className="flex justify-center relative">
           <input
-            id="id"
+            id="email"
             type="text"
-            {...register('id', { required: '아이디를 입력해주세요.' })}
+            {...register('email', { required: '아이디를 입력해주세요.' })}
             placeholder="이메일 형식으로 작성해주세요."
             onChange={handleIdChange}
             className="w-[85%] h-[3vh] shadow appearance-none border border-black rounded py-2 p-1"
@@ -136,9 +141,14 @@ function SignupForm() {
             {showPassword ? '👁️' : '👁️‍🗨️'}
           </button>
         </div>
+        {errors.password && (
+          <p className="text-red-500 text-xs mt-3 pl-[3vh]">
+            {errors.password.message}
+          </p>
+        )}
       </div>
 
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <label
           className="block text-black text-sm font-bold pl-[3vh] mb-2"
           htmlFor="password_confirm"
@@ -165,7 +175,7 @@ function SignupForm() {
             {errors.password_confirm.message}
           </p>
         )}
-      </div>
+      </div> */}
 
       <div className="flex items-center justify-center mb-5">
         <button
@@ -175,6 +185,10 @@ function SignupForm() {
           다음
         </button>
       </div>
+
+      {errorMessage && (
+        <div className="text-red-500 text-xs mt-3 pl-[3vh]">{errorMessage}</div>
+      )}
     </form>
   );
 }
