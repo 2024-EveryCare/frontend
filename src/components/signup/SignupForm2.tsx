@@ -2,63 +2,73 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-interface ISignup {
-  category: 'M' | 'F';
-}
+import { useSignup } from '../../context/SignupContext';
 
 interface SignupData {
-  id: string;
-  password: string;
   name: string;
-  gender: string | null;
-  birth: string;
+  birthdate: string;
+  gender: string;
 }
 
-function SignupForm2({ category }: ISignup) {
+function SignupForm2() {
   const { register, handleSubmit, setValue } = useForm();
+  const { signupData, setSignupData } = useSignup();
+  const navigate = useNavigate();
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [signupSuccess, setSignupSuccess] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { id, password } = location.state || {};
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) setValue('id', id);
-    if (password) setValue('password', password);
-  }, [id, password, setValue]);
+    if (signupData.id) setValue('id', signupData.id);
+    if (signupData.password) setValue('password', signupData.password);
+  }, [signupData, setValue]);
 
-  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  /* const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const {
       currentTarget: { name },
     } = event;
     setSelectedGender(name);
+  }; */
+  const onClickGender = (gender: string) => {
+    setSignupData((prevData) => ({
+      ...prevData,
+      gender,
+    }));
+    setSelectedGender(gender);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: SignupData) => {
     try {
-      const signupData: SignupData = {
-        id: data.id,
-        password: data.password,
+      const finalSignupData = {
+        ...signupData,
         name: data.name,
-        gender: selectedGender,
-        birth: data.birth,
+        gender: signupData.gender,
+        birthdate: data.birthdate,
       };
+
+      console.log('Sending data to backend:', finalSignupData);
+
       const response = await axios.post(
-        'https://jsonplaceholder.typicode.com/posts',
-        signupData,
+        'http://localhost:8080/api/v1/members/signup',
+        finalSignupData,
       );
 
       console.log(response.data);
       setSignupSuccess(true);
       navigate('/login');
     } catch (error) {
-      console.log('Error:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        setErrorMessage(
+          error.response.data.message || '회원가입에 실패했습니다.',
+        );
+      } else {
+        setErrorMessage('회원가입 중 오류가 발생했습니다.');
+      }
+      console.log('Error:', error); // Log the error for debugging
     }
   };
 
-  const inputBrith = () => {
+  const inputBrith = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value.replace(/-/g, '');
     let formattedValue = input;
     if (input.length > 4) {
@@ -67,12 +77,12 @@ function SignupForm2({ category }: ISignup) {
     if (input.length > 6) {
       formattedValue = `${input.slice(0, 4)}-${input.slice(4, 6)}-${input.slice(6, 8)}`;
     }
-    setValue('birth', formattedValue);
+    setValue('birthdate', formattedValue);
     console.log(formattedValue);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4">
       <div className="mb-6">
         <label
           className="block text-black text-sm font-bold pl-[3vh] mb-2"
@@ -85,7 +95,7 @@ function SignupForm2({ category }: ISignup) {
           <input
             id="name"
             type="text"
-            {...register('name')}
+            {...register('name', { required: '이름을 입력해주세요.' })}
             className="w-[85%] h-[3vh] shadow appearance-none  border border-black rounded py-2 p-1"
           />
         </div>
@@ -98,42 +108,36 @@ function SignupForm2({ category }: ISignup) {
         >
           성별
         </label>
-        <div className="flex justify-center space-x-10">
-          {category !== 'M' && (
-            <button
-              name="M"
-              type="button"
-              onClick={onClick}
-              className={`w-[38%] h-[3vh] border border-black text-black py-2 px-4 rounded ${selectedGender === 'M' ? 'bg-blue-400' : 'hover:bg-blue-200'}`}
-            >
-              남자
-            </button>
-          )}
-          {category !== 'F' && (
-            <button
-              name="F"
-              type="button"
-              onClick={onClick}
-              className={`w-[38%] h-[3vh] border border-black text-black py-2 px-4 rounded ${selectedGender === 'F' ? 'bg-pink-400' : 'hover:bg-pink-200'}`}
-            >
-              여자
-            </button>
-          )}
+        <div className="flex justify-center space-x-4">
+          <button
+            type="button"
+            onClick={() => onClickGender('M')}
+            className={`w-[40%] h-[3vh] border border-black text-black py-2 px-4 rounded ${selectedGender === 'M' ? 'bg-blue-400' : 'hover:bg-blue-200'}`}
+          >
+            남자
+          </button>
+          <button
+            type="button"
+            onClick={() => onClickGender('F')}
+            className={`w-[40%] h-[3vh] border border-black text-black py-2 px-4 rounded ${selectedGender === 'F' ? 'bg-pink-400' : 'hover:bg-pink-200'}`}
+          >
+            여자
+          </button>
         </div>
       </div>
 
       <div className="mb-6">
         <label
           className="block text-black text-sm font-bold pl-[3vh] mb-2"
-          htmlFor="birth"
+          htmlFor="birthdate"
         >
           생년월일
         </label>
         <div className="flex justify-center">
           <input
-            id="birth"
+            id="birthdate"
             type="text"
-            {...register('birth')}
+            {...register('birthdate', { required: '생년월일을 입력해주세요.' })}
             placeholder="'YYYYMMDD' 8자리로 입력해주세요"
             onChange={inputBrith}
             className="w-[85%] h-[3vh] shadow appearance-none  border border-black rounded py-2 mb-6 p-1"

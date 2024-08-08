@@ -6,7 +6,7 @@ import MainLog from '../../assets/BigMainLogo.png'; // 메인로고
 import Signup2 from '../../assets/signup/Signup2.svg';
 import Signup22 from '../../assets/signup/Signup22.svg';
 
-const SiginupPage2: React.FC = () => {
+const SignupPage2: React.FC = () => {
   return (
     <BackLayout>
       <div className="flex flex-col items-center ml-auto w-[403px] h-[403px]">
@@ -31,4 +31,4 @@ const SiginupPage2: React.FC = () => {
   );
 };
 
-export default SiginupPage2;
+export default SignupPage2;
