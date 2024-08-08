@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSignup } from '../../context/SignupContext';
 
 interface SignupData {
@@ -19,7 +19,7 @@ function SignupForm2() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (signupData.id) setValue('id', signupData.id);
+    if (signupData.email) setValue('email', signupData.email);
     if (signupData.password) setValue('password', signupData.password);
   }, [signupData, setValue]);
 
@@ -42,7 +42,6 @@ function SignupForm2() {
       const finalSignupData = {
         ...signupData,
         name: data.name,
-        gender: signupData.gender,
         birthdate: data.birthdate,
       };
 
