@@ -30,44 +30,31 @@ const PillRegister: React.FC = () => {
     setStartDate,
     endDate,
     setEndDate,
-    hospital,
-    setHospital,
-    disease,
-    setDisease,
     intakeDaily,
     setIntakeDaily,
     intakeCycle,
     setIntakeCycle,
-    morning,
-    setMorning,
-    lunch,
-    setLunch,
-    night,
-    setNight,
   } = useContext(RegisterContext);
 
-  useEffect(() => {
-    console.log('');
-  }, [morning, lunch, night]);
+  const [morning, setMorning] = useState<boolean>(false);
+  const [lunch, setLunch] = useState<boolean>(false);
+  const [night, setNight] = useState<boolean>(false);
+
+  const [intakeDailyBtn, setIntakeDailyBtn] = useState<boolean>(true);
 
   const handleDailyBtn = (name: string) => {
     if (name == 'morning') {
       setMorning((pre) => !pre);
-    } else if (name == 'lunch') setLunch((pre) => !pre);
-    else setNight((pre) => !pre);
-    console.log('Daily 상태: ', morning, lunch, night);
+    } else if (name == 'lunch') {
+      setLunch((pre) => !pre);
+    } else {
+      setNight((pre) => !pre);
+    }
   };
 
-  const handleIntakeCycle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('intakecycle input.. : ');
-    setIntakeCycle(e.target.value);
-    console.log(intakeCycle);
-  };
-  const handleIntakeDaily = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('intakedaily input..');
-    setIntakeDaily(e.target.value);
-    console.log(intakeDaily);
-  };
+  useEffect(() => {
+    console.log('Daily 상태: ', morning, lunch, night);
+  }, [morning, lunch, night]);
 
   const handleStartDate = (date: Date) => {
     console.log(date);
@@ -76,25 +63,6 @@ const PillRegister: React.FC = () => {
   const handleEndDate = (date: Date) => {
     console.log(date);
     setEndDate(date);
-  };
-
-  const [intakeDailyBtn, setIntakeDailyBtn] = useState<boolean>(true);
-
-  const onClickIntakeDaily = () => {
-    setIntakeDailyBtn((pre) => !pre);
-  };
-  const onClickStartDate = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const {
-      currentTarget: { name },
-    } = event;
-    setSelectedStartDateBtn(name);
-  };
-
-  const onClickEndDate = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const {
-      currentTarget: { name },
-    } = event;
-    setSelectedEndDateBtn(name);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -107,14 +75,25 @@ const PillRegister: React.FC = () => {
     setSavedDrug(temp);
   };
   const nevigate = useNavigate();
-  const handleRedirect = (path) => {
+
+  const handleRedirect = (path: string) => {
     console.log('pill-search page redirect...');
+    console.log('저장된 데이터:', {
+      savedDrug,
+      startDate,
+      endDate,
+      intakeDaily,
+      intakeCycle,
+      morning,
+      lunch,
+      night,
+    });
     nevigate(path);
   };
   return (
-    <div className="h-[79vh] overflow-y-auto">
+    <div>
       <div className="w-[100%] h-[22vh]">
-        <div className="mt-[3vh] ml-[5%] mb-[2%]">
+        <div className="mt-[3vh] ml-[5%] mb-[3%]">
           <PillNextText
             headText="복용 약"
             contentText="복용하시는 약이 맞으신가요?"
@@ -122,13 +101,16 @@ const PillRegister: React.FC = () => {
         </div>
         {savedDrug.length ? (
           <ul className="flex m-auto h-[10vh] flex-wrap overflow-y-scroll">
-            {savedDrug.map((showedDrug) => (
-              <li className="w-[46%] h-[2.5vh] flex mt-2 ml-2 border border-gray-500 rounded-xl justify-center items-center text-sm text-gray-500 relative pt-4 pb-4 pr-4 text-center">
-                <p style={MediNameStyle}>{showedDrug}</p>
+            {savedDrug.map((showedDrug, index) => (
+              <li
+                key={index}
+                className="w-[46%] h-[2.5vh] flex mt-2 ml-2 border border-gray-500 rounded-xl justify-center items-center text-sm text-gray-500 relative pt-4 pb-4 pr-4 text-center"
+              >
+                <p style={MediNameStyle}>{showedDrug.name}</p>
 
                 <button
                   className="w-4 h-4 border border-[#F5F5F5] rounded-[10px] text-[1rem] text-[#F56132] bg-[rgba(217, 217, 217, 0.58)] absolute right-[1%] top-[18%] font-bold"
-                  onClick={() => handleDeleteList(showedDrug)}
+                  onClick={() => handleDeleteList(showedDrug.drugName)}
                 >
                   -
                 </button>
@@ -136,7 +118,7 @@ const PillRegister: React.FC = () => {
             ))}
           </ul>
         ) : null}
-        <div className="w-[100%] flex">
+        <div className="w-[100%] mt-[5%] flex">
           <InputBtn
             className={`${savedDrug.length ? 'm-auto h-[35px] w-[80%]' : 'm-auto mt-[30px] h-[35px] w-[80%]'}`}
             onClick={() => handleRedirect('/pill-search')}
@@ -156,30 +138,22 @@ const PillRegister: React.FC = () => {
           onSubmit={handleSubmit}
           className="w-100% flex flex-col justify-center items-center space-y-6"
         >
-          {/* <div className="flex justify-center space-x-8 w-[100%] px-4">
-            <InputBtn
-              className="h-[35px] w-[80%] mt-[30px]"
-              onClick={onClickIntakeDaily}
-            >
-              주기 입력
-            </InputBtn>
-          </div> */}
-          {(intakeDailyBtn) ? (
+          {intakeDailyBtn ? (
             <div className="w-[100%] h-[100px]  flex items-center space-x-1 justify-center gap-1 m-auto">
               <InputBtn
-                className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white` : ''}`}
+                className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white border-blue-300` : ''}`}
                 onClick={() => handleDailyBtn('morning')}
               >
                 아침
               </InputBtn>
               <InputBtn
-                className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white` : ''}`}
+                className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white border-blue-300` : ''}`}
                 onClick={() => handleDailyBtn('lunch')}
               >
                 점심
               </InputBtn>
               <InputBtn
-                className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white` : ''}`}
+                className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white border-blue-300` : ''}`}
                 onClick={() => handleDailyBtn('night')}
               >
                 저녁
@@ -227,7 +201,7 @@ const PillRegister: React.FC = () => {
           ></ReactDatePicker>
         </div>
       </div>
-      <div className="w-[100%] h-[15vh] flex flex-col justify-center">
+      <div className="w-[100%] flex flex-col justify-center">
         <SaveBtn
           className="m-auto h-[35px] w-[50%]"
           onClick={() => handleRedirect('/direct-register')}
