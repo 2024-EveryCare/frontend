@@ -1,4 +1,4 @@
-import { toInteger } from "lodash";
+import { toInteger } from 'lodash';
 
 export const formatDate = (date: Date): string => {
   const year = date.getFullYear();
@@ -56,19 +56,13 @@ export const formatDateObject = (dateOb: data) => {
   return formatedDate;
 };
 
-export const intakeDailyCalculator = async (
-  //아침 점심 저녁이 선택 되었는지를 부울 값으로 받고, 부울값을 2진수로 바꿔주는 함수
+export const intakeDailyCalculator = (
   morning: boolean,
   lunch: boolean,
   night: boolean,
-) => {
-  const binaryCycle = [0, 0, 0];
-  morning ? (binaryCycle[0] = 1) : (binaryCycle[0] = 0);
-  lunch ? (binaryCycle[1] = 1) : (binaryCycle[1] = 0);
-  night ? (binaryCycle[2] = 1) : (binaryCycle[2] = 0);
-
-  console.log('binary : ', binaryCycle);
+): string => {
+  const binaryCycle = [morning ? 1 : 0, lunch ? 1 : 0, night ? 1 : 0];
   const response = binaryCycle.join('');
+  console.log('intakeDaily:', response);
   return response;
 };
-
