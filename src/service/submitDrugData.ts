@@ -1,4 +1,5 @@
 import axios from 'axios';
+<<<<<<<
 
 /* export const submitDrugData = (
   drugName,
@@ -29,6 +30,9 @@ import axios from 'axios';
     });
 }; */
 
+=======
+
+>>>>>>>
 export const submitDrugData = async (
   drugNames: string[],
   intakeStart: string,
