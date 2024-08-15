@@ -9,9 +9,12 @@ import axios from 'axios';
   hospital,
   disease,
 ) => {
-  const memberId = 1;
   axios
+<<<<<<<
     .post(`http://localhost:8080/api/v1/medicines/direct-records/${memberId}`, {
+=======
+    .post(`http://localhost:8080/api/v1/medicines/direct-records`, {
+>>>>>>>
       // memberID 세션 구현전에 1 넣겠음.
       drugName: drugName,
       intakeStart: intakeStart,
@@ -22,7 +25,7 @@ import axios from 'axios';
       disease: disease,
     })
     .then((response) => {
-      console.log('해치웠나?', response);
+      console.log('해치웠나?', response.data);
     });
 }; */
 

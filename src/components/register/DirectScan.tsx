@@ -29,11 +29,17 @@ const DirectScan: React.FC = () => {
     e.preventDefault();
     e.stopPropagation(); // 기본적인 동작 억제
     const OCRImgFile = e.dataTransfer.files; // 드랍된 파일 받기
+    console.log('asd');
     if (OCRImgFile.length > 0) {
       if (fileInputRef.current) {
         fileInputRef.current.files = OCRImgFile; // 위에 설정한 hidden 처리한 input에 있는 current에 이미지 삽입
         const formData = new FormData(); // 백엔드에서 요청 데이터 형식
-        formData.append('OCRImg', fileInputRef.current.files[0]);
+        console.log(OCRImgFile[0]);
+        formData.append('file', OCRImgFile[0]);
+        // console.log(formData.get('file'));
+        // console.log('asd');
+        // formData.append('file', OCRImgFile[0]);
+        // formData.append('member_id', '12345');
         toggleLoading(); // 로딩 시작
         try {
           const data = await submitOcrFile(formData); // OCR 사진을 서버로 보낸 후 리턴 값 기다리기
@@ -49,6 +55,7 @@ const DirectScan: React.FC = () => {
           const reader = new FileReader(); // URL 생성을 위한 FileReader 생성
           reader.onload = async function (event) {
             const imageUrl = event.target?.result as string;
+            console.log(imageUrl);
             await setImgURL(imageUrl);
           };
           reader.readAsDataURL(fileInputRef.current.files[0]);
@@ -70,7 +77,7 @@ const DirectScan: React.FC = () => {
     // imgURL 상태가 변경될 때마다 리다이렉트
     if (imgURL) {
       console.log('Data response OK, redirecting...');
-      navigate('/scan-confirm');
+      // navigate('/scan-confirm');
     }
   }, [imgURL, navigate]);
 
