@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import Morning from '../../assets/Calendar/Morning.svg';
+import Lunch from '../../assets/Calendar/Lunch.svg';
+import Night from '../../assets/Calendar/Night.svg';
 
-interface Dosage {
-  recordID: string;
-  drugName: string;
-  hospital: string;
-  disease: string;
-  IntakeStart: string;
-  IntakeEnd: string;
+interface DosageRecord {
+  drugNames: string[];
+  intakeDaily: string;
+  intakeStart: string;
+  intakeEnd: string;
+}
+
+interface DosageData {
+  date: string;
+  records: DosageRecord[];
 }
 
 interface CalendarInfoProps {
   selectedYear: number;
   month: number;
   selectedDay: number;
-  dosageData: Dosage[];
-  handleDelete: (recordID: string) => void;
+  dosageData: DosageData[];
+  handleDelete: (
+    drugNames: string[],
+    intakeStart: string,
+    intakeEnd: string,
+  ) => void;
 }
 
 const CalendarInfo: React.FC<CalendarInfoProps> = ({
@@ -25,16 +35,23 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
   handleDelete,
 }) => {
   const [deleteBtn, setDeleteBtn] = useState<boolean>(false);
-  const [filteredDosage, setFilteredDosage] = useState<Dosage[]>([]);
+  const [filteredDosage, setFilteredDosage] = useState<DosageRecord[]>([]);
 
   useEffect(() => {
-    const filtered: Dosage[] = dosageData.filter((dosage) => {
-      const intakeStart = new Date(dosage.IntakeStart);
-      const intakeEnd = new Date(dosage.IntakeEnd);
-      const selectedDate = new Date(selectedYear, month, selectedDay);
+    const selectedDate = new Date(selectedYear, month, selectedDay)
+      .toISOString()
+      .split('T')[0];
 
-      return selectedDate >= intakeStart && selectedDate <= intakeEnd;
-    });
+    const filtered: DosageRecord[] = dosageData
+      .filter((data) => data.date === selectedDate)
+      .flatMap((data) => data.records)
+      .map((record) => ({
+        ...record,
+        drugNames: record.drugNames
+          .filter((name) => name !== null)
+          .map((name) => name || '알 수 없음'),
+      }));
+
     setFilteredDosage(filtered);
   }, [selectedYear, month, selectedDay, dosageData]);
 
@@ -55,18 +72,46 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
         </div>
       )}
       {filteredDosage.length > 0 ? (
-        <div className="mt-2" style={{ paddingLeft: '8px' }}>
-          {filteredDosage.map((item) => (
+        <div
+          className="h-[33vh] overflow-x-auto mt-2"
+          style={{ paddingLeft: '8px' }}
+        >
+          {filteredDosage.map((item, index) => (
             <div
-              key={item.recordID}
+              key={index}
               className="empty-dosage-info h-10 bg-gray-100 flex items-center text-black rounded-lg mt-1"
             >
               <span className="text-xs" style={{ padding: '8px' }}>
-                {item.drugName}
+                {item.drugNames.join(', ')}
+              </span>
+              <span className="text-xs ml-auto flex ">
+                {item.intakeDaily && item.intakeDaily.length >= 3 && (
+                  <>
+                    {item.intakeDaily[0] === '1' && (
+                      <img
+                        src={Morning}
+                        alt="Morning"
+                        className="w-6 h-6 mr-3"
+                      />
+                    )}
+                    {item.intakeDaily[1] === '1' && (
+                      <img src={Lunch} alt="Lunch" className="w-6 h-6 mr-3" />
+                    )}
+                    {item.intakeDaily[2] === '1' && (
+                      <img src={Night} alt="Night" className="w-6 h-6 mr-3" />
+                    )}
+                  </>
+                )}
               </span>
               {deleteBtn && (
                 <button
-                  onClick={() => handleDelete(item.recordID)}
+                  onClick={() =>
+                    handleDelete(
+                      item.drugNames,
+                      item.intakeStart,
+                      item.intakeEnd,
+                    )
+                  }
                   className="flex items-center"
                   style={{ marginLeft: 'auto', marginRight: '10px' }}
                 >
