@@ -2,15 +2,21 @@ import React from 'react';
 import { chunkArray } from '../../utils/helpers';
 import pillImage from '../../assets/Calendar/CalendarPill.svg'; // 알약 이미지
 
+interface DosageRecord {
+  drugNames: string[];
+  intakeDaily: string;
+  intakeStart: string;
+  intakeEnd: string;
+}
+
 interface DosageData {
-  recordID: string;
-  drugName: string;
-  IntakeStart: string;
-  IntakeEnd: string;
+  date: string;
+  records: DosageRecord[];
 }
 
 interface CalendarTableProps {
   month: number;
+  year: number;
   selectedDay: number;
   dates: Array<{ day: number; month: number; year: number }>;
   handleDayClick: (day: number) => void;
@@ -19,6 +25,7 @@ interface CalendarTableProps {
 
 const CalendarTable: React.FC<CalendarTableProps> = ({
   month,
+  year,
   selectedDay,
   dates,
   handleDayClick,
@@ -28,22 +35,49 @@ const CalendarTable: React.FC<CalendarTableProps> = ({
     date: { day: number; month: number; year: number },
     dosageData: DosageData[],
   ) => {
-    const pills = dosageData.filter((dosage) => {
-      const startDate = new Date(dosage.IntakeStart);
-      const endDate = new Date(dosage.IntakeEnd);
-      const currentDate = new Date(date.year, date.month, date.day);
-      return currentDate >= startDate && currentDate <= endDate;
-    });
+    // const currentDate = new Date(date.year, date.month - 1, date.day);
+    const formattedDate = new Date(date.year, date.month - 1, date.day)
+      .toISOString()
+      .split('T')[0];
 
-    if (pills.length > 0) {
+    // dosageData에서 해당 날짜의 기록을 찾음
+    const records =
+      dosageData.find((data) => data.date === formattedDate)?.records || [];
+
+    if (records.length > 0) {
       return (
         <div className="flex items-center">
           <img src={pillImage} alt="Pill" className="w-[60%] h-[1.5vh] mt-1" />
-          <span className="ml-1 mt-1.5">{pills.length}</span>
+          <span className="ml-1 mt-1.5">{records.length}</span>
         </div>
       );
     } else return null;
   };
+
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (year: number, month: number) => {
+    return new Date(year, month - 1, 1).getDay();
+  };
+
+  const daysInMonth = getDaysInMonth(year, month + 1);
+  const firstDayOfMonth = getFirstDayOfMonth(year, month + 1);
+
+  const calendarDays = Array.from({ length: daysInMonth }, (_, i) => ({
+    day: i + 1,
+    month: month + 1,
+    year: year,
+  }));
+
+  const leadingEmptyDays = Array.from({ length: firstDayOfMonth }, () => ({
+    day: 0,
+    month: month,
+    year: year,
+  }));
+
+  const datesWithEmptyDays = [...leadingEmptyDays, ...calendarDays];
 
   return (
     <table className="calendar-table w-full mt-2">
@@ -59,21 +93,27 @@ const CalendarTable: React.FC<CalendarTableProps> = ({
         </tr>
       </thead>
       <tbody>
-        {chunkArray(dates, 7).map((week, weekIndex) => (
+        {chunkArray(datesWithEmptyDays, 7).map((week, weekIndex) => (
           <React.Fragment key={weekIndex}>
             {weekIndex >= 0 && (
               <tr className="border-[1px] border-gray-300"></tr>
             )}
             <tr>
               {week.map((date, dayIndex) => {
+                if (!date.day) {
+                  return (
+                    <td key={dayIndex} className="w-20 h-[8vh] bg-white"></td>
+                  );
+                }
+
                 const pillsPeriod = IntakePeriod(date, dosageData);
 
                 return (
                   <td
                     key={dayIndex}
-                    className={`w-20 h-[8vh] ${date.month !== month ? 'text-gray-400' : ''} 
-                    ${date.month === month && dayIndex === 0 ? 'text-red-500' : ''} 
-                    ${date.month === month && dayIndex === 6 ? 'text-blue-500' : ''}`}
+                    className={`w-20 h-[8vh] ${date.month !== month + 1 ? 'text-gray-400' : ''} 
+                    ${date.month === month + 1 && dayIndex === 0 ? 'text-red-500' : ''} 
+                    ${date.month === month + 1 && dayIndex === 6 ? 'text-blue-500' : ''}`}
                     onClick={() => handleDayClick(date.day)}
                   >
                     <div className="flex flex-col items-center pt-[0.4vh] w-full h-full">
