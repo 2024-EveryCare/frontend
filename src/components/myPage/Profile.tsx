@@ -4,8 +4,8 @@ import dad from '../../assets/dad.png';
 import { memberInfo } from '../../service/member';
 
 const Profile: React.FC = () => {
-    const [name, setName] = useState<string>('에d브리');
-  const [birth, setBirth] = useState<string>('?');
+    const [name, setName] = useState<string>('????');
+  const [birth, setBirth] = useState<string>('???');
   const [age, setAge] = useState<string>('?');
   const [gender, setGender] = useState<string>('?');
   useEffect(() => {
@@ -13,10 +13,10 @@ const Profile: React.FC = () => {
   }, []);
   const clickedLogout = async () => {
     const response = await memberInfo();
-    setName(response.data.data.name);
-    setAge(response.data.data.age);
-    setBirth(response.data.data.birthdate);
-    setGender(response.data.data.genderStr);
+    setName(response.name);
+    setAge(response.age);
+    setBirth(response.birthdate);
+    setGender(response.genderStr);
   };
 
   return (
