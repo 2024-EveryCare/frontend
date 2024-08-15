@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { memberLogout } from '../../service/member';
 
 const Menu: React.FC = () => {
+  const clickedLogout = async () => {
+    const response = await memberLogout();
+    console.log(response.data);
+    window.location.reload(); //로그아웃하면 상태관리가 필요없어지므로 useEffect사용안함.
+  };
+
   return (
     <div className="flex flex-col justify-center w-[100%] h-[30%] bg-pink gap-[4vh]">
-      <p className="text-[20px] font-bold ml-[3vh]">로그아웃</p>
+      <p onClick={clickedLogout} className="text-[20px] font-bold ml-[3vh]">
+        로그아웃
+      </p>
       <p className="text-[20px] font-bold ml-[3vh]">회원 정보 수정</p>
       <p className="text-[20px] font-bold ml-[3vh]">비밀번호 변경</p>
       <p className="text-[20px] font-bold ml-[3vh]">처방 기록 확인하기</p>
