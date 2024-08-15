@@ -15,7 +15,10 @@ const PillDetailSearch: React.FC<{ drugName: string; imageUrl: string }> = ({
     const fetchDrugData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/medicines/${encodeURIComponent(drugName)}`,
+          `http://localhost:8080/api/v1/medicines/details`,
+          {
+            params: { drugName },
+          },
         );
         setDrugData(response.data);
         setLoading(false);
