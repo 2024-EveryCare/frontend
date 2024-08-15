@@ -13,6 +13,7 @@ export const submitOcrFile = async (formData: FormData) => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        withCredentials: true,
       },
     );
 
@@ -20,7 +21,7 @@ export const submitOcrFile = async (formData: FormData) => {
     console.log('콘솔에 응답 데이터 확인');
     console.log(response);
     console.log(response.data);
-    
+
     // console.log(response.data.data[0].drugName);
 
     // 필요한 데이터 추출 및 반환
