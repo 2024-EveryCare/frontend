@@ -33,7 +33,7 @@ const MainPg: React.FC = () => {
         <div className="flex justify-between">
           <img src={SmallLogo} alt="" style={LogoStyle} />
           <div className="flex justify-between">
-            {isLoggedIn ? (
+            {isLoggedIn && user ? (
               <>
                 <span className="flex justify-center items-center text-sm text-gray-600 mt-5 mr-4">
                   {user.name}님
