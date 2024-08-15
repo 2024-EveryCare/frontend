@@ -144,7 +144,7 @@ const DirectRegister: React.FC = () => {
     setEndDate(date);
   };
 
-  /* const handleSubmitDrugData = async () => {
+  const handleSubmitDrugData = async () => {
     const drugNames = savedDrug.map((drugData) => drugData.name);
 
     const calculatedIntakeDaily = await intakeDailyCalculator(
@@ -180,97 +180,94 @@ const DirectRegister: React.FC = () => {
       alert('필수 데이터가 누락되었습니다. 모든 필드를 입력했는지 확인하세요.');
     }
     setSaveBtn(false);
-  }; */
-
-  const handleSubmitDrugData = async () => {
-    const drugNames = savedDrug.map((drugData) => drugData.name);
-    console.log('Updated drugNames:', drugNames);
-
-    const calculatedIntakeDaily = await intakeDailyCalculator(
-      morning,
-      lunch,
-      night,
-    );
-    setIntakeDaily(calculatedIntakeDaily);
-
-    console.log('intakeDaily:', calculatedIntakeDaily);
-
-    if (
-<<<<<<<
-      drugNames.length &&
-=======
-      // drugName.length &&
->>>>>>>
-      startDate &&
-      endDate &&
-      calculatedIntakeDaily &&
-      hospital.trim() &&
-      disease.trim()
-    ) {
-      const formattedStartDate = formatDate(startDate);
-      const formattedEndDate = formatDate(endDate);
-
-      const requestData = {
-        drugNames: drugNames,
-        hospital: hospital.trim(),
-        disease: disease.trim(),
-        intakeStart: formattedStartDate,
-        intakeEnd: formattedEndDate,
-        intakeDaily: calculatedIntakeDaily,
-        intakeCycle: 0,
-      };
-
-      console.log('요청 데이터:', requestData);
-
-      try {
-        const response = await axios.post(
-          'http://localhost:8080/api/v1/medicines/direct-records',
-          requestData,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          },
-        );
-        console.log('서버 응답:', response.data);
-        navigate('/calendar');
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          console.error('서버 응답 오류 데이터:', error.response.data);
-          console.error('서버 응답 상태:', error.response.status);
-          console.error('서버 응답 헤더:', error.response.headers);
-        } else {
-          console.error('요청 실패:', error);
-        }
-      }
-    } else {
-      console.error('필수 데이터가 누락되었습니다.');
-      alert('필수 데이터가 누락되었습니다. 모든 필드를 입력했는지 확인하세요.');
-    }
-    setSaveBtn(false);
   };
 
-  /* useEffect(() => {
-    if (saveBtn) {
-      submitDrugData(
-        drugName,
-        startDate,
-        endDate,
-        intakeCycle,
-        intakeDaily,
-        hospital,
-        disease,
-      );
-    }
-  }, [saveBtn]); */
+  // const handleSubmitDrugData = async () => {
+  //   const drugNames = savedDrug.map((drugData) => drugData.name);
+  //   console.log('Updated drugNames:', drugNames);
+
+  //   const calculatedIntakeDaily = await intakeDailyCalculator(
+  //     morning,
+  //     lunch,
+  //     night,
+  //   );
+  //   setIntakeDaily(calculatedIntakeDaily);
+
+  //   console.log('intakeDaily:', calculatedIntakeDaily);
+
+  //   if (
+  //     // drugNames.length &&
+  //     // drugName.length &&
+  //     startDate &&
+  //     endDate &&
+  //     calculatedIntakeDaily &&
+  //     hospital.trim() &&
+  //     disease.trim()
+  //   ) {
+  //     const formattedStartDate = formatDate(startDate);
+  //     const formattedEndDate = formatDate(endDate);
+
+  //     const requestData = {
+  //       drugNames: drugNames,
+  //       hospital: hospital.trim(),
+  //       disease: disease.trim(),
+  //       intakeStart: formattedStartDate,
+  //       intakeEnd: formattedEndDate,
+  //       intakeDaily: calculatedIntakeDaily,
+  //       intakeCycle: 0,
+  //     };
+
+  //     console.log('요청 데이터:', requestData);
+
+  //     try {
+  //       const response = await axios.post(
+  //         'http://localhost:8080/api/v1/medicines/direct-records',
+  //         requestData,
+  //         {
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             Accept: 'application/json',
+  //           },
+  //         },
+  //       );
+  //       console.log('서버 응답:', response.data);
+  //       navigate('/calendar');
+  //     } catch (error) {
+  //       if (axios.isAxiosError(error) && error.response) {
+  //         console.error('서버 응답 오류 데이터:', error.response.data);
+  //         console.error('서버 응답 상태:', error.response.status);
+  //         console.error('서버 응답 헤더:', error.response.headers);
+  //       } else {
+  //         console.error('요청 실패:', error);
+  //       }
+  //     }
+  //   } else {
+  //     console.error('필수 데이터가 누락되었습니다.');
+  //     alert('필수 데이터가 누락되었습니다. 모든 필드를 입력했는지 확인하세요.');
+  //   }
+  //   setSaveBtn(false);
+  // };
+
+  // useEffect(() => {
+  //   if (saveBtn) {
+  //     submitDrugData(
+  //       drugName,
+  //       startDate,
+  //       endDate,
+  //       intakeCycle,
+  //       intakeDaily,
+  //       hospital,
+  //       disease,
+  //     );
+  //   }
+  // }, [saveBtn]);
 
   useEffect(() => {
     //OCR인식결과가 들어올 시 useEffect로 랜더링 후 화면 출력
     console.log(OCRData);
   }, [OCRData]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     //저장버튼 클릭시 서버로 데이터 전송,
     //따로 뺀 이유는 같이 넣으면 랜더링 주기가 안맞아서 최신화 된 값이 안나오므로 handleSubmitDrugData에서 await을 걸어 준 후
     //값이 나오면 saveBtn상태 바뀌면서 전송하도록
@@ -296,7 +293,7 @@ const DirectRegister: React.FC = () => {
         disease,
       );
     }
-  }, [saveBtn]); */
+  }, [saveBtn]);
 
   return (
     <div className="h-[86vh] w-100% items-center overflow-auto">
