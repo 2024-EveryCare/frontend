@@ -35,9 +35,9 @@ const PillInfoSearch: React.FC = () => {
 
     if (searchData.length >= 2) {
       axios
-        .get(
-          `http://localhost:8080/api/v1/medicines/findName/${encodeURIComponent(searchData)}`,
-        )
+        .get(`http://localhost:8080/api/v1/medicines/findName`, {
+          params: { drugName: searchData },
+        })
         .then((response) => {
           if (response.status === 200) {
             console.log('자동 완성 데이터: ', response);
@@ -138,9 +138,9 @@ const PillInfoSearch: React.FC = () => {
     setSavedDrug(updatedDrugs); // 한 번에 상태 업데이트
 
     axios
-      .get(
-        `http://localhost:8080/api/v1/medicines/find-drug-info/${encodeURIComponent(searchInputValue)}`,
-      )
+      .get(`http://localhost:8080/api/v1/medicines/find-drug-info`, {
+        params: { drugName: searchInputValue },
+      })
       .then((response) => {
         const data = response.data;
         console.log('서버 응답 data : ', data);
