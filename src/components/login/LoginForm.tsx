@@ -16,20 +16,37 @@ function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { login } = useAuth();
 
+  // 로그인 후 토큰 저장
   const onSubmit = async (data: LoginData) => {
+    const { email, password } = data;
+
     try {
-      const response = await axios.post(
+      const response = await fetch(
         'http://localhost:8080/api/v1/members/login',
-        data,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        },
       );
-      console.log(response.data);
+      const data = await response.json();
+      console.log('Login response:', data); // 로그인 응답 확인
 
-      // 로그인 성공 시 토큰 저장 (예: localStorage 사용)
-      // localStorage.setItem('token', response.data.token);
+      if (data.token) {
+        localStorage.setItem('authToken', data.token);
+        console.log('Token stored:', data.token); // 저장된 토큰 확인
+      }
 
-      login({ name: response.data.name }, response.data.token);
+      if (data.status === 'OK' && data.data) {
+        const { name } = data.data; // name 속성을 data에서 추출
+        const token = data.token;
 
-      navigate('/calendar');
+        // 사용자 정보를 AuthContext에 저장
+        login({ name }, token);
+        navigate('/');
+      }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         setErrorMessage(
