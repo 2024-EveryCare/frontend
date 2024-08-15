@@ -20,18 +20,18 @@ export const submitOcrFile = async (formData: FormData) => {
     // 콘솔에 응답 데이터 확인
     console.log('콘솔에 응답 데이터 확인');
     console.log(response);
-    console.log(response.data);
+    console.log(response.data.drugName);
 
     // console.log(response.data.data[0].drugName);
 
     // 필요한 데이터 추출 및 반환
     return {
-      // drugName: response.data.data[0].drugName,
-      // intakeStart: response.data.data[0].intakeStart,
-      // intakeEnd: response.data.data[0].intakeEnd,
-      // intakeCycle: response.data.data[0].intakeCycle,
-      // hospital: response.data.data[0].hospital,
-      // disease: response.data.data[0].disease,
+      drugName: response.data.drugName,
+      intakeStart: response.data.intakeStart,
+      intakeEnd: response.data.intakeEnd,
+      intakeCycle: response.data.intakeCycle,
+      hospital: response.data.hospital,
+      disease: response.data.disease,
     };
   } catch (error) {
     // 오류 처리

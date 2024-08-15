@@ -48,7 +48,7 @@ const DirectScan: React.FC = () => {
             intakeStart: data.intakeStart,
             intakeEnd: data.intakeEnd,
             intakeCycle: data.intakeCycle,
-            hospital: data.hospital,
+            hospital: data.hospital[0],
             disease: data.disease,
           });
 
@@ -77,7 +77,7 @@ const DirectScan: React.FC = () => {
     // imgURL 상태가 변경될 때마다 리다이렉트
     if (imgURL) {
       console.log('Data response OK, redirecting...');
-      // navigate('/scan-confirm');
+      navigate('/scan-confirm');
     }
   }, [imgURL, navigate]);
 

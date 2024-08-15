@@ -45,18 +45,16 @@ const ScanConfirm: React.FC = () => {
     }));
 
     setSaveDrugData(parsedDrugData);
-    setIntakeCycle(OCRData.intakeCycle);
+    // setIntakeCycle(OCRData.intakeCycle);
     setHospital(OCRData.hospital);
-    // setShowHospital(true); 결과가 있을때만 보여주기
+
     setDisease(OCRData.disease);
-    // setShowDisease(true); 결과가 있을때만 보여주기
   }, [OCRData]);
   const [morning, setMorning] = useState<boolean>(false);
   const [lunch, setLunch] = useState<boolean>(false);
   const [night, setNight] = useState<boolean>(false);
   const [showedDrugCount, setShowedDrugCount] = useState(0);
   const [inputValue, setInputValue] = useState<string>(''); // 모달창 input박스 안 데이터를 읽어오는 배열.
-
 
   const [drugData, setDrugData] = useState<DrugData>([]);
 
@@ -137,9 +135,9 @@ const ScanConfirm: React.FC = () => {
     setEndDate(date);
   };
 
-  const [showIntakeCycle, setShowIntakeCycle] = useState(false);
-  const [showHospital, setShowHospital] = useState(false);
-  const [showDisease, setShowDisease] = useState(false);
+  const [showIntakeCycle, setShowIntakeCycle] = useState(true);
+  const [showHospital, setShowHospital] = useState(true);
+  const [showDisease, setShowDisease] = useState(true);
   const [intakeCycle, setIntakeCycle] = useState('');
   const [intakeDaily, setIntakeDaily] = useState('');
   const [hospital, setHospital] = useState('');
@@ -201,12 +199,21 @@ const ScanConfirm: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log(
+      drugName,
+      startDate,
+      endDate,
+      0,
+      intakeDaily,
+      hospital,
+      disease,
+    );
     if (saveBtn) {
       submitDrugData(
         drugName,
         startDate,
         endDate,
-        intakeCycle,
+        0,
         intakeDaily,
         hospital,
         disease,
