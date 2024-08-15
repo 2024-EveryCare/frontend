@@ -48,7 +48,7 @@ const DirectScan: React.FC = () => {
             intakeStart: data.intakeStart,
             intakeEnd: data.intakeEnd,
             intakeCycle: data.intakeCycle,
-            hospital: data.hospital,
+            hospital: data.hospital[0],
             disease: data.disease,
           });
 
