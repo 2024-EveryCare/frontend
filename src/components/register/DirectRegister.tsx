@@ -196,7 +196,11 @@ const DirectRegister: React.FC = () => {
     console.log('intakeDaily:', calculatedIntakeDaily);
 
     if (
+<<<<<<<
       drugNames.length &&
+=======
+      // drugName.length &&
+>>>>>>>
       startDate &&
       endDate &&
       calculatedIntakeDaily &&
@@ -271,6 +275,17 @@ const DirectRegister: React.FC = () => {
     //따로 뺀 이유는 같이 넣으면 랜더링 주기가 안맞아서 최신화 된 값이 안나오므로 handleSubmitDrugData에서 await을 걸어 준 후
     //값이 나오면 saveBtn상태 바뀌면서 전송하도록
     if (saveBtn) {
+      console.log('asdasd22');
+      console.log(
+        '따라라라',
+        drugName,
+        startDate,
+        endDate,
+        intakeCycle,
+        intakeDaily,
+        hospital,
+        disease,
+      );
       submitDrugData(
         drugName,
         startDate,
@@ -556,7 +571,7 @@ const DirectRegister: React.FC = () => {
           className="m-auto h-[35px] w-[50%]"
           onClick={handleSubmitDrugData}
         >
-          저장하기
+          저장하기ㄴㄴ
         </SaveBtn>
       </div>
     </div>
