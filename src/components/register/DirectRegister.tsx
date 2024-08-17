@@ -3,23 +3,19 @@ import { useState } from 'react';
 import RegisterSick from '../../assets/register/RegisterSick.svg';
 import RegisterHos from '../../assets/register/RegisterHospital.svg';
 import { useNavigate } from 'react-router-dom';
-// import CustomHr from '../CustomHr';
 import { RegisterContext } from '../../context/RegisterContext';
 import DatePicker from 'react-datepicker';
-import './CustomDatePicker.css';
 import CalendarImg from '../../assets/calendar.png';
 import SaveBtn from './button/SaveBtn';
 import InputBtn from './button/InputBtn';
 import { formatDate, intakeDailyCalculator } from '../../utils/date';
 import { submitDrugData } from '../../service/submitDrugData';
-import axios from 'axios';
+import './CustomDatePicker.css';
 
 const DirectRegister: React.FC = () => {
   const navigate = useNavigate(); //리다이렉트를 위한 useNavigate Hook
   const {
     //전역변수 context 불러오기
-    OCRData,
-    setOCRData,
     savedDrug, //약물의 name,code,pcode,company등의 정보를 담고있음.
     setSavedDrug,
     startDate,
@@ -183,18 +179,11 @@ const DirectRegister: React.FC = () => {
   };
 
   useEffect(() => {
-    //OCR인식결과가 들어올 시 useEffect로 랜더링 후 화면 출력
-    console.log(OCRData);
-  }, [OCRData]);
-
-  useEffect(() => {
     //저장버튼 클릭시 서버로 데이터 전송,
     //따로 뺀 이유는 같이 넣으면 랜더링 주기가 안맞아서 최신화 된 값이 안나오므로 handleSubmitDrugData에서 await을 걸어 준 후
     //값이 나오면 saveBtn상태 바뀌면서 전송하도록
     if (saveBtn) {
-      console.log('asdasd22');
       console.log(
-        '따라라라',
         drugName,
         startDate,
         endDate,
@@ -443,19 +432,19 @@ const DirectRegister: React.FC = () => {
           ) : (
             <div className="flex justify-center items-center h-[8vh] mt-[1vh] gap-3">
               <InputBtn
-                className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white` : ''}`}
+                className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white border-white` : ''}`}
                 onClick={() => handleDailyBtn('morning')}
               >
                 아침
               </InputBtn>
               <InputBtn
-                className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white` : ''}`}
+                className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white border-white` : ''}`}
                 onClick={() => handleDailyBtn('lunch')}
               >
                 점심
               </InputBtn>
               <InputBtn
-                className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white` : ''}`}
+                className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white border-white` : ''}`}
                 onClick={() => handleDailyBtn('night')}
               >
                 저녁

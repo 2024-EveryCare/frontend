@@ -1,10 +1,4 @@
-import React, {
-  ReactEventHandler,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PillNextText from '../../components/register/PillNextText';
 import SaveBtn from './button/SaveBtn';
 import { RegisterContext } from '../../context/RegisterContext';
@@ -34,23 +28,15 @@ const PillRegister: React.FC = () => {
     setIntakeDaily,
     intakeCycle,
     setIntakeCycle,
+    morning,
+    setMorning,
+    lunch,
+    setLunch,
+    night,
+    setNight,
   } = useContext(RegisterContext);
 
-  const [morning, setMorning] = useState<boolean>(false);
-  const [lunch, setLunch] = useState<boolean>(false);
-  const [night, setNight] = useState<boolean>(false);
-
   const [intakeDailyBtn, setIntakeDailyBtn] = useState<boolean>(true);
-
-  const handleDailyBtn = (name: string) => {
-    if (name == 'morning') {
-      setMorning((pre) => !pre);
-    } else if (name == 'lunch') {
-      setLunch((pre) => !pre);
-    } else {
-      setNight((pre) => !pre);
-    }
-  };
 
   useEffect(() => {
     console.log('Daily 상태: ', morning, lunch, night);
@@ -142,19 +128,19 @@ const PillRegister: React.FC = () => {
             <div className="w-[100%] h-[100px]  flex items-center space-x-1 justify-center gap-1 m-auto">
               <InputBtn
                 className={`w-[25%] h-[35px] ${morning ? `bg-blue-300 text-white border-blue-300` : ''}`}
-                onClick={() => handleDailyBtn('morning')}
+                onClick={() => setMorning((prev) => !prev)}
               >
                 아침
               </InputBtn>
               <InputBtn
                 className={`w-[25%] h-[35px] ${lunch ? `bg-blue-300 text-white border-blue-300` : ''}`}
-                onClick={() => handleDailyBtn('lunch')}
+                onClick={() => setLunch((prev) => !prev)}
               >
                 점심
               </InputBtn>
               <InputBtn
                 className={`w-[25%] h-[35px] ${night ? `bg-blue-300 text-white border-blue-300` : ''}`}
-                onClick={() => handleDailyBtn('night')}
+                onClick={() => setNight((prev) => !prev)}
               >
                 저녁
               </InputBtn>
