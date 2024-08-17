@@ -110,6 +110,7 @@ const PillSearch: React.FC = () => {
         if (!exists) {
           updatedDrugs.push(drug);
         }
+        handleCheckboxChange(i);
       }
     }
     setSavedDrug(updatedDrugs);

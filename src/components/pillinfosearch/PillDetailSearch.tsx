@@ -31,11 +31,7 @@ const PillDetailSearch: React.FC<{ drugName: string; imageUrl: string }> = ({
   }, [drugName]);
 
   if (loading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {
