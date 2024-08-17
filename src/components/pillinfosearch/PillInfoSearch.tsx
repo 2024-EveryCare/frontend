@@ -83,7 +83,7 @@ const PillInfoSearch: React.FC = () => {
     console.log(checkedBgRefs.current[index]);
     checkedBgRefs.current[index]?.classList.remove('bg-blue-100');
     const drug = checkboxRefs.current[index]!.value; // 삭제 할 약의 값
-    const { drugCode, ...restDrugData } = JSON.parse(drug); // 문자열로 바꾼후, 재구조화를 통해서 drugCode만 추출.
+    const { drugCode } = JSON.parse(drug); // 문자열로 바꾼후, 재구조화를 통해서 drugCode만 추출.
     console.log('drugCode:', drugCode);
     const temp = savedDrug.filter(
       (drugData: DrugData) => drugData.drugCode != drugCode,
@@ -179,10 +179,10 @@ const PillInfoSearch: React.FC = () => {
             {autoCompleteData.map((medicine, index) => (
               <li
                 key={index}
-                onClick={() => handleDropdownClick(medicine)}
+                onClick={() => handleDropdownClick(medicine.name)}
                 className="cursor-pointer px-4 py-2 hover:bg-blue-50"
               >
-                {medicine}
+                {medicine.name}
               </li>
             ))}
           </ul>
