@@ -44,13 +44,7 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
 
     const filtered: DosageRecord[] = dosageData
       .filter((data) => data.date === selectedDate)
-      .flatMap((data) => data.records)
-      .map((record) => ({
-        ...record,
-        drugNames: record.drugNames
-          .filter((name) => name !== null)
-          .map((name) => name || '알 수 없음'),
-      }));
+      .flatMap((data) => data.records);
 
     setFilteredDosage(filtered);
   }, [selectedYear, month, selectedDay, dosageData]);
@@ -76,50 +70,48 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
           className="h-[33vh] overflow-x-auto mt-2"
           style={{ paddingLeft: '8px' }}
         >
-          {filteredDosage.map((item, index) => (
-            <div
-              key={index}
-              className="empty-dosage-info h-10 bg-gray-100 flex items-center text-black rounded-lg mt-1"
-            >
-              <span className="text-xs" style={{ padding: '8px' }}>
-                {item.drugNames.join(', ')}
-              </span>
-              <span className="text-xs ml-auto flex ">
-                {item.intakeDaily && item.intakeDaily.length >= 3 && (
-                  <>
-                    {item.intakeDaily[0] === '1' && (
-                      <img
-                        src={Morning}
-                        alt="Morning"
-                        className="w-6 h-6 mr-3"
-                      />
-                    )}
-                    {item.intakeDaily[1] === '1' && (
-                      <img src={Lunch} alt="Lunch" className="w-6 h-6 mr-3" />
-                    )}
-                    {item.intakeDaily[2] === '1' && (
-                      <img src={Night} alt="Night" className="w-6 h-6 mr-3" />
-                    )}
-                  </>
+          {filteredDosage.flatMap((item, recordIndex) =>
+            item.drugNames.map((drugName, drugIndex) => (
+              <div
+                key={`${recordIndex}-${drugIndex}`}
+                className="empty-dosage-info h-10 bg-gray-100 flex items-center text-black rounded-lg mt-1"
+              >
+                <span className="text-xs" style={{ padding: '8px' }}>
+                  {drugName}
+                </span>
+                <span className="text-xs ml-auto flex ">
+                  {item.intakeDaily && item.intakeDaily.length >= 3 && (
+                    <>
+                      {item.intakeDaily[0] === '1' && (
+                        <img
+                          src={Morning}
+                          alt="Morning"
+                          className="w-6 h-6 mr-3"
+                        />
+                      )}
+                      {item.intakeDaily[1] === '1' && (
+                        <img src={Lunch} alt="Lunch" className="w-6 h-6 mr-3" />
+                      )}
+                      {item.intakeDaily[2] === '1' && (
+                        <img src={Night} alt="Night" className="w-6 h-6 mr-3" />
+                      )}
+                    </>
+                  )}
+                </span>
+                {deleteBtn && (
+                  <button
+                    onClick={() =>
+                      handleDelete([drugName], item.intakeStart, item.intakeEnd)
+                    }
+                    className="flex items-center"
+                    style={{ marginLeft: 'auto', marginRight: '10px' }}
+                  >
+                    X
+                  </button>
                 )}
-              </span>
-              {deleteBtn && (
-                <button
-                  onClick={() =>
-                    handleDelete(
-                      item.drugNames,
-                      item.intakeStart,
-                      item.intakeEnd,
-                    )
-                  }
-                  className="flex items-center"
-                  style={{ marginLeft: 'auto', marginRight: '10px' }}
-                >
-                  X
-                </button>
-              )}
-            </div>
-          ))}
+              </div>
+            )),
+          )}
         </div>
       ) : (
         <div
