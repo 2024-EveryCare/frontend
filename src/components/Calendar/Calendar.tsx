@@ -25,6 +25,7 @@ const Calendar: React.FC = () => {
     dates,
     handleScroll,
     dosageData,
+    setDosageData,
   } = useCalendar();
 
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -75,7 +76,7 @@ const Calendar: React.FC = () => {
         month={month}
         selectedDay={selectedDay}
         dosageData={dosageData}
-        handleDelete={() => {}}
+        setDosageData={setDosageData}
       />
     </div>
   );

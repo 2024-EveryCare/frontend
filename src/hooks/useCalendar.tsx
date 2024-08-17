@@ -175,5 +175,6 @@ export const useCalendar = () => {
     dates,
     handleScroll,
     initializeCalendar,
+    setDosageData,
   };
 };
