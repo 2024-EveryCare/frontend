@@ -31,24 +31,31 @@ const CalendarTable: React.FC<CalendarTableProps> = ({
   handleDayClick,
   dosageData,
 }) => {
+  // 특정 날짜의 복용한 약물 개수를 계산하는 함수
   const IntakePeriod = (
     date: { day: number; month: number; year: number },
     dosageData: DosageData[],
   ) => {
-    // const currentDate = new Date(date.year, date.month - 1, date.day);
     const formattedDate = new Date(date.year, date.month - 1, date.day)
       .toISOString()
       .split('T')[0];
 
-    // dosageData에서 해당 날짜의 기록을 찾음
+    // 해당 날짜의 복용 기록을 가져옴
     const records =
       dosageData.find((data) => data.date === formattedDate)?.records || [];
 
-    if (records.length > 0) {
+    // 각 기록에서 약물의 수를 계산함
+    const totalPills = records.reduce(
+      (sum, record) => sum + record.drugNames.length,
+      0,
+    );
+
+    // 약물 개수 표시
+    if (totalPills > 0) {
       return (
         <div className="flex items-center">
           <img src={pillImage} alt="Pill" className="w-[60%] h-[1.5vh] mt-1" />
-          <span className="ml-1 mt-1.5">{records.length}</span>
+          <span className="ml-1 mt-1.5">{totalPills}</span>
         </div>
       );
     } else return null;
