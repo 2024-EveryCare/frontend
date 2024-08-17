@@ -7,7 +7,7 @@ interface SignupData {
   email: string;
   emailOption: string;
   password: string;
-  // password_confirm: string;
+  password_confirm: string;
 }
 
 function SignupForm() {
@@ -65,7 +65,7 @@ function SignupForm() {
       return;
     }
 
-    /* if (data.password !== data.password_confirm) {
+    if (data.password !== data.password_confirm) {
       setError('password_confirm', {
         type: 'manual',
         message: '비밀번호가 일치하지 않습니다.',
@@ -73,7 +73,7 @@ function SignupForm() {
       return;
     } else {
       clearErrors('password_confirm');
-    } */
+    }
 
     setSignupData((prevData) => ({
       ...prevData,
@@ -148,7 +148,7 @@ function SignupForm() {
         )}
       </div>
 
-      {/* <div className="mb-6">
+      <div className="mb-6">
         <label
           className="block text-black text-sm font-bold pl-[3vh] mb-2"
           htmlFor="password_confirm"
@@ -175,7 +175,7 @@ function SignupForm() {
             {errors.password_confirm.message}
           </p>
         )}
-      </div> */}
+      </div>
 
       <div className="flex items-center justify-center mb-5">
         <button

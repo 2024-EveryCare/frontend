@@ -1,13 +1,16 @@
-import React from 'react';
-import Magnify from '../../assets/pillInfoSearch/Magnify.gif';
-import Magnify1 from '../../assets/pillInfoSearch/Magnify1.gif';
-import Magnify2 from '../../assets/pillInfoSearch/Magnify2.gif';
-import Spin from '../../assets/pillInfoSearch/Spin.gif';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const Loading = () => {
   return (
-    <div className="flex justify-center items-center w-full h-[80vh]">
-      <img src={Spin} alt="로딩" width="25%" />
+    <div className="p-4">
+      <Skeleton height={60} width="80%" className="mb-5" />
+      <Skeleton height={40} width="90%" className="mb-4" />
+      <Skeleton height={40} width="90%" className="mb-4" />
+      <Skeleton height={40} width="90%" className="mb-4" />
+      <Skeleton height={40} width="90%" className="mb-4" />
+      <Skeleton height={40} width="90%" className="mb-4" />
+      <Skeleton height={600} width="100%" />
     </div>
   );
 };

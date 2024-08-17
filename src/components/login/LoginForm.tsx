@@ -87,7 +87,7 @@ function LoginForm() {
         >
           비밀번호
         </label>
-        <div className="flex justify-center">
+        <div className="relative flex justify-center">
           <input
             id="password"
             type={showPassword ? 'text' : 'password'}
@@ -97,7 +97,7 @@ function LoginForm() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            className="absolute right-[10%] top-1/3 transform -translate-y-1/2"
           >
             {showPassword ? '👁️' : '👁️‍🗨️'}
           </button>
