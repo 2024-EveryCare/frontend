@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 interface OCRDataType {
   // OCR 인식으로 받은 처방전 데이터 인터페이스
@@ -30,7 +30,7 @@ interface DrugData {
 export const RegisterContext = createContext(null);
 
 export const RegisterContextProvider: React.FC = ({ children }) => {
-  const [OCRData, setOCRData] = useState<OCRDataType|null>();
+  const [OCRData, setOCRData] = useState<OCRDataType | null>();
   const [savedDrug, setSavedDrug] = useState<(DrugData | null)[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -75,3 +75,5 @@ export const RegisterContextProvider: React.FC = ({ children }) => {
     </RegisterContext.Provider>
   );
 };
+
+export const useRegisterContext = () => useContext(RegisterContext);
