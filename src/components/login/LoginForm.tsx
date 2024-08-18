@@ -1,13 +1,8 @@
-import axios from 'axios';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
-
-interface LoginData {
-  email: string;
-  password: string;
-}
+import { loginUser, LoginData } from '../../service/login';
 
 function LoginForm() {
   const { register, handleSubmit } = useForm();
@@ -18,44 +13,24 @@ function LoginForm() {
 
   // 로그인 후 토큰 저장
   const onSubmit = async (data: LoginData) => {
-    const { email, password } = data;
-
     try {
-      const response = await fetch(
-        'http://localhost:8080/api/v1/members/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-          credentials: 'include',
-        },
-      );
-      const data = await response.json();
-      console.log('Login response:', data); // 로그인 응답 확인
+      const responseData = await loginUser(data);
 
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-        console.log('Token stored:', data.token); // 저장된 토큰 확인
+      if (responseData.token) {
+        localStorage.setItem('authToken', responseData.token);
+        console.log('Token stored:', responseData.token); // 저장된 토큰 확인
       }
 
-      if (data.status === 'OK' && data.data) {
-        const { name } = data.data; // name 속성을 data에서 추출
-        const token = data.token;
+      if (responseData.status === 'OK' && responseData.data) {
+        const { name } = responseData.data; // name 속성을 data에서 추출
+        const token = responseData.token;
 
         // 사용자 정보를 AuthContext에 저장
         login({ name }, token);
         navigate('/');
       }
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(
-          error.response.data.message || '로그인에 실패했습니다.',
-        );
-      } else {
-        setErrorMessage('로그인 중 오류가 발생했습니다.');
-      }
+      setErrorMessage('로그인 중 오류가 발생했습니다.');
       console.log('Error:', error);
     }
   };

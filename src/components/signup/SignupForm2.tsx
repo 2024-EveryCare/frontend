@@ -3,12 +3,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useSignup } from '../../context/SignupContext';
-
-interface SignupData {
-  name: string;
-  birthdate: string;
-  gender: string;
-}
+import { signupUser, SignupData } from '../../service/signupUser';
 
 function SignupForm2() {
   const { register, handleSubmit, setValue } = useForm();
@@ -23,12 +18,6 @@ function SignupForm2() {
     if (signupData.password) setValue('password', signupData.password);
   }, [signupData, setValue]);
 
-  /* const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const {
-      currentTarget: { name },
-    } = event;
-    setSelectedGender(name);
-  }; */
   const onClickGender = (gender: string) => {
     setSignupData((prevData) => ({
       ...prevData,
@@ -47,12 +36,8 @@ function SignupForm2() {
 
       console.log('Sending data to backend:', finalSignupData);
 
-      const response = await axios.post(
-        'http://localhost:8080/api/v1/members/signup',
-        finalSignupData,
-      );
-
-      console.log(response.data);
+      const responseData = await signupUser(finalSignupData);
+      console.log(responseData);
       setSignupSuccess(true);
       navigate('/login');
     } catch (error) {
