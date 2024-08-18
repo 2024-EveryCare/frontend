@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import SearchIcon from '../../assets/SearchIc.png';
 import PillNextText from './PillNextText';
-import axios from 'axios';
 import SaveBtn from './button/SaveBtn';
 import { RegisterContext } from '../../context/RegisterContext';
 import { useNavigate } from 'react-router';
-// import { searchDrug } from '../../service/searchDrug';
+import { autoData, drugSearch } from '../../service/searchDrug';
 
 const PillSearch: React.FC = () => {
   const navigate = useNavigate();
@@ -26,27 +25,18 @@ const PillSearch: React.FC = () => {
   const [autoCompleteData, setAutoCompleteData] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const searchData = e.target.value;
     setSearchInputValue(searchData);
 
     if (searchData.length >= 2) {
       console.log('자동 완성 검색어:', searchData);
-      axios
-        .get(`http://localhost:8080/api/v1/medicines/findName`, {
-          params: { drugName: searchData },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            console.log('자동 완성 데이터: ', response);
-            setAutoCompleteData(response.data.data || []);
-            setShowDropdown(true);
-          } else {
-            setAutoCompleteData([]);
-            setShowDropdown(false);
-          }
-        })
-        .catch((error) => console.log('자동 완성 데이터 호출 실패', error));
+
+      const data = await autoData(searchData);
+      setAutoCompleteData(data);
+      setShowDropdown(data.length > 0);
     } else {
       setShowDropdown(false);
     }
@@ -125,21 +115,16 @@ const PillSearch: React.FC = () => {
     autoSave();
     try {
       console.log('검색 요청어:', searchInputValue);
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/medicines/find-drug-info`,
-        {
-          params: { drugName: searchInputValue },
-        },
-      );
-      console.log('검색 결과 데이터: ', response.data.data);
-      const drugs = response.data.data.map((drug: any) => ({
-        drugName: drug.name,
-        imageUrl: drug.imageUrl,
-        name: drug.name,
-      }));
-      setSearchedDrugData(drugs || []);
+      const drugs = await drugSearch(searchInputValue);
+      if (Array.isArray(drugs)) {
+        setSearchedDrugData(drugs);
+      } else {
+        console.error('Unexpected data format:', drugs);
+        setSearchedDrugData([]);
+      }
     } catch (error) {
-      console.error('약물 검색 중 오류가 발생했습니다:', error);
+      console.error('약물 검색 오류:', error);
+      setSearchedDrugData([]);
     }
   };
 
