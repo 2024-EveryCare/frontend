@@ -19,7 +19,7 @@ import {
 } from '../../utils/date';
 import axios from 'axios';
 import { RegisterContext } from '../../context/RegisterContext';
-import { searchDrug } from '../../service/searchDrug';
+// import { searchDrug } from '../../service/searchDrug';
 import { submitDrugData } from '../../service/submitDrugData';
 
 interface DrugData {
