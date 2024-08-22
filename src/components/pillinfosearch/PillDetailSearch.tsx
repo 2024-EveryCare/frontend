@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { parseXML, formatPrecautions } from '../../utils/xmlParser'; // XML 파싱 유틸리티 함수 (아래 참조)
 import Loading from './Loading';
+import { pillDetailSearch } from '../../service/pillDetailSearch';
 
 const PillDetailSearch: React.FC<{ drugName: string; imageUrl: string }> = ({
   drugName,
@@ -14,13 +14,8 @@ const PillDetailSearch: React.FC<{ drugName: string; imageUrl: string }> = ({
   useEffect(() => {
     const fetchDrugData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/medicines/details`,
-          {
-            params: { drugName },
-          },
-        );
-        setDrugData(response.data);
+        const data = await pillDetailSearch(drugName);
+        setDrugData(data);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -31,7 +26,11 @@ const PillDetailSearch: React.FC<{ drugName: string; imageUrl: string }> = ({
   }, [drugName]);
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
