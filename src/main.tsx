@@ -21,6 +21,7 @@ import PillDetailSearchPage from './pages/pillinfosearch/PillDetailSearchPage';
 import MyPage from './pages/mypage/MyPage';
 import { SignupProvider } from './context/SignupContext';
 import { AuthProvider } from './context/AuthContext';
+import AiChemistPage from './pages/AiChemist/AiChemistPage';
 const queryClient = new QueryClient();
 
 // async function enableMocking() {
@@ -51,6 +52,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 <Route path="/scan-or-direct" element={<ScanOrDirectPage />} />
                 <Route path="/direct-scan" element={<DirectScanPage />} />
                 <Route path="/scan-confirm" element={<ScanConfirmPage />} />
+                <Route path="/chemist" element={<AiChemistPage />} />
                 <Route
                   path="/direct-register"
                   element={<DirectRegisterPage />}
