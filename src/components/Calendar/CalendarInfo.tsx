@@ -3,6 +3,7 @@ import Morning from '../../assets/Calendar/Morning.svg';
 import Lunch from '../../assets/Calendar/Lunch.svg';
 import Night from '../../assets/Calendar/Night.svg';
 import axios from 'axios';
+import { deleteDrug } from '../../service/deleteDrug';
 
 interface DosageRecord {
   drugNames: string[];
@@ -53,22 +54,7 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
     intakeEnd: string,
   ) => {
     try {
-      const token = localStorage.getItem('token');
-
-      await axios.delete(`http://localhost:8080/api/v1/medicines/records`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-
-        data: {
-          drugName,
-          intakeStart,
-          intakeEnd,
-        },
-      });
+      await deleteDrug(drugName, intakeStart, intakeEnd);
       // 삭제 후 UI 업데이트(필요시)
       setFilteredDosage(
         (prevDosage) =>
