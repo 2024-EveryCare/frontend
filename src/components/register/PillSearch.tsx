@@ -35,7 +35,7 @@ const PillSearch: React.FC = () => {
       console.log('자동 완성 검색어:', searchData);
 
       const data = await autoData(searchData);
-      setAutoCompleteData(data);
+      setAutoCompleteData(data.map((item) => item.name));
       setShowDropdown(data.length > 0);
     } else {
       setShowDropdown(false);
@@ -154,10 +154,10 @@ const PillSearch: React.FC = () => {
             {autoCompleteData.map((medicine, index) => (
               <li
                 key={index}
-                onClick={() => handleDropdownClick(medicine.name)}
+                onClick={() => handleDropdownClick(medicine)}
                 className="cursor-pointer px-4 py-2 hover:bg-blue-50"
               >
-                {medicine.name}
+                {medicine}
               </li>
             ))}
           </ul>
