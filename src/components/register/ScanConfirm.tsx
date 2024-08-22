@@ -19,7 +19,7 @@ import {
 } from '../../utils/date';
 import axios from 'axios';
 import { RegisterContext } from '../../context/RegisterContext';
-// import { searchDrug } from '../../service/searchDrug';
+import { autoData, drugSearch } from '../../service/searchDrug';
 import { submitDrugData } from '../../service/submitDrugData';
 
 interface DrugData {
@@ -71,7 +71,7 @@ const ScanConfirm: React.FC = () => {
       // 스페이스 같은 짓 못하도록 trim() 을 사용해서 공백문자 줄바꿈 제거 후 검증
       return;
     }
-    const searchedDrugData = await searchDrug(inputValue);
+    const searchedDrugData = await drugSearch(inputValue);
     setDrugData(searchedDrugData.data);
   };
 

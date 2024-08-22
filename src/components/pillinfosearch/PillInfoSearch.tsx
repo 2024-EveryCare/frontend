@@ -4,6 +4,7 @@ import axios from 'axios';
 import { RegisterContext } from '../../context/RegisterContext';
 import { useNavigate } from 'react-router';
 import PillNextText from '../register/PillNextText';
+import { pillSearch } from '../../service/pillInfoSearch';
 
 const PillInfoSearch: React.FC = () => {
   const navigate = useNavigate();
@@ -29,26 +30,18 @@ const PillInfoSearch: React.FC = () => {
   const checkboxRefs = useRef<(HTMLInputElement | null)[]>([]); // checkboxRefs 수정
   const checkedBgRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const searchData = e.target.value;
     setSearchInputValue(searchData);
 
     if (searchData.length >= 2) {
-      axios
-        .get(`http://localhost:8080/api/v1/medicines/findName`, {
-          params: { drugName: searchData },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            console.log('자동 완성 데이터: ', response);
-            setAutoCompleteData(response.data.data || []);
-            setShowDropdown(true);
-          } else {
-            setAutoCompleteData([]);
-            setShowDropdown(false);
-          }
-        })
-        .catch((error) => console.log('자동 완성 데이터 호출 실패', error));
+      console.log('자동 완성 검색어:', searchData);
+
+      const data = await pillSearch(searchData);
+      setAutoCompleteData(data);
+      setShowDropdown(data.length > 0);
     } else {
       setShowDropdown(false);
     }
