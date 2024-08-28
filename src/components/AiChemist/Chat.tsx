@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import ChemistImg from '../../assets/Chatbot.png';
 import UserImg from '../../assets/dad.png';
-import { chatService } from '../../service/chat';
+import { chatService, newChatService } from '../../service/chat';
 import btn from '../../assets/Import.png';
+import { useNavigate } from 'react-router';
 const Chat: React.FC = () => {
+  const navigator = useNavigate();
   const [messages, setMessages] = useState<{ user: string; text: string }[]>([
     {
       user: 'AI',
@@ -36,6 +38,12 @@ const Chat: React.FC = () => {
       ...prevMessages,
       { user: 'AI', text: responseText },
     ]); // AI 응답 저장
+  };
+
+  const handleNewChat = async () => {
+    const response = newChatService();
+    console.log(response);
+    navigator('/chemist');
   };
 
   useEffect(() => {
@@ -93,7 +101,10 @@ const Chat: React.FC = () => {
           onClick={handleSend}
         />
 
-        <button className="absolute w-[100px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[55%] bottom-[120%] text-[12px] text-blue-500">
+        <button
+          className="absolute w-[100px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[55%] bottom-[120%] text-[12px] text-blue-500"
+          onClick={handleNewChat}
+        >
           새 대화 생성
         </button>
         <button className="absolute w-[120px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[20%] bottom-[120%] text-[12px] text-blue-500">
