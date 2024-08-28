@@ -4,9 +4,12 @@ import ChemistImg from '../../assets/Chatbot.png';
 import UserImg from '../../assets/dad.png';
 
 const Chat: React.FC = () => {
-  const [messages, setMessages] = useState<{ user: string; text: string }[]>(
-    [],
-  );
+  const [messages, setMessages] = useState<{ user: string; text: string }[]>([
+    {
+      user: 'AI',
+      text: '에브리님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [의약품 모니터링]을 눌러주세요.',
+    },
+  ]);
   const [input, setInput] = useState('');
 
   const handleSend = () => {
@@ -31,7 +34,8 @@ const Chat: React.FC = () => {
           <div
             key={index}
             className={`flex items-center space-x-2 
-                ${ //메시지 저장시 키,값 쌍의 객체형식으로 저장
+                ${
+                  //메시지 저장시 키,값 쌍의 객체형식으로 저장
                   message.user === 'User' ? 'justify-end' : '' //유저가 맞다면 스타일에 justify-end를 둬서 오른쪽에 붙혀서 정렬, 아닐시(Ai약사) 기본 왼쪽정렬
                 }`}
           >
