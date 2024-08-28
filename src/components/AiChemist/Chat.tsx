@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ChemistImg from '../../assets/Chatbot.png';
 import UserImg from '../../assets/dad.png';
 import { chatService } from '../../service/chat';
-
+import btn from '../../assets/Import.png';
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<{ user: string; text: string }[]>([
     {
@@ -46,7 +46,7 @@ const Chat: React.FC = () => {
   return (
     <div className="h-[95%] w-[100%] bg-blue-100 p-4 space-y-4">
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 overflow-y-auto max-h-[98%]">
+      <div className="space-y-4 overflow-y-auto max-h-[98%] text-[16px]">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -74,9 +74,9 @@ const Chat: React.FC = () => {
       </div>
 
       {/* 유저 입력 필드 */}
-      <div className="bottom-0 h-[3vh] w-[100%] absolute items-center space-x-2">
+      <div className="bottom-0 h-[5vh] w-[100%] absolute items-center left-0">
         <input
-          className="flex-grow p-2 rounded-md shadow border border-gray-300 w-[80%]"
+          className="border border-gray-300 w-[100%] h-[100%] text-[16px]"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -87,12 +87,21 @@ const Chat: React.FC = () => {
             }
           }}
         />
-        <button
-          className="p-2 bg-blue-500 text-white rounded-md shadow"
+        <img
+          className="absolute right-2 bottom-2"
+          src={btn}
           onClick={handleSend}
-        >
-          전송
+        />
+
+        <button className="absolute w-[100px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[55%] bottom-[120%] text-[12px] text-blue-500">
+          새 대화 생성
         </button>
+        <button className="absolute w-[120px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[20%] bottom-[120%] text-[12px] text-blue-500">
+          복용 내역 모니터링
+        </button>
+        {/* <button className="absolute w-[30px] h-[30px] border-2 right-2 bottom-2">
+          복용 내역 모니터링
+        </button> */}
       </div>
     </div>
   );
