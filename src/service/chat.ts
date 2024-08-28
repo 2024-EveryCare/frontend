@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const chatService = async (text: string) => {
+export const chatService = async (text: string) => {
   try {
     const response = await axios.post(
       'http://localhost:8080/api/v1/chatbot/ask',
