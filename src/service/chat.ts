@@ -27,3 +27,13 @@ export const newChatService = async () => {
     throw error; // 필요에 따라 에러를 던지거나 에러 처리
   }
 };
+
+export const monitoringService = async () => {
+  const response = await axios.get(
+    'http://localhost:8080/api/v1/chatbot/monitoring',
+    {
+      withCredentials: true,
+    },
+  );
+  return response.data.data.statistics;
+};

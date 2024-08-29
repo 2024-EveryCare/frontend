@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import ChemistImg from '../../assets/Chatbot.png';
 import UserImg from '../../assets/dad.png';
-import { chatService, newChatService } from '../../service/chat';
+import {
+  chatService,
+  monitoringService,
+  newChatService,
+} from '../../service/chat';
 import btn from '../../assets/Import.png';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 const Chat: React.FC = () => {
   const navigator = useNavigate();
   const [messages, setMessages] = useState<{ user: string; text: string }[]>([
@@ -48,6 +53,15 @@ const Chat: React.FC = () => {
       { user: 'Ai', text: '채팅봇이 초기화 되었습니다.' },
     ]);
     navigator('/chemist');
+  };
+
+  const handleIntakeList = async () => {
+    console.log('진행중');
+    const response = await monitoringService();
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { user: 'Ai', text: response },
+    ]);
   };
 
   useEffect(() => {
@@ -111,7 +125,10 @@ const Chat: React.FC = () => {
         >
           새 대화 생성
         </button>
-        <button className="absolute w-[120px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[20%] bottom-[120%] text-[12px] text-blue-500">
+        <button
+          className="absolute w-[120px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[20%] bottom-[120%] text-[12px] text-blue-500"
+          onClick={handleIntakeList}
+        >
           복용 내역 모니터링
         </button>
         {/* <button className="absolute w-[30px] h-[30px] border-2 right-2 bottom-2">
