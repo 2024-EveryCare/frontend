@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Prescription from '../../assets/register/Prescription.png';
 import PillNextText from './PillNextText';
 import BackBtn from './button/BackBtn';
@@ -39,17 +39,14 @@ const ScanConfirm: React.FC = () => {
     //OCRData는 객체이므로 바로 map으로 돌리기가 불가능.
     const parsedDrugData = drugName.map((drugName) => ({
       drugName: drugName,
-      drugCode: '',
-      drugPcode: '',
-      drugCompany: '',
     }));
-
     setSaveDrugData(parsedDrugData);
-    // setIntakeCycle(OCRData.intakeCycle);
+
     setHospital(OCRData.hospital);
 
     setDisease(OCRData.disease);
   }, [OCRData]);
+
   const [morning, setMorning] = useState<boolean>(false);
   const [lunch, setLunch] = useState<boolean>(false);
   const [night, setNight] = useState<boolean>(false);
@@ -68,31 +65,63 @@ const ScanConfirm: React.FC = () => {
     //서버로 inputValue값 넘길 로직 작성
     if (inputValue.trim() == '') {
       alert('감색어를 입력하세요!!');
-      // 스페이스 같은 짓 못하도록 trim() 을 사용해서 공백문자 줄바꿈 제거 후 검증
       return;
     }
     const searchedDrugData = await drugSearch(inputValue);
-    setDrugData(searchedDrugData.data);
+    console.log(searchedDrugData);
+    setDrugData(searchedDrugData);
   };
 
   const [saveDrugData, setSaveDrugData] = useState<DrugData[]>([]);
-  const handleCheckboxChange = (index: number) => {
-    const updatedDrugData = [...drugData];
-    updatedDrugData[index].check = !updatedDrugData[index].check;
-    console.log(index);
-    if (updatedDrugData[index].check) {
-      console.log('체크박스 체크');
-      setSaveDrugData([...saveDrugData, updatedDrugData[index]]);
-      console.log(saveDrugData);
-    } else {
-      const updatedSaveDrugData = saveDrugData.filter(
-        (item) => item.drugID !== updatedDrugData[index].drugID,
-      ); // 일치하지 않는것은 저장을 안하고 일치하는것만 남겨서 update배열에 새로 저장, 중괄호가 없으면 boolean으로
-      console.log('체크박스 해제');
-      setSaveDrugData(updatedSaveDrugData);
-    }
+  // const handleCheckboxChange = (index: number) => {
+  //   const updatedDrugData = [...drugData];
+  //   updatedDrugData[index].check = !updatedDrugData[index].check;
+  //   console.log(index);
+  //   if (updatedDrugData[index].check) {
+  //     console.log('체크박스 체크');
+  //     setSaveDrugData([...saveDrugData, updatedDrugData[index]]);
+  //     console.log(saveDrugData);
+  //   } else {
+  //     const updatedSaveDrugData = saveDrugData.filter(
+  //       (item) => item.drugID !== updatedDrugData[index].drugID,
+  //     ); // 일치하지 않는것은 저장을 안하고 일치하는것만 남겨서 update배열에 새로 저장, 중괄호가 없으면 boolean으로
+  //     console.log('체크박스 해제');
+  //     setSaveDrugData(updatedSaveDrugData);
+  //   }
 
-    setDrugData(updatedDrugData);
+  //   setDrugData(updatedDrugData);
+  // };
+  const checkBoxRefs = useRef<HTMLInputElement | null[]>([]);
+  const handleCheckboxChange = (index: number) => {
+    // setDrugData(searchedDrugData.data);
+    if (!checkBoxRefs.current[index].checked) {
+      checkBoxRefs.current[index].checked = true;
+      setSaveDrugData((preSaveDrugData) => [
+        ...preSaveDrugData,
+        { drugName: drugData[index].drugName },
+      ]);
+      console.log(checkBoxRefs.current[index].checked);
+      console.log(saveDrugData);
+      changeCheckboxBg(index, 0);
+    } else {
+      checkBoxRefs.current[index].checked = false;
+      const updateDrugData = saveDrugData.filter((deleteItem) => {
+        deleteItem.drugName != drugData[index].drugName;
+        console.log(checkBoxRefs.current[index].checked);
+        console.log(saveDrugData);
+        changeCheckboxBg(index, 1);
+      });
+      setSaveDrugData(updateDrugData);
+    }
+  };
+
+  const checkBoxBgRefs = useRef<HTMLDivElement | null[]>([]);
+  const changeCheckboxBg = (index: number, identifier: number) => {
+    if (identifier === 0) {
+      checkBoxBgRefs.current[index]?.classList.add('bg-blue-100');
+    } else {
+      checkBoxBgRefs.current[index]?.classList.remove('bg-blue-100');
+    }
   };
 
   const handleDeleteList = (drugName: string) => {
@@ -221,6 +250,10 @@ const ScanConfirm: React.FC = () => {
     }
   }, [saveBtn]);
 
+  useEffect(() => {
+    console.log(saveDrugData);
+  }, [saveDrugData]);
+
   return (
     <>
       <BackBtn text="처방전 확인"></BackBtn>
@@ -283,53 +316,55 @@ const ScanConfirm: React.FC = () => {
             </div>
 
             <div className="w-[100%] h-[25vh] overflow-y-scroll text-[1vh]">
-              <table className="w-[100%] h-[30vh] divide-y border-black border-1 table-fixed">
-                <thead className="w-[100%] h-[3vh] bg-gray-100 border-t-2 border-gray-300">
-                  <tr>
-                    <th className="h-[3vh] w-[26%] text-center align-middle text-[1.4vh] p-[5px] border-l-[1px] border-gray-200">
+              <div className="w-[100%] h-[30vh] divide-y">
+                <div className="w-[100%] h-[3vh] border-t border-b border-gray-300">
+                  <div className="flex">
+                    <div className="h-[3vh] w-[24%] text-center align-middle text-[1.4vh] p-[5px] border-l-[1px] border-gray-200">
+                      식별/포장
+                    </div>
+                    <div className="h-[3vh] w-[100%] text-center align-middle text-[1.4vh] p-[5px] border-l-[1px] border-r-[1px] border-gray-200">
                       제품명
-                    </th>
-                    <th className="h-[3vh] w-[17%] text-center align-middle text-[1.4vh] p-[5px] border-l-[1px] border-gray-200">
-                      제품코드
-                    </th>
-                    <th className="h-[3vh] w-[19%] text-center align-middle text-[1.4vh] p-[5px] border-l-[1px] border-gray-200">
-                      주성분코드
-                    </th>
-                    <th className="h-[3vh] w-[28%] text-center align-middle text-[1.4vh] p-[5px] border-l-[1px] border-gray-200">
-                      업체명
-                    </th>
-                    <th className="h-[3vh] w-[10%] text-center align-middle text-[1.4vh] p-[5px] border-l-[1px] border-r-[1px] border-gray-200">
-                      선택
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="w-[100%] bg-white h-[80%] overflow-y-scroll">
+                    </div>
+                  </div>
+                </div>
+                <ul className="w-[100%] bg-white h-[80%] overflow-y-scroll">
                   {drugData.map((medicine, index) => (
-                    <tr
-                      className="border border-gray-200 relative"
-                      key={medicine.drugID}
+                    <li
+                      key={index}
+                      className="border border-gray-200 relative flex"
                     >
-                      <td className="h-[10%] w-[17%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle">
+                      <div
+                        className="h-[50px] w-[25%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle"
+                        onClick={() => handleCheckboxChange(index)}
+                        ref={(element) =>
+                          (checkBoxBgRefs.current[index] = element)
+                        }
+                      >
+                        <img
+                          className="h-[100%] w-[100%]"
+                          src={medicine.imageUrl}
+                        />
+                      </div>
+                      <div
+                        className="h-[50px] w-[100%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle"
+                        onClick={() => handleCheckboxChange(index)}
+                        ref={(element) =>
+                          (checkBoxBgRefs.current[index] = element)
+                        }
+                      >
                         {medicine.drugName}
-                      </td>
-                      <td className="h-[10%] w-[17%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle">
-                        {medicine.drugCode}
-                      </td>
-                      <td className="h-[10%] w-[17%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle">
-                        {medicine.drugPcode}
-                      </td>
-                      <td className="h-[10%] w-[17%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle">
-                        {medicine.drugCompany}
-                      </td>
+                      </div>
                       <input
-                        className="absolute bottom-[50%] right-[3%]"
+                        className="hidden"
                         type="checkbox"
-                        onChange={() => handleCheckboxChange(index)}
+                        ref={(element) =>
+                          (checkBoxRefs.current[index] = element)
+                        }
                       />
-                    </tr>
+                    </li>
                   ))}
-                </tbody>
-              </table>
+                </ul>
+              </div>
             </div>
           </AddPillModal>
           {/* </div> */}
