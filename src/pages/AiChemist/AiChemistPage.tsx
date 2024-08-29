@@ -10,6 +10,7 @@ const AiChemistPage: React.FC = () => {
       <CenterLayout>
         <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
         <Chat></Chat>
+        <NavBar></NavBar>
       </CenterLayout>
     </BackLayout>
   );

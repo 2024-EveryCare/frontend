@@ -70,9 +70,23 @@ const Chat: React.FC = () => {
   }, [messages]);
 
   return (
-    <div className="h-[95%] w-[100%] bg-blue-100 p-4 space-y-4">
+    <div className="h-[80%] w-[100%] bg-blue-100 p-4 space-y-4">
+      <div className="flex justify-center gap-5">
+        <button
+          className="w-[100px] h-[30px] p-2 border border-blue-500 rounded-[15px] text-[12px] text-blue-500"
+          onClick={handleNewChat}
+        >
+          새 대화 생성
+        </button>
+        <button
+          className="w-[120px] h-[30px] p-2 border border-blue-500 rounded-[15px] text-[12px] text-blue-500"
+          onClick={handleIntakeList}
+        >
+          복용 내역 모니터링
+        </button>
+      </div>
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 overflow-y-auto max-h-[98%] text-[16px]">
+      <div className="space-y-4 h-[90%] overflow-y-auto max-h-[98%] text-[16px]">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -98,15 +112,14 @@ const Chat: React.FC = () => {
           </div>
         ))}
       </div>
-
       {/* 유저 입력 필드 */}
-      <div className="bottom-0 h-[5vh] w-[100%] absolute items-center left-0">
+      <div className="bottom-[10%] h-[5vh] w-[100%] absolute items-center left-0">
         <input
-          className="border border-gray-300 w-[100%] h-[100%] text-[16px]"
+          className="border border-gray-300 w-[100%] h-[120%] text-[16px] text-center"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="                                          메시지를 입력하세요..."
+          placeholder="메시지를 입력하세요..."
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
               handleSend();
@@ -114,26 +127,10 @@ const Chat: React.FC = () => {
           }}
         />
         <img
-          className="absolute right-2 bottom-2"
+          className="absolute right-2 bottom-[5%]"
           src={btn}
           onClick={handleSend}
         />
-
-        <button
-          className="absolute w-[100px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[55%] bottom-[120%] text-[12px] text-blue-500"
-          onClick={handleNewChat}
-        >
-          새 대화 생성
-        </button>
-        <button
-          className="absolute w-[120px] h-[30px] p-2 border border-blue-500 rounded-[15px] right-[20%] bottom-[120%] text-[12px] text-blue-500"
-          onClick={handleIntakeList}
-        >
-          복용 내역 모니터링
-        </button>
-        {/* <button className="absolute w-[30px] h-[30px] border-2 right-2 bottom-2">
-          복용 내역 모니터링
-        </button> */}
       </div>
     </div>
   );
