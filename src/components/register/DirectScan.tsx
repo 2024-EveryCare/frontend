@@ -7,12 +7,18 @@ import Loading from '../ocrLoading';
 import { useNavigate } from 'react-router';
 import { RegisterContext } from '../../context/RegisterContext';
 import { submitOcrFile } from '../../service/submitOcrFile';
+import { qrCreateService } from '../../service/qr';
 
 const DirectScan: React.FC = () => {
   const navigate = useNavigate();
   const { setOCRData, imgURL, setImgURL } = useContext(RegisterContext); // 상태관리에서 필요한 부분만 추출
   const fileInputRef = useRef<HTMLInputElement>(null); // 파일 업로드(input 태그에 hidden 적용 후 안 보이게 한 후 간접적으로 이용)를 위해 사용
   const [loading, setLoading] = useState<boolean>(false);
+  const [qrURL, setQrURL] = useState<string>('');
+
+  const Base64Img = (base64: string) => {
+    return `data:image/png;base64,${base64}`;
+  };
 
   const toggleLoading = () => {
     setLoading((prev) => !prev); // 로딩 상태를 토글
@@ -73,6 +79,10 @@ const DirectScan: React.FC = () => {
     }
   };
 
+  const handleCreateQr = async () => {
+    const response = await qrCreateService();
+    console.log(response.data.qrCode);
+  };
   useEffect(() => {
     // imgURL 상태가 변경될 때마다 리다이렉트
     if (imgURL) {
@@ -80,6 +90,17 @@ const DirectScan: React.FC = () => {
       navigate('/scan-confirm');
     }
   }, [imgURL, navigate]);
+
+  useEffect(() => {
+    // qrCreateService가 비동기 함수라고 가정
+    const fetchUrl = async () => {
+      const base64Url = await qrCreateService(); // 비동기 호출
+      const data = Base64Img(base64Url);
+      console.log(data);
+      setQrURL(data);
+    };
+    fetchUrl();
+  }, []);
 
   return (
     <div className="relative">
@@ -103,8 +124,11 @@ const DirectScan: React.FC = () => {
         </div>
 
         <CustomHr />
-        <div className="w-full flex justify-center items-center h-[32vh] text-[0.9rem] flex-col">
-          <img src={QR} className="w-[50vh] h-[30vh]" />
+        <div
+          className="w-full flex justify-center items-center h-[32vh] text-[0.9rem] flex-col"
+          onClick={handleCreateQr}
+        >
+          <img src={qrURL} className="w-[50vh] h-[30vh]" />
           <div
             style={{
               width: '80%',
