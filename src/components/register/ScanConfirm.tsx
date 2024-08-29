@@ -40,13 +40,13 @@ const ScanConfirm: React.FC = () => {
     const parsedDrugData = drugName.map((drugName) => ({
       drugName: drugName,
     }));
-
     setSaveDrugData(parsedDrugData);
 
     setHospital(OCRData.hospital);
 
     setDisease(OCRData.disease);
   }, [OCRData]);
+
   const [morning, setMorning] = useState<boolean>(false);
   const [lunch, setLunch] = useState<boolean>(false);
   const [night, setNight] = useState<boolean>(false);
@@ -94,19 +94,33 @@ const ScanConfirm: React.FC = () => {
   const checkBoxRefs = useRef<HTMLInputElement | null[]>([]);
   const handleCheckboxChange = (index: number) => {
     // setDrugData(searchedDrugData.data);
-    if (!checkBoxRefs.current[index].check) {
-      //
-      checkBoxRefs.current[index].check = true;
+    if (!checkBoxRefs.current[index].checked) {
+      checkBoxRefs.current[index].checked = true;
       setSaveDrugData((preSaveDrugData) => [
         ...preSaveDrugData,
-        drugData[index].drugName,
+        { drugName: drugData[index].drugName },
       ]);
+      console.log(checkBoxRefs.current[index].checked);
+      console.log(saveDrugData);
+      changeCheckboxBg(index, 0);
     } else {
-      checkBoxRefs.current[index].check = false;
+      checkBoxRefs.current[index].checked = false;
       const updateDrugData = saveDrugData.filter((deleteItem) => {
         deleteItem.drugName != drugData[index].drugName;
+        console.log(checkBoxRefs.current[index].checked);
+        console.log(saveDrugData);
+        changeCheckboxBg(index, 1);
       });
       setSaveDrugData(updateDrugData);
+    }
+  };
+
+  const checkBoxBgRefs = useRef<HTMLDivElement | null[]>([]);
+  const changeCheckboxBg = (index: number, identifier: number) => {
+    if (identifier === 0) {
+      checkBoxBgRefs.current[index]?.classList.add('bg-blue-100');
+    } else {
+      checkBoxBgRefs.current[index]?.classList.remove('bg-blue-100');
     }
   };
 
@@ -236,6 +250,10 @@ const ScanConfirm: React.FC = () => {
     }
   }, [saveBtn]);
 
+  useEffect(() => {
+    console.log(saveDrugData);
+  }, [saveDrugData]);
+
   return (
     <>
       <BackBtn text="처방전 확인"></BackBtn>
@@ -315,13 +333,25 @@ const ScanConfirm: React.FC = () => {
                       key={index}
                       className="border border-gray-200 relative flex"
                     >
-                      <div className="h-[50px] w-[25%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle">
+                      <div
+                        className="h-[50px] w-[25%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle"
+                        onClick={() => handleCheckboxChange(index)}
+                        ref={(element) =>
+                          (checkBoxBgRefs.current[index] = element)
+                        }
+                      >
                         <img
                           className="h-[100%] w-[100%]"
                           src={medicine.imageUrl}
                         />
                       </div>
-                      <div className="h-[50px] w-[100%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle">
+                      <div
+                        className="h-[50px] w-[100%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle"
+                        onClick={() => handleCheckboxChange(index)}
+                        ref={(element) =>
+                          (checkBoxBgRefs.current[index] = element)
+                        }
+                      >
                         {medicine.drugName}
                       </div>
                       <input
