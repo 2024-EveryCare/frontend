@@ -122,7 +122,7 @@ const Chat: React.FC = () => {
         ))}
       </div>
       {/* 유저 입력 필드 */}
-      <div className="bottom-[10%] h-[5vh] w-[100%] absolute items-center left-0">
+      <div className="bottom-[1%] h-[5vh] w-[100%] absolute items-center left-0">
         <input
           className="border border-gray-300 w-[100%] h-[120%] text-[16px] text-center"
           type="text"
@@ -136,7 +136,7 @@ const Chat: React.FC = () => {
           }}
         />
         <img
-          className="absolute right-2 bottom-[5%]"
+          className="absolute w-[8%] right-3 bottom-[5%]"
           src={btn}
           onClick={handleSend}
         />
