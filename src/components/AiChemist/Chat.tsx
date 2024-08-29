@@ -95,7 +95,7 @@ const Chat: React.FC = () => {
         </button>
       </div>
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 h-[90%] overflow-y-auto max-h-[98%] text-[16px]">
+      <div className="space-y-4 h-[90%] overflow-y-auto max-w-[90%] max-h-[98%] text-[16px]">
         {messages.map((message, index) => (
           <div
             key={index}
