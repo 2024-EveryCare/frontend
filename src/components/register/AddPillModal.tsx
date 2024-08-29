@@ -43,7 +43,7 @@ const AddPillModal: React.FC<ModalProps> = ({
     <div style={ModalStyle} onClick={onClose} className="shadow-lg">
       <div style={ModalContentStyle} onClick={(e) => e.stopPropagation()}>
         {children}
-        <SaveBtn className="h-[35px] w-[50%]" onClick={onClose}>
+        <SaveBtn className="mt-[4vh] h-[35px] w-[50%]" onClick={onClose}>
           저장하기
         </SaveBtn>
       </div>

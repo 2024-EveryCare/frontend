@@ -21,7 +21,7 @@ const Chat: React.FC = () => {
       handleSaveUser(userText);
       const response = await chatService(input);
       setInput(''); // 입력창 비우기
-
+      console.log(response.data.response);
       handleSendAi(response.data.response);
     }
   };
@@ -33,7 +33,7 @@ const Chat: React.FC = () => {
     ]); // 이전 메시지 저장 후, 키:값 형태로 객체 저장
   };
 
-  const handleSendAi = (responseText: string) => {
+  const handleSendAi = (responseText) => {
     setMessages((prevMessages) => [
       ...prevMessages,
       { user: 'AI', text: responseText },
@@ -43,6 +43,10 @@ const Chat: React.FC = () => {
   const handleNewChat = async () => {
     const response = newChatService();
     console.log(response);
+    setMessages((preMessages) => [
+      ...preMessages,
+      { user: 'Ai', text: '채팅봇이 초기화 되었습니다.' },
+    ]);
     navigator('/chemist');
   };
 
@@ -88,7 +92,7 @@ const Chat: React.FC = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="메시지를 입력하세요..."
+          placeholder="                                          메시지를 입력하세요..."
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
               handleSend();
