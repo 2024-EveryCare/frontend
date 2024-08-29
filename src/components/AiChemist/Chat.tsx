@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import ChemistImg from '../../assets/Chatbot.png';
+import ChemistImg from '../../assets/chatBot/Chatbot.png';
 import UserImg from '../../assets/dad.png';
+import btn from '../../assets/chatBot/Send.svg';
+import ChatBg from '../../assets/chatBot/ChatBg.svg';
+
 import {
   chatService,
   monitoringService,
   newChatService,
 } from '../../service/chat';
-import btn from '../../assets/Import.png';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+
 const Chat: React.FC = () => {
   const navigator = useNavigate();
   const [messages, setMessages] = useState<{ user: string; text: string }[]>([
@@ -70,7 +72,14 @@ const Chat: React.FC = () => {
   }, [messages]);
 
   return (
-    <div className="h-[80%] w-[100%] bg-blue-100 p-4 space-y-4">
+    <div
+      className="h-[95%] w-[100%] p-4 space-y-4 relative"
+      style={{
+        backgroundImage: `url(${ChatBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <div className="flex justify-center gap-5">
         <button
           className="w-[100px] h-[30px] p-2 border border-blue-500 rounded-[15px] text-[12px] text-blue-500"
