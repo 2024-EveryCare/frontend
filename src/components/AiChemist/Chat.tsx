@@ -124,7 +124,7 @@ const Chat: React.FC = () => {
       {/* 유저 입력 필드 */}
       <div className="bottom-[1%] h-[5vh] w-[100%] absolute items-center left-0">
         <input
-          className="border border-gray-300 w-[100%] h-[120%] text-[16px] text-center"
+          className="border border-gray-300 w-[100%] h-[120%] text-[16px] p-2"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
