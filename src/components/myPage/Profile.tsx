@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import dad from '../../assets/dad.png';
 import { memberInfo } from '../../service/member';
+import { getJSESSIONCookie } from '../../utils/cookie';
 
 const Profile: React.FC = () => {
   const [name, setName] = useState<string>('????');
