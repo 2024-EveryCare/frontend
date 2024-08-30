@@ -14,7 +14,7 @@ const MainPg: React.FC = () => {
     marginLeft: '3%',
   };
   const navigate = useNavigate();
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, user } = useAuth();
 
   useEffect(() => {
     console.log('User info:', user);

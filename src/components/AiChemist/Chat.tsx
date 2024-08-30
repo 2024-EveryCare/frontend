@@ -6,17 +6,16 @@ import btn from '../../assets/chatBot/Send.svg';
 import ChatBg from '../../assets/chatBot/ChatBg.svg';
 
 import { chatService, monitoringService } from '../../service/chat';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router';
 import { PulseLoader } from 'react-spinners';
 
 const Chat: React.FC = () => {
   const navigator = useNavigate();
-  const [messages, setMessages] = useState<{ user: string; text: string }[]>([
-    {
-      user: 'AI',
-      text: `에브리님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [의약품 모니터링]을 눌러주세요.`,
-    },
-  ]);
+  const { isLoggedIn, user } = useAuth();
+  const [messages, setMessages] = useState<{ user: string; text: string }[]>(
+    [],
+  );
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
   const autoScroll = useRef<HTMLDivElement>(null); // 메세지 컨테이너 참조
@@ -59,24 +58,41 @@ const Chat: React.FC = () => {
   };
 
   const handleNewChat = async () => {
-    setMessages([
-      {
-        user: 'AI',
-        text: `에브리님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [의약품 모니터링]을 눌러주세요.`,
-      },
-    ]);
+    {
+      isLoggedIn && user
+        ? setMessages([
+            {
+              user: 'AI',
+              text: `${user.name}님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [복용 내역 모니터링]을 눌러주세요.`,
+            },
+          ])
+        : '';
+    }
     setInput('');
     navigator('/chatBot');
   };
 
   const handleIntakeList = async () => {
     console.log('진행중');
+    setLoading(true);
     const response = await monitoringService();
     setMessages((prevMessages) => [
       ...prevMessages,
       { user: 'Ai', text: response },
     ]);
+    setLoading(false);
   };
+
+  useEffect(() => {
+    if (isLoggedIn && user) {
+      setMessages([
+        {
+          user: 'AI',
+          text: `${user.name}님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [복용 내역 모니터링]을 눌러주세요.`,
+        },
+      ]);
+    }
+  }, [isLoggedIn, user]);
 
   useEffect(() => {
     if (autoScroll.current) {
