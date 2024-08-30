@@ -5,28 +5,26 @@ import UserImg from '../../assets/dad.png';
 import btn from '../../assets/chatBot/Send.svg';
 import ChatBg from '../../assets/chatBot/ChatBg.svg';
 
-import {
-  chatService,
-  monitoringService,
-  newChatService,
-} from '../../service/chat';
+import { chatService, monitoringService } from '../../service/chat';
 import { useNavigate } from 'react-router';
+import { useSignup } from '../../context/SignupContext';
 
 const Chat: React.FC = () => {
   const navigator = useNavigate();
+  const { signupData } = useSignup();
   const [messages, setMessages] = useState<{ user: string; text: string }[]>([
     {
       user: 'AI',
-      text: '에브리님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [의약품 모니터링]을 눌러주세요.',
+      text: `에브리님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [의약품 모니터링]을 눌러주세요.`,
     },
   ]);
   const [input, setInput] = useState('');
 
   const formatMessage = (text) => {
-    return text.split(/([.,!?])\s*/).map((part, index) => (
+    return text.split(/([.!])\s*/).map((part, index) => (
       <React.Fragment key={index}>
         {part}
-        {['.', ',', '!', '?'].includes(part) ? <br /> : null}
+        {['.', '!'].includes(part) ? <br /> : null}
       </React.Fragment>
     ));
   };
@@ -35,8 +33,8 @@ const Chat: React.FC = () => {
     if (input.trim() !== '') {
       const userText = input;
       handleSaveUser(userText);
-      const response = await chatService(input);
       setInput(''); // 입력창 비우기
+      const response = await chatService(input);
       console.log(response.data.response);
       handleSendAi(response.data.response);
     }
@@ -57,13 +55,14 @@ const Chat: React.FC = () => {
   };
 
   const handleNewChat = async () => {
-    const response = newChatService();
-    console.log(response);
-    setMessages((preMessages) => [
-      ...preMessages,
-      { user: 'Ai', text: '채팅봇이 초기화 되었습니다.' },
+    setMessages([
+      {
+        user: 'AI',
+        text: `에브리님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [의약품 모니터링]을 눌러주세요.`,
+      },
     ]);
-    navigator('/chemist');
+    setInput('');
+    navigator('/chatBot');
   };
 
   const handleIntakeList = async () => {

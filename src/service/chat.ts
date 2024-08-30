@@ -15,7 +15,7 @@ export const chatService = async (text: string) => {
   }
 };
 
-export const newChatService = async () => {
+/* export const newChatService = async () => {
   try {
     const response = await axios.get(
       'http://localhost:8080/api/v1/chatbot/newchat',
@@ -26,7 +26,7 @@ export const newChatService = async () => {
     console.error('새로운 채팅 생성 중 오류 발생 :', error);
     throw error; // 필요에 따라 에러를 던지거나 에러 처리
   }
-};
+}; */
 
 export const monitoringService = async () => {
   const response = await axios.get(
