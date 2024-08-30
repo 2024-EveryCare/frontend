@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import ChemistImg from '../../assets/chatBot/Chatbot.png';
 import UserImg from '../../assets/dad.png';
@@ -7,11 +7,9 @@ import ChatBg from '../../assets/chatBot/ChatBg.svg';
 
 import { chatService, monitoringService } from '../../service/chat';
 import { useNavigate } from 'react-router';
-import { useSignup } from '../../context/SignupContext';
 
 const Chat: React.FC = () => {
   const navigator = useNavigate();
-  const { signupData } = useSignup();
   const [messages, setMessages] = useState<{ user: string; text: string }[]>([
     {
       user: 'AI',
@@ -19,6 +17,7 @@ const Chat: React.FC = () => {
     },
   ]);
   const [input, setInput] = useState('');
+  const autoScroll = useRef<HTMLDivElement>(null);
 
   const formatMessage = (text) => {
     return text.split(/([.!])\s*/).map((part, index) => (
@@ -75,7 +74,9 @@ const Chat: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log('채팅중');
+    if (autoScroll.current) {
+      autoScroll.current.scrollIntoView({ behavior: 'smooth' });
+    }
     console.log(messages);
   }, [messages]);
 
@@ -134,6 +135,8 @@ const Chat: React.FC = () => {
             )}
           </div>
         ))}
+        {/* 스크롤을 맨 아래로 이동*/}
+        <div ref={autoScroll} />
       </div>
       {/* 유저 입력 필드 */}
       <div className="bottom-[1%] h-[5vh] w-[100%] absolute items-center left-0">
