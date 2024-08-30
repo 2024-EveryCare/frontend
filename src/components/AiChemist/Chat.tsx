@@ -122,7 +122,7 @@ const Chat: React.FC = () => {
             )}
             {/* state에 저장된 메시지 표시 */}
             <div
-              className={`min-w-[100px] p-2 rounded-md shadow ${
+              className={`px-4 py-2 rounded-md shadow ${
                 message.user === 'User'
                   ? 'bg-chatBgColor text-white'
                   : 'bg-white text-gray-500'
