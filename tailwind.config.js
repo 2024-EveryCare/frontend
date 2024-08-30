@@ -2,7 +2,11 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        chatBgColor: '#36a8ef',
+      },
+    },
   },
   plugins: [
     function ({ addUtilities }) {

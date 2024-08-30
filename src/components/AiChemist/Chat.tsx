@@ -22,6 +22,15 @@ const Chat: React.FC = () => {
   ]);
   const [input, setInput] = useState('');
 
+  const formatMessage = (text) => {
+    return text.split(/([.,!?])\s*/).map((part, index) => (
+      <React.Fragment key={index}>
+        {part}
+        {['.', ',', '!', '?'].includes(part) ? <br /> : null}
+      </React.Fragment>
+    ));
+  };
+
   const handleSend = async () => {
     if (input.trim() !== '') {
       const userText = input;
@@ -95,7 +104,7 @@ const Chat: React.FC = () => {
         </button>
       </div>
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 h-[90%] overflow-y-auto max-w-[90%] max-h-[98%] text-[16px]">
+      <div className="space-y-4 h-[90%] overflow-y-auto max-w-[90%] max-h-[98%] text-[16px] leading-loose">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -112,8 +121,14 @@ const Chat: React.FC = () => {
               />
             )}
             {/* state에 저장된 메시지 표시 */}
-            <div className="min-w-[100px] bg-white p-2 rounded-md shadow">
-              {message.text}
+            <div
+              className={`min-w-[100px] p-2 rounded-md shadow ${
+                message.user === 'User'
+                  ? 'bg-chatBgColor text-white'
+                  : 'bg-white text-gray-500'
+              }`}
+            >
+              {formatMessage(message.text)}
             </div>
             {message.user === 'User' && ( // 유저 이미지 표시
               <img className="w-[40px] h-[40px]" src={UserImg} alt="User" />
