@@ -7,6 +7,7 @@ import ChatBg from '../../assets/chatBot/ChatBg.svg';
 
 import { chatService, monitoringService } from '../../service/chat';
 import { useNavigate } from 'react-router';
+import { PulseLoader } from 'react-spinners';
 
 const Chat: React.FC = () => {
   const navigator = useNavigate();
@@ -17,7 +18,8 @@ const Chat: React.FC = () => {
     },
   ]);
   const [input, setInput] = useState('');
-  const autoScroll = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const autoScroll = useRef<HTMLDivElement>(null); // 메세지 컨테이너 참조
 
   const formatMessage = (text) => {
     return text.split(/([.!])\s*/).map((part, index) => (
@@ -33,9 +35,12 @@ const Chat: React.FC = () => {
       const userText = input;
       handleSaveUser(userText);
       setInput(''); // 입력창 비우기
+      setLoading(true);
+
       const response = await chatService(input);
       console.log(response.data.response);
       handleSendAi(response.data.response);
+      setLoading(false);
     }
   };
 
@@ -46,7 +51,7 @@ const Chat: React.FC = () => {
     ]); // 이전 메시지 저장 후, 키:값 형태로 객체 저장
   };
 
-  const handleSendAi = (responseText) => {
+  const handleSendAi = (responseText: string) => {
     setMessages((prevMessages) => [
       ...prevMessages,
       { user: 'AI', text: responseText },
@@ -104,11 +109,11 @@ const Chat: React.FC = () => {
         </button>
       </div>
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 h-[90%] overflow-y-auto max-w-[90%] max-h-[98%] text-[16px] leading-loose">
+      <div className="space-y-4 h-[90%] overflow-y-auto scrollbar-custom max-h-[98%] text-[16px] leading-loose">
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`flex items-start space-x-2 
+            className={`flex items-start space-x-2 mb-4
                 ${
                   message.user === 'User' ? 'justify-end' : '' // 유저 메시지 오른쪽 정렬
                 }`}
@@ -135,6 +140,16 @@ const Chat: React.FC = () => {
             )}
           </div>
         ))}
+        {loading && (
+          <span className="flex justify-items">
+            <img className="w-[40px] h-[40px]" src={ChemistImg} alt="Chemist" />
+            <PulseLoader
+              color="#808080"
+              size={10}
+              className="px-4 py-3 rounded-md shadow bg-white text-gray-500 ml-[8px]"
+            />
+          </span>
+        )}
         {/* 스크롤을 맨 아래로 이동*/}
         <div ref={autoScroll} />
       </div>
