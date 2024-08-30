@@ -4,14 +4,14 @@ import dad from '../../assets/dad.png';
 import { memberInfo } from '../../service/member';
 
 const Profile: React.FC = () => {
-    const [name, setName] = useState<string>('????');
+  const [name, setName] = useState<string>('????');
   const [birth, setBirth] = useState<string>('???');
   const [age, setAge] = useState<string>('?');
   const [gender, setGender] = useState<string>('?');
   useEffect(() => {
-    clickedLogout();
+    handleBringProfile();
   }, []);
-  const clickedLogout = async () => {
+  const handleBringProfile = async () => {
     const response = await memberInfo();
     setName(response.name);
     setAge(response.age);

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { memberLogout } from '../../service/member';
+import { eraseCookie } from '../../utils/cookie';
 
 const Menu: React.FC = () => {
   const clickedLogout = async () => {
     const response = await memberLogout();
     console.log(response.data);
-    window.location.reload(); //로그아웃하면 상태관리가 필요없어지므로 useEffect사용안함.
+    eraseCookie('name');
+    eraseCookie('JSESSIONID');
   };
 
   return (

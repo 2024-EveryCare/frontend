@@ -52,12 +52,13 @@ const NavBar: React.FC = () => {
           backgroundImage: `url(${Search})`,
         }}
       ></Link>
-      <div
+      <Link
+        to="/my"
         style={{
           ...NavContentStyle,
           backgroundImage: `url(${Info})`,
         }}
-      ></div>
+      ></Link>
     </nav>
   );
 };
