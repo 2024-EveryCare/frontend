@@ -102,6 +102,13 @@ const DirectScan: React.FC = () => {
     fetchUrl();
   }, []);
 
+  // if (loading) {
+  //   return (
+  //     <div>
+  //       <Loading />
+  //     </div>
+  //   );
+  // }
   return (
     <div className="relative">
       <BackBtn text="약봉투 등록하기" />
@@ -129,16 +136,7 @@ const DirectScan: React.FC = () => {
           onClick={handleCreateQr}
         >
           <img src={qrURL} className="w-[50vh] h-[30vh]" />
-          <div
-            style={{
-              width: '80%',
-              textAlign: 'center',
-              backgroundColor: '#D9D9D9',
-              borderRadius: '20px',
-              fontSize: '0.9rem',
-              padding: '0.2rem',
-            }}
-          >
+          <div className="w-[80%] text-center bg-[#D9D9D9] rounded-[20px] text-[0.9rem] p-[0.2rem]">
             휴대폰으로 QR 코드를 인식한 후 약 봉투를 스캔해주세요
           </div>
         </div>

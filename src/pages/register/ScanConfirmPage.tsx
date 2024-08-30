@@ -22,7 +22,7 @@ const ScanConfirmPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="" className='className="w-1/3 mt-3 ml-3' />
+        <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
         <ScanConfirm></ScanConfirm>
         <NavBar></NavBar>
       </CenterLayout>
