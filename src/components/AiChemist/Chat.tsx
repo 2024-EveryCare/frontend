@@ -108,7 +108,7 @@ const Chat: React.FC = () => {
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`flex items-center space-x-2 
+            className={`flex items-start space-x-2 
                 ${
                   message.user === 'User' ? 'justify-end' : '' // 유저 메시지 오른쪽 정렬
                 }`}
