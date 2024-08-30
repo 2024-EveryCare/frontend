@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { loginUser, LoginData } from '../../service/login';
+import { setCookie } from '../../utils/cookie';
 
 function LoginForm() {
   const { register, handleSubmit } = useForm();
@@ -16,17 +17,17 @@ function LoginForm() {
     try {
       const responseData = await loginUser(data);
 
-      if (responseData.token) {
-        localStorage.setItem('authToken', responseData.token);
-        console.log('Token stored:', responseData.token); // 저장된 토큰 확인
-      }
+      // if (responseData.token) {
+      //   localStorage.setItem('authToken', responseData.token);
+      //   console.log('Token stored:', responseData.token); // 저장된 토큰 확인
+      // }
+
+      // if (responseData.status === 'OK' && responseData.data) {
+      //   const { name } = responseData.data; // name 속성을 data에서 추출
+      //   const token = responseData.token;
 
       if (responseData.status === 'OK' && responseData.data) {
-        const { name } = responseData.data; // name 속성을 data에서 추출
-        const token = responseData.token;
-
-        // 사용자 정보를 AuthContext에 저장
-        login({ name }, token);
+        setCookie('name', responseData.data.name, 30); //JSESSION 유효시간 30분과 동일 하게 맞춤.
         navigate('/');
       }
     } catch (error) {
