@@ -15,8 +15,10 @@ const MainPg: React.FC = () => {
     marginLeft: '3%',
   };
   const navigate = useNavigate();
+
   // const { isLoggedIn, user, logout } = useAuth();
   const [userName, setUserName] = useState<string>('');
+
   useEffect(() => {
     const user = getCookie('name');
     if (user) {

@@ -52,7 +52,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 <Route path="/scan-or-direct" element={<ScanOrDirectPage />} />
                 <Route path="/direct-scan" element={<DirectScanPage />} />
                 <Route path="/scan-confirm" element={<ScanConfirmPage />} />
-                <Route path="/chemist" element={<AiChemistPage />} />
+                <Route path="/chatBot" element={<AiChemistPage />} />
                 <Route
                   path="/direct-register"
                   element={<DirectRegisterPage />}
