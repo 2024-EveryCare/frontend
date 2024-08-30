@@ -25,6 +25,7 @@
     "react-query": "^3.39.3",
     "react-router": "^6.24.0",
     "react-router-dom": "^6.24.0",
+    "react-spinners": "^0.14.1",
     "skeleton": "^0.1.2",
     "swiper": "^11.1.4"
   },
