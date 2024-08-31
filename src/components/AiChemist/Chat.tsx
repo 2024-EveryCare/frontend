@@ -154,11 +154,11 @@ const Chat: React.FC = () => {
         ))}
         {loading && (
           <span className="flex justify-items">
-            <img className="w-[40px] h-[40px]" src={ChemistImg} alt="Chemist" />
+            <img className="w-[45px] h-[45px]" src={ChemistImg} alt="Chemist" />
             <PulseLoader
               color="#808080"
               size={10}
-              className="px-4 py-3 rounded-md shadow bg-white text-gray-500 ml-[8px]"
+              className="px-4 py-3 rounded-md shadow bg-white text-gray-500 ml-[9px]"
             />
           </span>
         )}

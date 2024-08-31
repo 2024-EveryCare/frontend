@@ -335,8 +335,8 @@ const ScanConfirm: React.FC = () => {
             <div className="w-[100%] h-[20%] mt-[2vh]">
               <input
                 type="text"
-                placeholder="   찾는 약이 있으신가요?"
-                className="mx-auto w-[80%] h-[5vh] border border-gray-300  "
+                placeholder="찾는 약이 있으신가요?"
+                className="mx-auto w-[80%] h-[5vh] border border-gray-300 p-2 text-base"
                 onChange={changeInputBox} // input창에 입력 발생시 배열에 저장.(최종전송은 버튼이 눌리면 할거임.)
               />
 
@@ -348,7 +348,7 @@ const ScanConfirm: React.FC = () => {
               </button>
             </div>
 
-            <div className="w-[100%] h-[25vh] overflow-y-scroll text-[1vh]">
+            <div className="w-[100%] h-[25vh] text-[1vh]">
               <div className="w-[100%] h-[30vh] divide-y">
                 <div className="w-[100%] h-[3vh] border-t border-b border-gray-300">
                   <div className="flex">
@@ -367,16 +367,22 @@ const ScanConfirm: React.FC = () => {
                       className="border border-gray-200 relative flex"
                     >
                       <div
-                        className="h-[50px] w-[25%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle"
+                        className="w-[25%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle"
                         onClick={() => handleCheckboxChange(index)}
                         ref={(element) =>
                           (checkBoxBgRefs.current[index] = element)
                         }
                       >
-                        <img
-                          className="h-[100%] w-[100%]"
-                          src={medicine.imageUrl}
-                        />
+                        {medicine.imageUrl ? (
+                          <img
+                            className="h-[40px] w-[100%]"
+                            src={medicine.imageUrl}
+                          />
+                        ) : (
+                          <div className="ml-3">
+                            <PillNextText />
+                          </div>
+                        )}
                       </div>
                       <div
                         className="h-[50px] w-[100%] border border-gray-200 whitespace-normal overflow-x-scroll align-middle"
@@ -511,7 +517,7 @@ const ScanConfirm: React.FC = () => {
             <div className="flex justify-center aligin-center h-[30px] w-[80%] mt-[2rem] rounded-2xl border-blue-200 border-[1px] m-auto">
               <input
                 type="text"
-                className="w-[70%] h-[80%] m-auto text-center"
+                className="w-[100%] h-[80%] m-auto text-center"
                 placeholder="병원을 입력 해 주세요"
                 value={hospital}
                 onChange={handleHospital}
@@ -547,7 +553,7 @@ const ScanConfirm: React.FC = () => {
             <div className="flex flex-col justify-center aligin-center h-[30px] w-[80%] mt-[2rem] rounded-2xl border-blue-200 border-[1px] m-auto">
               <input
                 type="text"
-                className="w-[70%] h-[80%] m-auto text-center"
+                className="w-[100%] h-[80%] m-auto text-center"
                 placeholder="질병을 입력 해 주세요."
                 value={disease}
                 onChange={handleDisease}
