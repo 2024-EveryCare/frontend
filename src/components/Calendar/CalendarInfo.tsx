@@ -98,6 +98,16 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
     }
   };
 
+  const handleDelete = (drugName: string) => {
+    const drugDelete = filteredDosage.find((record) =>
+      record.drugNames.includes(drugName),
+    );
+
+    if (drugDelete) {
+      deleteData(drugName, drugDelete.intakeStart, drugDelete.intakeEnd);
+    }
+  };
+
   const clickedBtn = () => {
     setDeleteBtn(!deleteBtn);
   };
@@ -110,9 +120,9 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
             {`${month + 1}월 ${selectedDay}일 복용 내역`}
           </h3>
           {deleteBtn ? (
-            <button className="flex items-center" onClick={clickedBtn}>
+            <span className="flex items-center" onClick={clickedBtn}>
               완료
-            </button>
+            </span>
           ) : (
             <span className="flex items-center" onClick={clickedBtn}>
               삭제
