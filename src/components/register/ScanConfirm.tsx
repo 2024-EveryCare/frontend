@@ -21,6 +21,7 @@ import axios from 'axios';
 import { RegisterContext } from '../../context/RegisterContext';
 import { autoData, drugSearch } from '../../service/searchDrug';
 import { submitDrugData } from '../../service/submitDrugData';
+import { useNavigate } from 'react-router';
 
 interface DrugData {
   drugName: string;
@@ -31,6 +32,7 @@ interface DrugData {
 }
 
 const ScanConfirm: React.FC = () => {
+  const navigate = useNavigate();
   const { OCRData, setOCRData, imgURL, setImgURL } =
     useContext(RegisterContext); // 처방전 인식 결과를 받아오는 전역변수 역할
   useEffect(() => {
@@ -132,12 +134,12 @@ const ScanConfirm: React.FC = () => {
     setSaveDrugData(updatedSaveDrugData);
     console.log(saveDrugData);
   };
+
   const handleDailyBtn = (name: string) => {
     if (name == 'morning') {
       setMorning((pre) => !pre);
     } else if (name == 'lunch') setLunch((pre) => !pre);
     else setNight((pre) => !pre);
-    console.log('Daily 상태: ', morning, lunch, night);
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -205,28 +207,28 @@ const ScanConfirm: React.FC = () => {
     console.log(e.target.value);
     setDisease(e.target.value);
   };
+  const handleSaveBtn = () => {
+    setSaveBtn((pre) => !pre);
+  };
 
   const [saveBtn, setSaveBtn] = useState<boolean>(false);
   const [drugName, setDrugName] = useState<string[]>([]);
   const handleSubmitDrugData = async () => {
-    await setDrugName(await saveDrugData.map((drugData) => drugData.drugName));
-    await setIntakeDaily(await intakeDailyCalculator(morning, lunch, night));
-    if (
-      drugName.length &&
-      startDate &&
-      endDate &&
-      intakeDaily &&
-      hospital &&
-      disease
-    ) {
-      await setStartDate(await formatDateObject(startDate));
-      await setEndDate(await formatDateObject(endDate));
-      setSaveBtn((pre) => !pre);
-    } else {
-      console.log('값이 입력되지 않았습니다.');
-    }
-  };
+    setDrugName(saveDrugData.map((drugData) => drugData.drugName));
+    const data = intakeDailyCalculator(morning, lunch, night);
+    setIntakeDaily(data);
 
+    setStartDate(formatDateObject(startDate));
+    setEndDate(formatDateObject(endDate));
+    handleSaveBtn();
+  };
+  useEffect(() => {
+    console.log(saveDrugData);
+  }, [saveDrugData]);
+
+  useEffect(() => {
+    console.log('Daily 상태: ', morning, lunch, night);
+  }, [morning, lunch, night, intakeDaily]);
   useEffect(() => {
     console.log(
       drugName,
@@ -237,7 +239,15 @@ const ScanConfirm: React.FC = () => {
       hospital,
       disease,
     );
-    if (saveBtn) {
+    if (
+      saveBtn &&
+      drugName.length &&
+      startDate &&
+      endDate &&
+      intakeDaily &&
+      hospital &&
+      disease
+    ) {
       submitDrugData(
         drugName,
         startDate,
@@ -247,12 +257,13 @@ const ScanConfirm: React.FC = () => {
         hospital,
         disease,
       );
+      console.log('저장완료.');
+      navigate('/calendar');
+    } else {
+      handleSaveBtn();
+      console.log('값이 입력되지 않았습니다.');
     }
   }, [saveBtn]);
-
-  useEffect(() => {
-    console.log(saveDrugData);
-  }, [saveDrugData]);
 
   return (
     <>
@@ -449,11 +460,11 @@ const ScanConfirm: React.FC = () => {
               </div>
             ) : null}
           </div>
-          <div className="w-[100%] h-[10vh] mt-[1vh]">
+          <div className="w-[100%] h-[10vh]">
             {showIntakeCycle ? (
               <InputBtn
                 onClick={handleShowIntakeCycle}
-                className="w-[80%] h-[30px] mt-[3vh] hover:bg-blue-200 hover:text-white"
+                className="w-[80%] h-[30px] mt-[1vh] hover:bg-blue-200 hover:text-white"
               >
                 확인
               </InputBtn>

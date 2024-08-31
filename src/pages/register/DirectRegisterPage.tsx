@@ -23,7 +23,7 @@ const DirectRegisterPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <Link to="/" className="w-1/3 mt-3 ml-3">
+        <Link to="/" className="w-1/3 ml-3">
           <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
         </Link>
         <DirectRegister />
