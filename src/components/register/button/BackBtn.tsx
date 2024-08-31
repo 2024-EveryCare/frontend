@@ -1,6 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 
 const BackBtn: React.FC = ({ text }) => {
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
   return (
     <div
       style={{
@@ -10,7 +17,10 @@ const BackBtn: React.FC = ({ text }) => {
         marginTop: '3%',
       }}
     >
-      <button className="p-2"> &lt; </button>
+      <button onClick={handleBackClick} className="p-2">
+        {' '}
+        &lt;{' '}
+      </button>
       <span className="p-1">{text}</span>
     </div>
   );

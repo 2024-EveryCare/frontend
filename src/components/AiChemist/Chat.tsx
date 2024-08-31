@@ -6,7 +6,6 @@ import btn from '../../assets/chatBot/Send.svg';
 import ChatBg from '../../assets/chatBot/ChatBg.svg';
 
 import { chatService, monitoringService } from '../../service/chat';
-// import { useAuth } from '../../context/AuthContext';
 import { getCookie } from '../../utils/cookie';
 import { useNavigate } from 'react-router';
 import { PulseLoader } from 'react-spinners';
