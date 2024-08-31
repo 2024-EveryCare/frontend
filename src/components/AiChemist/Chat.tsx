@@ -6,18 +6,18 @@ import btn from '../../assets/chatBot/Send.svg';
 import ChatBg from '../../assets/chatBot/ChatBg.svg';
 
 import { chatService, monitoringService } from '../../service/chat';
-import { useAuth } from '../../context/AuthContext';
+import { getCookie } from '../../utils/cookie';
 import { useNavigate } from 'react-router';
 import { PulseLoader } from 'react-spinners';
 
 const Chat: React.FC = () => {
   const navigator = useNavigate();
-  const { isLoggedIn, user } = useAuth();
   const [messages, setMessages] = useState<{ user: string; text: string }[]>(
     [],
   );
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [username, setUserName] = useState<string | null>(null);
   const autoScroll = useRef<HTMLDivElement>(null); // 메세지 컨테이너 참조
 
   const formatMessage = (text) => {
@@ -58,15 +58,13 @@ const Chat: React.FC = () => {
   };
 
   const handleNewChat = async () => {
-    {
-      isLoggedIn && user
-        ? setMessages([
-            {
-              user: 'AI',
-              text: `${user.name}님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [복용 내역 모니터링]을 눌러주세요.`,
-            },
-          ])
-        : '';
+    if (username) {
+      setMessages([
+        {
+          user: 'AI',
+          text: `${username}님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [복용 내역 모니터링]을 눌러주세요.`,
+        },
+      ]);
     }
     setInput('');
     navigator('/chatBot');
@@ -84,15 +82,17 @@ const Chat: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isLoggedIn && user) {
+    const name = getCookie('name');
+    setUserName(name);
+    if (name) {
       setMessages([
         {
           user: 'AI',
-          text: `${user.name}님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [복용 내역 모니터링]을 눌러주세요.`,
+          text: `${name}님 안녕하세요! 에브리케어의 AI 약사입니다. 궁금한 점이 있으시면 질문해주세요. 올해의 의약품 복용 내역을 한눈에 보고 싶으시면 [복용 내역 모니터링]을 눌러주세요.`,
         },
       ]);
     }
-  }, [isLoggedIn, user]);
+  }, []);
 
   useEffect(() => {
     if (autoScroll.current) {
@@ -125,7 +125,7 @@ const Chat: React.FC = () => {
         </button>
       </div>
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 h-[90%] overflow-y-auto scrollbar-custom max-h-[98%] text-[16px] leading-loose">
+      <div className="space-y-4 h-[85%] overflow-y-auto scrollbar-custom max-h-[84%] text-[16px] leading-normal">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -170,24 +170,27 @@ const Chat: React.FC = () => {
         <div ref={autoScroll} />
       </div>
       {/* 유저 입력 필드 */}
-      <div className="bottom-[1%] h-[5vh] w-[100%] absolute items-center left-0">
-        <input
-          className="border border-gray-300 w-[100%] h-[120%] text-[16px] p-2"
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="메시지를 입력하세요..."
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleSend();
-            }
-          }}
-        />
-        <img
-          className="absolute w-[8%] right-3 bottom-[5%]"
-          src={btn}
-          onClick={handleSend}
-        />
+      <div className="bottom-[0%] h-[11vh] w-full absolute flex items-center left-0 bg-white px-4">
+        {/* 전체 배경이 차지하는 div */}
+        <div className="flex w-full items-center">
+          {/* 텍스트 입력 필드 */}
+          <textarea
+            className="flex-grow h-[100px] text-[16px] p-1 resize-none overflow-auto"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="메시지를 입력하세요..."
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Enter 키 기본 동작 방지 (줄바꿈 방지)
+                handleSend();
+              }
+            }}
+          />
+          {/* 전송 버튼 */}
+          <button className="h-full mb-16" onClick={handleSend}>
+            <img className="w-[35px] h-[35px]" src={btn} alt="Send" />
+          </button>
+        </div>
       </div>
     </div>
   );
