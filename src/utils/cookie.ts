@@ -7,7 +7,8 @@ export const setCookie = (
   const date = new Date();
   date.setTime(date.getTime() + minutes * 60 * 1000); // minutes를 밀리초로 변환
   const expires = session ? '' : `; expires=${date.toUTCString()}`;
-  document.cookie = `${name}=${value || ''}${expires}; path=/`;
+  // 쿠키 값을 인코딩하여 설정
+  document.cookie = `${name}=${encodeURIComponent(value || '')}${expires}; path=/`;
 };
 
 // 쿠키 가져오기 함수
@@ -17,7 +18,10 @@ export const getCookie = (name: string) => {
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
     while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    if (c.indexOf(nameEQ) === 0) {
+      // 쿠키 값을 디코딩하여 반환
+      return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
   }
   return null;
 };
