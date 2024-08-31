@@ -7,6 +7,7 @@ import MainPage from '../../components/mainPage/MainPage';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { getCookie } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
 
 const MainPg: React.FC = () => {
   const LogoStyle = {
@@ -37,7 +38,10 @@ const MainPg: React.FC = () => {
     <BackLayout>
       <CenterLayout>
         <div className="flex justify-between">
-          <img src={SmallLogo} alt="" style={LogoStyle} />
+          <Link to="/" style={LogoStyle}>
+            <img src={SmallLogo} alt="" />
+          </Link>
+
           <div className="flex justify-between">
             {userName ? (
               <>

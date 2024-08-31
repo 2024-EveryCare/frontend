@@ -7,6 +7,7 @@ import BackBtn from '../../components/register/button/BackBtn';
 import PillSearch from '../../components/register/PillSearch';
 import { useNavigate } from 'react-router';
 import { getCookie } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
 
 const PillSearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ const PillSearchPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="" className='className="w-1/3 mt-3 ml-3' />
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} alt="" className='className="w-1/3 mt-3 ml-3' />
+        </Link>
         <BackBtn text="약 입력"></BackBtn>
         <PillSearch></PillSearch>
         <NavBar></NavBar>

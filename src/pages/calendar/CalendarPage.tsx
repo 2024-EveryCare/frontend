@@ -6,6 +6,7 @@ import SmallLogo from '../../assets/SmallLogo.png';
 import Calendar from '../../components/Calendar/Calendar';
 import { useNavigate } from 'react-router';
 import { getCookie } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
 
 const CalendarPage: React.FC = () => {
   const navigate = useNavigate();
@@ -21,7 +22,10 @@ const CalendarPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
+        </Link>
+
         <Calendar />
         <NavBar></NavBar>
       </CenterLayout>

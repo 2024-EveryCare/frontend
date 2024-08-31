@@ -6,6 +6,7 @@ import SmallLogo from '../../assets/SmallLogo.png';
 import ScanConfirm from '../../components/register/ScanConfirm';
 import { useNavigate } from 'react-router';
 import { getCookie } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
 
 const ScanConfirmPage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ const ScanConfirmPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
+        </Link>
         <ScanConfirm></ScanConfirm>
         <NavBar></NavBar>
       </CenterLayout>

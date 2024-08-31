@@ -6,6 +6,7 @@ import PillInfoSearch from '../../components/pillinfosearch/PillInfoSearch';
 import SmallLogo from '../../assets/SmallLogo.png';
 import { useNavigate } from 'react-router';
 import { getCookie } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
 
 const PillInfoSearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ const PillInfoSearchPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
+        </Link>
         <PillInfoSearch></PillInfoSearch>
         <NavBar></NavBar>
       </CenterLayout>
