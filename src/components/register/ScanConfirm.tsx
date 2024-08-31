@@ -225,12 +225,32 @@ const ScanConfirm: React.FC = () => {
     handleSaveBtn();
   };
   useEffect(() => {
-    console.log(saveDrugData);
+    if (saveBtn) {
+      console.log(
+        drugName,
+        startDate,
+        endDate,
+        intakeCycle,
+        intakeDaily,
+        hospital,
+        disease,
+      );
+      submitDrugData(
+        drugName,
+        startDate,
+        endDate,
+        0,
+        intakeDaily,
+        hospital,
+        disease,
+      );
+    }
   }, [saveDrugData]);
 
   useEffect(() => {
     console.log('Daily 상태: ', morning, lunch, night);
   }, [morning, lunch, night, intakeDaily]);
+
   useEffect(() => {
     console.log(
       drugName,
