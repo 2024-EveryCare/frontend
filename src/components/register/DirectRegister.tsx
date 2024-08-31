@@ -230,7 +230,7 @@ const DirectRegister: React.FC = () => {
       </div>
       <hr className="border-1 border-gray-300 m-auto w-[85%]" />
       <div className="w-[100%] h-[22vh]">
-        <div className="flex flex-col h-[30%] mt-[12%]">
+        <div className="flex flex-col h-[30%] mt-[5%]">
           {!selectedHos && !hospital.length ? (
             <>
               <p className="text-3xl w-[50%] font-black mb-[2%] ml-[5%]">
@@ -260,13 +260,12 @@ const DirectRegister: React.FC = () => {
                   <p className="inline-block w-[70%] h-[40px] text-2xl text-gray-700 font-bold">
                     {hospital}
                   </p>
-                  <button
-                    name="sickConfirm"
+                  <InputBtn
+                    className="w-[68%] h-[37px] mb-[105px] hover:bg-blue-200 hover:text-white absolute top-[170%] left-[5%]"
                     onClick={onClickHos}
-                    className="absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
                   >
                     수정
-                  </button>
+                  </InputBtn>
                 </div>
               ) : (
                 <div className="relative w-[90%]">
@@ -274,16 +273,15 @@ const DirectRegister: React.FC = () => {
                     type="text"
                     value={hospital}
                     onChange={handleHosInputChange}
-                    className="inline-block h-[40px] w-[70%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
+                    className="inline-block h-[40px] w-[90%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
                     placeholder="병원명을 입력해주세요."
                   />
-                  <button
-                    name="hosConfirm"
+                  <InputBtn
+                    className="w-[68%] h-[37px] mb-[105px] hover:bg-blue-200 hover:text-white absolute top-[170%] left-[5%]"
                     onClick={onClickHosConfirm}
-                    className="inline-block absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
                   >
                     확인
-                  </button>
+                  </InputBtn>
                 </div>
               )}
             </div>
@@ -292,7 +290,7 @@ const DirectRegister: React.FC = () => {
       </div>
       <hr className="border-1 border-gray-300 m-auto w-[85%]" />
       <div className="flex h-[25vh] w-[100%]">
-        <div className="flex flex-col w-full h-[30%] mt-[12%]">
+        <div className="flex flex-col w-full h-[30%] mt-[5%]">
           {!selectedSick && !disease ? (
             <>
               <p className="text-3xl w-[50%] font-black ml-[5%] mb-[2%]">
@@ -322,13 +320,12 @@ const DirectRegister: React.FC = () => {
                   <p className="inline-block w-[70%] h-[40px] text-2xl text-gray-700 font-bold">
                     {disease}
                   </p>
-                  <button
-                    name="sickConfirm"
+                  <InputBtn
+                    className="w-[68%] h-[37px] mb-[105px] hover:bg-blue-200 hover:text-white absolute top-[170%] left-[5%]"
                     onClick={onClickSick}
-                    className="absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
                   >
                     수정
-                  </button>
+                  </InputBtn>
                 </div>
               ) : (
                 <div className="relative w-[90%]">
@@ -336,16 +333,15 @@ const DirectRegister: React.FC = () => {
                     type="text"
                     value={disease}
                     onChange={handleSickInputChange}
-                    className="h-[40px] w-[70%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
+                    className="h-[40px] w-[90%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
                     placeholder="질병명을 입력해주세요."
                   />
-                  <button
-                    name="sickConfirm"
+                  <InputBtn
+                    className="w-[68%] h-[37px] mb-[105px] hover:bg-blue-200 hover:text-white absolute top-[170%] left-[5%]"
                     onClick={onClickSickConfirm}
-                    className="inline-block absolute right-[5%] top-[18%] text-xs text-orange-500 font-bold bg-gray-100 pl-[13px] pr-[13px] p-[5px] rounded-2xl"
                   >
                     확인
-                  </button>
+                  </InputBtn>
                 </div>
               )}
             </div>
@@ -419,7 +415,7 @@ const DirectRegister: React.FC = () => {
       </div>
       <hr className="border-1 border-gray-300 m-auto w-[85%]" />
       <div className="flex h-[27vh] w-[100%]">
-        <div className="flex flex-col w-full h-[30%] mt-[12%]">
+        <div className="flex flex-col w-full h-[30%] mt-[5%]">
           {!clickedDailyBtn && !(morning || lunch || night) ? (
             <>
               <p className="text-3xl w-[50%] font-black ml-[5%] mb-[2%]">
