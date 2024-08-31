@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { getCookie } from '../../utils/cookie';
 import { Link } from 'react-router-dom';
+import chatBotImg from '../../assets/chatBot/Chatbot.png';
 
 const MainPg: React.FC = () => {
   const LogoStyle = {
@@ -32,6 +33,10 @@ const MainPg: React.FC = () => {
   };
   const handleJoinClick = () => {
     navigate('/signup');
+  };
+
+  const handleRedirect = () => {
+    navigate('/chatBot');
   };
 
   return (
@@ -68,6 +73,11 @@ const MainPg: React.FC = () => {
           </div>
         </div>
         <MainPage />
+        <img
+          src={chatBotImg}
+          className="absolute w-[10%] h-[6%] left-[3%] bottom-[12%]"
+          onClick={handleRedirect}
+        ></img>
         <NavBar></NavBar>
       </CenterLayout>
     </BackLayout>

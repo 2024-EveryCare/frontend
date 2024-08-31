@@ -7,9 +7,13 @@ import SmallLogo from '../../assets/SmallLogo.png';
 import { useNavigate } from 'react-router';
 import { getCookie, isCookieExpired } from '../../utils/cookie';
 import { Link } from 'react-router-dom';
+import chatBotImg from '../../assets/chatBot/Chatbot.png';
 
 const PillInfoSearchPage: React.FC = () => {
   const navigate = useNavigate();
+  const handleRedirect = () => {
+    navigate('/chatBot');
+  };
   useEffect(() => {
     const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
@@ -26,6 +30,11 @@ const PillInfoSearchPage: React.FC = () => {
           <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
         </Link>
         <PillInfoSearch></PillInfoSearch>
+        <img
+          src={chatBotImg}
+          className="absolute w-[10%] h-[6%] left-[3%] bottom-[12%]"
+          onClick={handleRedirect}
+        ></img>
         <NavBar></NavBar>
       </CenterLayout>
     </BackLayout>

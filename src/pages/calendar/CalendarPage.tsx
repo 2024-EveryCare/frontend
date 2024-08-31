@@ -7,9 +7,13 @@ import Calendar from '../../components/Calendar/Calendar';
 import { useNavigate } from 'react-router';
 import { getCookie, isCookieExpired } from '../../utils/cookie';
 import { Link } from 'react-router-dom';
+import chatBotImg from '../../assets/chatBot/Chatbot.png';
 
 const CalendarPage: React.FC = () => {
   const navigate = useNavigate();
+  const handleRedirect = () => {
+    navigate('/chatBot');
+  };
   useEffect(() => {
     const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
@@ -27,6 +31,11 @@ const CalendarPage: React.FC = () => {
         </Link>
 
         <Calendar />
+        <img
+          src={chatBotImg}
+          className="absolute w-[10%] h-[6%] left-[3%] bottom-[12%]"
+          onClick={handleRedirect}
+        ></img>
         <NavBar></NavBar>
       </CenterLayout>
     </BackLayout>
