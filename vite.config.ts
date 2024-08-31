@@ -24,8 +24,8 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        // target: 'https://haruconnection.store:8000', // 배포용
-        target: 'http://localhost:8080',
+        target: 'https://everycare.site:8080', // 배포용
+        // target: 'http://localhost:8080',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
