@@ -1,5 +1,6 @@
 import React from 'react';
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 // const OcrLoading: React.FC = () => {
 //   return (
 //     <div className="absolute bg-gradient-to-r from-green-300 via-teal-300 to-sky-400 w-[100%] h-[100%] top-0 flex items-center justify-center">
@@ -16,20 +17,20 @@ import React from 'react';
 
 // export default OcrLoading;
 
-const OcrLoading: React.FC = () => {
-  return (
-    <div className="absolute bg-gradient-to-r from-green-300 via-teal-300 to-sky-400 bg-opacity-80 w-[100%] h-[100%] top-0 flex items-center justify-center">
-      <div className="relative">
-        <div className="w-24 h-24 border-4 border-white border-t-transparent border-solid rounded-full animate-spin"></div>
-        <div className="absolute top-0 left-0 w-24 h-24 border-4 border-white border-b-transparent border-solid rounded-full animate-spin-slower"></div>
-      </div>
-      <p className="text-2xl text-white absolute bottom-[40%] left-[50%] transform -translate-x-1/2 animate-pulse">
-        Loading...
-      </p>
-    </div>
-  );
-};
-export default OcrLoading;
+// const OcrLoading: React.FC = () => {
+//   return (
+//     <div className="absolute bg-gradient-to-r from-green-300 via-teal-300 to-sky-400 bg-opacity-80 w-[100%] h-[100%] top-0 flex items-center justify-center">
+//       <div className="relative">
+//         <div className="w-24 h-24 border-4 border-white border-t-transparent border-solid rounded-full animate-spin"></div>
+//         <div className="absolute top-0 left-0 w-24 h-24 border-4 border-white border-b-transparent border-solid rounded-full animate-spin-slower"></div>
+//       </div>
+//       <p className="text-2xl text-white absolute bottom-[40%] left-[50%] transform -translate-x-1/2 animate-pulse">
+//         Loading...
+//       </p>
+//     </div>
+//   );
+// };
+// export default OcrLoading;
 
 // const OcrLoading: React.FC = () => {
 //   return (
@@ -43,3 +44,21 @@ export default OcrLoading;
 // };
 
 // export default OcrLoading;
+
+const OcrLoading: React.FC = () => {
+  return (
+    <div className="absolute p-4 w-full h-full top-0 bg-white">
+      <Skeleton height={200} width="80%" className="mb-5 ml-10" />
+      <Skeleton height={30} width="50%" className="mb-2 ml-10" />
+      <Skeleton height={30} width="70%" className="mb-4 ml-10" />
+      <Skeleton height={70} width="80%" className="mb-8 ml-10" />
+      <Skeleton height={30} width="50%" className="mb-2 ml-10" />
+      <Skeleton height={30} width="70%" className="mb-4 ml-10" />
+      <Skeleton height={70} width="80%" className="mb-4 ml-10" />
+      <Skeleton height={30} width="50%" className="mb-2 ml-10" />
+      <Skeleton height={30} width="70%" className="mb-4 ml-10" />
+      <Skeleton height={70} width="80%" className="mb-4 ml-10" />
+    </div>
+  );
+};
+export default OcrLoading;
