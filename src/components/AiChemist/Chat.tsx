@@ -125,7 +125,7 @@ const Chat: React.FC = () => {
         </button>
       </div>
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 h-[90%] overflow-y-auto scrollbar-custom max-h-[98%] text-[16px] leading-normal">
+      <div className="space-y-4 h-[85%] overflow-y-auto scrollbar-custom max-h-[84%] text-[16px] leading-normal">
         {messages.map((message, index) => (
           <div
             key={index}
