@@ -32,8 +32,8 @@ const ScanOrDirec: React.FC = () => {
   };
 
   const imgStyle = {
-    width: '100%',
-    height: '90%',
+    width: '90%',
+    height: '80%',
   };
 
   const nevigate = useNavigate();
