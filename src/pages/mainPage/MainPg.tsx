@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import BackLayout from '../../components/BackLayout';
 import CenterLayout from '../../components/CenterLayout';
 import NavBar from '../../components/NavBar';
@@ -6,6 +6,7 @@ import SmallLogo from '../../assets/SmallLogo.png';
 import MainPage from '../../components/mainPage/MainPage';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
+import { getCookie } from '../../utils/cookie';
 
 const MainPg: React.FC = () => {
   const LogoStyle = {
@@ -14,11 +15,16 @@ const MainPg: React.FC = () => {
     marginLeft: '3%',
   };
   const navigate = useNavigate();
-  const { isLoggedIn, user } = useAuth();
+
+  // const { isLoggedIn, user, logout } = useAuth();
+  const [userName, setUserName] = useState<string>('');
 
   useEffect(() => {
-    console.log('User info:', user);
-  }, [user]);
+    const user = getCookie('name');
+    if (user) {
+      setUserName(user);
+    }
+  });
 
   const handleLoginClick = () => {
     navigate('/login');
@@ -33,10 +39,10 @@ const MainPg: React.FC = () => {
         <div className="flex justify-between">
           <img src={SmallLogo} alt="" style={LogoStyle} />
           <div className="flex justify-between">
-            {isLoggedIn && user ? (
+            {userName ? (
               <>
                 <span className="flex justify-center items-center text-sm text-gray-600 mt-5 mr-4">
-                  {user.name}님
+                  {userName}님
                 </span>
               </>
             ) : (

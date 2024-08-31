@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import BackLayout from '../../components/BackLayout';
 import CenterLayout from '../../components/CenterLayout';
 import SmallLogo from '../../assets/SmallLogo.png';
 import Profile from '../../components/myPage/Profile';
 import Menu from './Menu';
 import NavBar from '../../components/NavBar';
+import { getCookie } from '../../utils/cookie';
+import { useNavigate } from 'react-router';
 
 const MyPage: React.FC = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const isLoggedIn = getCookie('name');
+    if (isLoggedIn) {
+      return;
+    } else {
+      alert('로그인 후 이용가능 합니다.');
+      navigate('/login');
+    }
+  }, []);
   return (
     <BackLayout>
       <CenterLayout>

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import BackLayout from '../../components/BackLayout';
 import CenterLayout from '../../components/CenterLayout';
 import NavBar from '../../components/NavBar';
 import SmallLogo from '../../assets/SmallLogo.png';
 import PillDetailSearch from '../../components/pillinfosearch/PillDetailSearch';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
+import { getCookie } from '../../utils/cookie';
 
 const PillDetailSearchPage: React.FC = () => {
   const location = useLocation();
@@ -13,6 +14,16 @@ const PillDetailSearchPage: React.FC = () => {
   if (!drugName) {
     return <div>약 이름을 찾을 수 없습니다.</div>;
   }
+  const navigate = useNavigate();
+  useEffect(() => {
+    const isLoggedIn = getCookie('name');
+    if (isLoggedIn) {
+      return;
+    } else {
+      alert('로그인 후 이용가능 합니다.');
+      navigate('/login');
+    }
+  }, []);
 
   return (
     <BackLayout>
