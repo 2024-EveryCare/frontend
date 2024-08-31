@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Morning from '../../assets/Calendar/Morning.svg';
 import Lunch from '../../assets/Calendar/Lunch.svg';
 import Night from '../../assets/Calendar/Night.svg';
-import axios from 'axios';
 import { deleteDrug } from '../../service/deleteDrug';
 
 interface DosageRecord {
@@ -110,9 +109,15 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
           <h3 className="text-lg font-bold" style={{ paddingLeft: '8px' }}>
             {`${month + 1}월 ${selectedDay}일 복용 내역`}
           </h3>
-          <span className="flex items-center" onClick={clickedBtn}>
-            삭제
-          </span>
+          {deleteBtn ? (
+            <button className="flex items-center" onClick={clickedBtn}>
+              완료
+            </button>
+          ) : (
+            <span className="flex items-center" onClick={clickedBtn}>
+              삭제
+            </span>
+          )}
         </div>
       )}
       {filteredDosage.length > 0 ? (
