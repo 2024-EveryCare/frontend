@@ -98,6 +98,16 @@ const CalendarInfo: React.FC<CalendarInfoProps> = ({
     }
   };
 
+  const handleDelete = (drugName: string) => {
+    const drugDelete = filteredDosage.find((record) =>
+      record.drugNames.includes(drugName),
+    );
+
+    if (drugDelete) {
+      deleteData(drugName, drugDelete.intakeStart, drugDelete.intakeEnd);
+    }
+  };
+
   const clickedBtn = () => {
     setDeleteBtn(!deleteBtn);
   };
