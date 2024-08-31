@@ -24,7 +24,7 @@ const PillSearchPage: React.FC = () => {
     <BackLayout>
       <CenterLayout margin="m-auto">
         <Link to="/" className="w-1/3 mt-3 ml-3">
-          <img src={SmallLogo} alt="" className='className="w-1/3 mt-3 ml-3' />
+          <img src={SmallLogo} alt="" className='w-1/3 mt-3 ml-3' />
         </Link>
         <BackBtn text="약 입력"></BackBtn>
         <PillSearch></PillSearch>
