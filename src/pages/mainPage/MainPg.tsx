@@ -7,7 +7,9 @@ import MainPage from '../../components/mainPage/MainPage';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { getCookie } from '../../utils/cookie';
-
+import { Link } from 'react-router-dom';
+import chatBotImg from '../../assets/chatBot/Chatbot.png';
+import bubble from '../../assets/chatBot/bubble3.png';
 const MainPg: React.FC = () => {
   const LogoStyle = {
     width: '30%',
@@ -33,11 +35,18 @@ const MainPg: React.FC = () => {
     navigate('/signup');
   };
 
+  const handleRedirect = () => {
+    navigate('/chatBot');
+  };
+
   return (
     <BackLayout>
       <CenterLayout>
         <div className="flex justify-between">
-          <img src={SmallLogo} alt="" style={LogoStyle} />
+          <Link to="/" style={LogoStyle}>
+            <img src={SmallLogo} alt="" />
+          </Link>
+
           <div className="flex justify-between">
             {userName ? (
               <>
@@ -64,6 +73,16 @@ const MainPg: React.FC = () => {
           </div>
         </div>
         <MainPage />
+        <img
+          src={bubble}
+          className="absolute w-[20%] h-[4%] left-[14%] bottom-[10%]"
+          onClick={handleRedirect}
+        ></img>
+        <img
+          src={chatBotImg}
+          className="absolute w-[10%] h-[6%] left-[4%] bottom-[11%]"
+          onClick={handleRedirect}
+        ></img>
         <NavBar></NavBar>
       </CenterLayout>
     </BackLayout>

@@ -5,12 +5,17 @@ import NavBar from '../../components/NavBar';
 import SmallLogo from '../../assets/SmallLogo.png';
 import Calendar from '../../components/Calendar/Calendar';
 import { useNavigate } from 'react-router';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, isCookieExpired } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
+import chatBotImg from '../../assets/chatBot/Chatbot.png';
 
 const CalendarPage: React.FC = () => {
   const navigate = useNavigate();
+  const handleRedirect = () => {
+    navigate('/chatBot');
+  };
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {
@@ -21,7 +26,15 @@ const CalendarPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
+        <img
+          src={chatBotImg}
+          className="absolute w-[10%] h-[6%] right-[3%] top-[4.5%]"
+          onClick={handleRedirect}
+        ></img>
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
+        </Link>
+
         <Calendar />
         <NavBar></NavBar>
       </CenterLayout>

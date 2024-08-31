@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import ChemistImg from '../../assets/chatBot/Chatbot.png';
-import UserImg from '../../assets/dad.png';
 import btn from '../../assets/chatBot/Send.svg';
 import ChatBg from '../../assets/chatBot/ChatBg.svg';
 
@@ -103,7 +102,7 @@ const Chat: React.FC = () => {
 
   return (
     <div
-      className="h-[95%] w-[100%] p-4 space-y-4 relative"
+      className="h-[92vh] w-[100%] p-4 space-y-4 relative"
       style={{
         backgroundImage: `url(${ChatBg})`,
         backgroundSize: 'cover',
@@ -125,7 +124,7 @@ const Chat: React.FC = () => {
         </button>
       </div>
       {/* 메시지 표시 영역 */}
-      <div className="space-y-4 h-[85%] overflow-y-auto scrollbar-custom max-h-[84%] text-[16px] leading-normal">
+      <div className="space-y-4 w-[100%] h-[85%] overflow-y-auto scrollbar-custom max-h-[84%] text-[16px] leading-normal">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -136,7 +135,7 @@ const Chat: React.FC = () => {
           >
             {message.user !== 'User' && ( // AI 약사 이미지 표시
               <img
-                className="w-[40px] h-[40px]"
+                className="w-[45px] h-[45px] p-0"
                 src={ChemistImg}
                 alt="Chemist"
               />
@@ -151,9 +150,6 @@ const Chat: React.FC = () => {
             >
               {formatMessage(message.text)}
             </div>
-            {message.user === 'User' && ( // 유저 이미지 표시
-              <img className="w-[40px] h-[40px]" src={UserImg} alt="User" />
-            )}
           </div>
         ))}
         {loading && (
@@ -170,12 +166,12 @@ const Chat: React.FC = () => {
         <div ref={autoScroll} />
       </div>
       {/* 유저 입력 필드 */}
-      <div className="bottom-[0%] h-[11vh] w-full absolute flex items-center left-0 bg-white px-4">
+      <div className="bottom-[0%] h-[10vh] w-full absolute flex items-center left-0 bg-white px-4">
         {/* 전체 배경이 차지하는 div */}
-        <div className="flex w-full items-center">
+        <div className="flex w-full items-center h-[8vh]">
           {/* 텍스트 입력 필드 */}
           <textarea
-            className="flex-grow h-[100px] text-[16px] p-1 resize-none overflow-auto"
+            className="flex-grow h-[100%] text-[16px] p-1 resize-none overflow-auto mt-[1vh]"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="메시지를 입력하세요..."
@@ -188,7 +184,7 @@ const Chat: React.FC = () => {
           />
           {/* 전송 버튼 */}
           <button className="h-full mb-16" onClick={handleSend}>
-            <img className="w-[35px] h-[35px]" src={btn} alt="Send" />
+            <img className="w-[35px] h-[35px] mt-[6vh]" src={btn} alt="Send" />
           </button>
         </div>
       </div>

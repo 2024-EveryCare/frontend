@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { memberLogout } from '../../service/member';
 import { eraseCookie } from '../../utils/cookie';
+import { useNavigate } from 'react-router';
 
 const Menu: React.FC = () => {
+  const navigate = useNavigate();
   const clickedLogout = async () => {
     const response = await memberLogout();
     console.log(response.data);
     eraseCookie('name');
     eraseCookie('JSESSIONID');
+    alert('로그아웃!!');
+    navigate('/');
   };
 
   return (

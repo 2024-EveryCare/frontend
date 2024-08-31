@@ -6,12 +6,13 @@ import SmallLogo from '../../assets/SmallLogo.png';
 import NavBar from '../../components/NavBar';
 import { RegisterContextProvider } from '../../context/RegisterContext';
 import { useNavigate } from 'react-router';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, isCookieExpired } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
 
 const DirectScanPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {
@@ -22,7 +23,9 @@ const DirectScanPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
+        </Link>
         <DirectScan></DirectScan>
         <NavBar></NavBar>
       </CenterLayout>

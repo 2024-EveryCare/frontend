@@ -27,7 +27,7 @@ function LoginForm() {
       //   const token = responseData.token;
 
       if (responseData.status === 'OK' && responseData.data) {
-        setCookie('name', responseData.data.name, 30); //JSESSION 유효시간 30분과 동일 하게 맞춤.
+        setCookie('name', responseData.data.name, 1); //JSESSION 유효시간 30분과 동일 하게 맞춤.
         navigate('/');
       }
     } catch (error) {

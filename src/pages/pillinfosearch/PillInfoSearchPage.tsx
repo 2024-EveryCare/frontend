@@ -5,12 +5,17 @@ import NavBar from '../../components/NavBar';
 import PillInfoSearch from '../../components/pillinfosearch/PillInfoSearch';
 import SmallLogo from '../../assets/SmallLogo.png';
 import { useNavigate } from 'react-router';
-import { getCookie } from '../../utils/cookie';
-
+import { getCookie, isCookieExpired } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
+import chatBotImg from '../../assets/chatBot/Chatbot.png';
+import bubble from '../../assets/chatBot/bubble3.png';
 const PillInfoSearchPage: React.FC = () => {
   const navigate = useNavigate();
+  const handleRedirect = () => {
+    navigate('/chatBot');
+  };
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {
@@ -18,12 +23,23 @@ const PillInfoSearchPage: React.FC = () => {
       navigate('/login');
     }
   }, []);
-
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} alt="Small Logo" className="w-1/3 mt-3 ml-3" />
+        </Link>
         <PillInfoSearch></PillInfoSearch>
+        <img
+          src={bubble}
+          className="absolute w-[20%] h-[4%] left-[14%] bottom-[10%]"
+          onClick={handleRedirect}
+        ></img>
+        <img
+          src={chatBotImg}
+          className="absolute w-[10%] h-[6%] left-[4%] bottom-[11%]"
+          onClick={handleRedirect}
+        ></img>
         <NavBar></NavBar>
       </CenterLayout>
     </BackLayout>

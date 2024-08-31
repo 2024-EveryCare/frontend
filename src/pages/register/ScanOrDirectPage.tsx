@@ -5,12 +5,13 @@ import NavBar from '../../components/NavBar';
 import ScanOrDirec from '../../components/register/ScanOrDirec';
 import SmallLogo from '../../assets/SmallLogo.png';
 import { useNavigate } from 'react-router';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, isCookieExpired } from '../../utils/cookie';
+import { Link } from 'react-router-dom';
 
 const ScanOrDirectPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {
@@ -21,7 +22,9 @@ const ScanOrDirectPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
-        <img src={SmallLogo} className="w-1/3 mt-3 ml-3" />
+        <Link to="/" className="w-1/3 mt-3 ml-3">
+          <img src={SmallLogo} className="w-1/3 mt-3 ml-3" />
+        </Link>
         <ScanOrDirec></ScanOrDirec>
         <NavBar></NavBar>
       </CenterLayout>
