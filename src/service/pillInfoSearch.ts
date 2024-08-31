@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { baseInstance } from './config';
 
 export const pillSearch = async (searchData: string) => {
   try {
-    const response = await axios.get(
+    const response = await baseInstance.get(
       `http://localhost:8080/api/v1/medicines/findName`,
       {
         params: { drugName: searchData },

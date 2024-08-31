@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { baseInstance } from './config';
 
 export const memberInfo = async () => {
-  const response = await axios.get(
+  const response = await baseInstance.get(
     `http://localhost:8080/api/v1/members/mypage`,
     {
       withCredentials: true,
@@ -13,7 +14,7 @@ export const memberInfo = async () => {
 };
 
 export const memberLogout = async () => {
-  const response = await axios.post(
+  const response = await baseInstance.post(
     'http://localhost:8080/api/v1/members/logout',
     {}, // 요청 본문이 필요 없는 경우 빈 객체로 전달
     {
