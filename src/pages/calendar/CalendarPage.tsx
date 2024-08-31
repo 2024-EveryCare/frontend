@@ -26,16 +26,16 @@ const CalendarPage: React.FC = () => {
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">
+        <img
+          src={chatBotImg}
+          className="absolute w-[10%] h-[6%] right-[3%] top-[4.5%]"
+          onClick={handleRedirect}
+        ></img>
         <Link to="/" className="w-1/3 mt-3 ml-3">
           <img src={SmallLogo} alt="" className="w-1/3 mt-3 ml-3" />
         </Link>
 
         <Calendar />
-        <img
-          src={chatBotImg}
-          className="absolute w-[10%] h-[6%] left-[3%] bottom-[12%]"
-          onClick={handleRedirect}
-        ></img>
         <NavBar></NavBar>
       </CenterLayout>
     </BackLayout>

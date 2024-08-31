@@ -273,7 +273,7 @@ const DirectRegister: React.FC = () => {
                     type="text"
                     value={hospital}
                     onChange={handleHosInputChange}
-                    className="inline-block h-[40px] w-[90%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
+                    className="inline-block h-[40px] w-[90%] rounded-xl border border- text-gray-700 bg-white text-lg p-2"
                     placeholder="병원명을 입력해주세요."
                   />
                   <InputBtn
@@ -333,7 +333,7 @@ const DirectRegister: React.FC = () => {
                     type="text"
                     value={disease}
                     onChange={handleSickInputChange}
-                    className="h-[40px] w-[90%] rounded-xl border border-black text-gray-700 bg-white text-lg p-2"
+                    className="h-[40px] w-[90%] rounded-xl border border-gray-300 text-gray-700 bg-white text-lg p-2"
                     placeholder="질병명을 입력해주세요."
                   />
                   <InputBtn

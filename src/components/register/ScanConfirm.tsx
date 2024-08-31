@@ -5,6 +5,8 @@ import BackBtn from './button/BackBtn';
 import { useSearchDrug } from '../../service/queries';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import RegisterSick from '../../assets/register/RegisterSick.svg';
+import RegisterHos from '../../assets/register/RegisterHospital.svg';
 
 import CalendarImg from '../../assets/calendar.png';
 
@@ -486,7 +488,7 @@ const ScanConfirm: React.FC = () => {
             contentText="어느 병원에서 처방받으셨나요"
           ></PillNextText>
           {showHospital ? (
-            <div className="flex flex-col justify-center aligin-center h-[30px] w-[80%] mt-[2rem] rounded-2xl border-blue-200 border-[1px] m-auto">
+            <div className="flex justify-center aligin-center h-[30px] w-[80%] mt-[2rem] rounded-2xl border-blue-200 border-[1px] m-auto">
               <input
                 type="text"
                 className="w-[70%] h-[80%] m-auto text-center"

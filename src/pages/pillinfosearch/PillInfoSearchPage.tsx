@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router';
 import { getCookie, isCookieExpired } from '../../utils/cookie';
 import { Link } from 'react-router-dom';
 import chatBotImg from '../../assets/chatBot/Chatbot.png';
-
+import bubble from '../../assets/chatBot/bubble3.png';
 const PillInfoSearchPage: React.FC = () => {
   const navigate = useNavigate();
   const handleRedirect = () => {
@@ -31,8 +31,13 @@ const PillInfoSearchPage: React.FC = () => {
         </Link>
         <PillInfoSearch></PillInfoSearch>
         <img
+          src={bubble}
+          className="absolute w-[20%] h-[4%] left-[14%] bottom-[10%]"
+          onClick={handleRedirect}
+        ></img>
+        <img
           src={chatBotImg}
-          className="absolute w-[10%] h-[6%] left-[3%] bottom-[12%]"
+          className="absolute w-[10%] h-[6%] left-[4%] bottom-[11%]"
           onClick={handleRedirect}
         ></img>
         <NavBar></NavBar>
