@@ -1,3 +1,5 @@
+import { baseInstance } from './config';
+
 export interface SignupData {
   email: string;
   password: string;
@@ -7,23 +9,22 @@ export interface SignupData {
 
 export async function signupUser(data: SignupData) {
   try {
-    const response = await fetch(
+    const response = await baseInstance.post(
       'http://localhost:8080/api/v1/members/signup',
+      data,
       {
-        method: 'POST',
+        withCredentials: true, // credentials: 'include'와 동일
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-        credentials: 'include',
       },
     );
 
-    const responseData = await response.json();
-    console.log('로그인 응답:', responseData);
+    console.log('회원가입 응답:', response.data);
 
-    return responseData;
+    return response.data;
   } catch (error) {
-    console.log('회원가입 에러:', error);
+    console.error('회원가입 에러:', error);
+    throw error; // 에러를 throw하여 상위 호출자가 처리할 수 있게 함
   }
 }

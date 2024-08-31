@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { baseInstance } from './config';
 
 export interface DrugData {
   itemName: string;
@@ -12,7 +13,7 @@ export interface DrugData {
 }
 
 export const pillDetailSearch = async (drugName: string): Promise<DrugData> => {
-  return axios
+  return baseInstance
     .get('http://localhost:8080/api/v1/medicines/details', {
       params: { drugName },
     })

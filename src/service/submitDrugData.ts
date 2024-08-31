@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { baseInstance } from './config';
 
 export const submitDrugData = async (
   drugNames: string[],
@@ -20,7 +21,7 @@ export const submitDrugData = async (
   };
 
   try {
-    const response = await axios.post(
+    const response = await baseInstance.post(
       'http://localhost:8080/api/v1/medicines/direct-records',
       requestData,
       {

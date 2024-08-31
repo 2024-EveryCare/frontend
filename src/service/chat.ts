@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { baseInstance } from './config';
 
 export const chatService = async (text: string) => {
   try {
-    const response = await axios.post(
+    const response = await baseInstance.post(
       'http://localhost:8080/api/v1/chatbot/ask',
       { prompt: text }, // 요청 본문
       { withCredentials: true }, // 추가 옵션
@@ -29,11 +30,8 @@ export const chatService = async (text: string) => {
 }; */
 
 export const monitoringService = async () => {
-  const response = await axios.get(
-    'http://localhost:8080/api/v1/chatbot/monitoring',
-    {
-      withCredentials: true,
-    },
-  );
+  const response = await baseInstance.get('/chatbot/monitoring', {
+    withCredentials: true,
+  });
   return response.data.data.statistics;
 };

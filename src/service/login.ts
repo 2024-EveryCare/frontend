@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { baseInstance } from './config';
+
 export interface LoginData {
   email: string;
   password: string;
@@ -7,20 +10,21 @@ export async function loginUser(data: LoginData) {
   const { email, password } = data;
 
   try {
-    const response = await fetch('http://localhost:8080/api/v1/members/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await baseInstance.post(
+      'http://localhost:8080/api/v1/members/login',
+      { email, password },
+      {
+        withCredentials: true, // credentials: 'include'와 동일
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-      body: JSON.stringify({ email, password }),
-      credentials: 'include',
-    });
+    );
 
-    const responseData = await response.json();
-    console.log('로그인 응답:', responseData);
-
-    return responseData;
+    console.log('로그인 응답:', response.data);
+    return response.data;
   } catch (error) {
-    console.log('로그인 에러:', error);
+    console.error('로그인 에러:', error);
+    throw error; // 에러를 throw하여 상위 호출자가 처리할 수 있게 함
   }
 }
