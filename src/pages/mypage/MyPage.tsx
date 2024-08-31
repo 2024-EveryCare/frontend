@@ -5,14 +5,14 @@ import SmallLogo from '../../assets/SmallLogo.png';
 import Profile from '../../components/myPage/Profile';
 import Menu from './Menu';
 import NavBar from '../../components/NavBar';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, isCookieExpired } from '../../utils/cookie';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {

@@ -5,13 +5,13 @@ import NavBar from '../../components/NavBar';
 import SmallLogo from '../../assets/SmallLogo.png';
 import ScanConfirm from '../../components/register/ScanConfirm';
 import { useNavigate } from 'react-router';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, isCookieExpired } from '../../utils/cookie';
 import { Link } from 'react-router-dom';
 
 const ScanConfirmPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {

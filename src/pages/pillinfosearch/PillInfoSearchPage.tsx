@@ -5,13 +5,13 @@ import NavBar from '../../components/NavBar';
 import PillInfoSearch from '../../components/pillinfosearch/PillInfoSearch';
 import SmallLogo from '../../assets/SmallLogo.png';
 import { useNavigate } from 'react-router';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, isCookieExpired } from '../../utils/cookie';
 import { Link } from 'react-router-dom';
 
 const PillInfoSearchPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {
@@ -19,7 +19,6 @@ const PillInfoSearchPage: React.FC = () => {
       navigate('/login');
     }
   }, []);
-
   return (
     <BackLayout>
       <CenterLayout margin="m-auto">

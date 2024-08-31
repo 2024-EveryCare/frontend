@@ -5,13 +5,13 @@ import NavBar from '../../components/NavBar';
 import SmallLogo from '../../assets/SmallLogo.png';
 import Calendar from '../../components/Calendar/Calendar';
 import { useNavigate } from 'react-router';
-import { getCookie } from '../../utils/cookie';
+import { getCookie, isCookieExpired } from '../../utils/cookie';
 import { Link } from 'react-router-dom';
 
 const CalendarPage: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const isLoggedIn = getCookie('name');
+    const isLoggedIn = isCookieExpired('name');
     if (isLoggedIn) {
       return;
     } else {

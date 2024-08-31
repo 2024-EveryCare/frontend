@@ -30,3 +30,16 @@ export const getCookie = (name: string) => {
 export const eraseCookie = (name: string) => {
   document.cookie = `${name}=; Max-Age=-99999999;`;
 };
+
+export const isCookieExpired = (name: string): boolean => {
+  const cookieValue = getCookie(name);
+
+  if (cookieValue === null) {
+    // 쿠키가 없으면 삭제
+    eraseCookie(name);
+    eraseCookie('JSESSIONID');
+    return false; // 만료된 것으로 간주
+  }
+
+  return true; // 유효한 쿠키
+};
