@@ -28,7 +28,7 @@ const CalendarPage: React.FC = () => {
       <CenterLayout margin="m-auto">
         <img
           src={chatBotImg}
-          className="absolute w-[10%] h-[6%] right-[3%] top-[4.5%]"
+          className="absolute w-[10%] h-[5%] right-[4%] top-[4.5%]"
           onClick={handleRedirect}
         ></img>
         <Link to="/" className="w-1/3 mt-3 ml-3">
