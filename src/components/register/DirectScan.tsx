@@ -117,9 +117,12 @@ const DirectScan: React.FC = () => {
         <div
           onDrop={dropFile}
           onDragOver={preventDragOver}
-          className="w-[90%] h-[23vh] flex justify-center items-center bg-[#F5F5F5] border border-dashed border-black rounded-[10px] text-[0.9rem] mt-0 mb-[2vh]"
+          className="flex flex-col justify-center items-center w-[90%] h-[23vh] bg-[#F5F5F5] border border-dashed border-black rounded-[10px] text-[0.9rem] mb-[2vh]"
         >
-          <img src={RegisterIcon} className="w-[10vh] h-[10vh] inline-block" />
+          <img
+            src={RegisterIcon}
+            className="w-[10vh] h-[10vh] inline-block mb-4"
+          />
           <input
             onChange={(e) => console.log(e.target.files)}
             style={{ display: 'none' }}
@@ -135,8 +138,8 @@ const DirectScan: React.FC = () => {
           className="w-full flex justify-center items-center h-[32vh] text-[0.9rem] flex-col"
           onClick={handleCreateQr}
         >
-          <img src={qrURL} className="w-[50vh] h-[30vh]" />
-          <div className="w-[80%] text-center bg-[#D9D9D9] rounded-[20px] text-[0.9rem] p-[0.2rem]">
+          <img src={qrURL} className="w-[35vh] h-[30vh]" />
+          <div className="w-[80%] text-center bg-[#D9D9D9] rounded-[20px] text-[0.9rem] p-[0.4rem]">
             휴대폰으로 QR 코드를 인식한 후 약 봉투를 스캔해주세요
           </div>
         </div>

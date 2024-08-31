@@ -408,7 +408,7 @@ const ScanConfirm: React.FC = () => {
           </AddPillModal>
           {/* </div> */}
           <button
-            className="absolute right-[7%] top-[10%] pl-[5px] pr-[5px] rounded-full bg-gray-200 text-red-500 text-center font-extrabold text-[12px] leading-normal"
+            className="w-[10%] h-[15%] absolute right-[7%] top-[4%] pl-[5px] pr-[5px] rounded-full bg-gray-200 text-red-500 text-center font-extrabold text-[12px] leading-normal"
             onClick={handleOpenModal} // 모달창 open 핸들러
           >
             추가
