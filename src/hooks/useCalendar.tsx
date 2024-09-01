@@ -32,7 +32,7 @@ export const useCalendar = () => {
   const fetchAllDosageData = useCallback(async () => {
     try {
       const response = await axios.get(
-        'http://www.everycare.site/api/v1/medicines/records/list',
+        'https://everycare.site/api/v1/medicines/records/list',
         {
           headers: {
             'Content-Type': 'application/json',

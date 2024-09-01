@@ -131,7 +131,7 @@ const PillInfoSearch: React.FC = () => {
     setSavedDrug(updatedDrugs); // 한 번에 상태 업데이트
 
     axios
-      .get(`http://www.everycare.site/api/v1/medicines/find-drug-info`, {
+      .get(`https://everycare.site/api/v1/medicines/find-drug-info`, {
         params: { drugName: searchInputValue },
       })
       .then((response) => {
