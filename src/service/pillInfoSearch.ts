@@ -4,7 +4,7 @@ import { baseInstance } from './config';
 export const pillSearch = async (searchData: string) => {
   try {
     const response = await baseInstance.get(
-      `http://www.everycare.site/api/v1/medicines/findName`,
+      `https://everycare.site/api/v1/medicines/findName`,
       {
         params: { drugName: searchData },
       },

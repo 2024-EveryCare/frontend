@@ -4,7 +4,7 @@ import { baseInstance } from './config';
 export const chatService = async (text: string) => {
   try {
     const response = await baseInstance.post(
-      'http://www.everycare.site/api/v1/chatbot/ask',
+      'https://everycare.site/api/v1/chatbot/ask',
       { prompt: text }, // 요청 본문
       { withCredentials: true }, // 추가 옵션
     );
@@ -19,7 +19,7 @@ export const chatService = async (text: string) => {
 /* export const newChatService = async () => {
   try {
     const response = await axios.get(
-      'http://www.everycare.site/api/v1/chatbot/newchat',
+      'https://everycare.site/api/v1/chatbot/newchat',
       { withCredentials: true },
     );
     return response; // 응답 데이터를 반환하거나 필요한 작업 수행
