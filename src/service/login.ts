@@ -11,7 +11,7 @@ export async function loginUser(data: LoginData) {
 
   try {
     const response = await baseInstance.post(
-      'https://everycare.site/api/v1/members/login',
+      'https://www.everycare.site/api/v1/members/login',
       { email, password },
       {
         withCredentials: true, // credentials: 'include'와 동일
