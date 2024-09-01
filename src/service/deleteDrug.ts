@@ -6,7 +6,7 @@ export const deleteDrug = async (
   intakeStart: string,
   intakeEnd: string,
 ): Promise<void> => {
-  await baseInstance.delete(`https://everycare.site/api/v1/medicines/records`, {
+  await baseInstance.delete(`https://www.everycare.site/api/v1/medicines/records`, {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',

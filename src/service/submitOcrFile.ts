@@ -8,7 +8,7 @@ export const submitOcrFile = async (formData: FormData) => {
     const file = formData.get('file');
     console.log(file);
     const response = await baseInstance.post(
-      'https://everycare.site/api/v1/medicines/photo',
+      'https://www.everycare.site/api/v1/medicines/photo',
       formData,
       {
         headers: {
