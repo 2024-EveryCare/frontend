@@ -14,7 +14,7 @@ export interface DrugData {
 
 export const pillDetailSearch = async (drugName: string): Promise<DrugData> => {
   return baseInstance
-    .get('http://localhost:8080/api/v1/medicines/details', {
+    .get('http://www.everycare.site/api/v1/medicines/details', {
       params: { drugName },
     })
     .then((response) => response.data);

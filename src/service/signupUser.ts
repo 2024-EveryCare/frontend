@@ -10,7 +10,7 @@ export interface SignupData {
 export async function signupUser(data: SignupData) {
   try {
     const response = await baseInstance.post(
-      'http://localhost:8080/api/v1/members/signup',
+      'http://www.everycare.site/api/v1/members/signup',
       data,
       {
         withCredentials: true, // credentials: 'include'와 동일

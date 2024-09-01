@@ -4,7 +4,7 @@ import { baseInstance } from './config';
 export const autoData = async (searchData: string) => {
   try {
     const response = await baseInstance.get(
-      `http://localhost:8080/api/v1/medicines/findName`,
+      `http://www.everycare.site/api/v1/medicines/findName`,
       {
         params: { drugName: searchData },
       },
@@ -24,7 +24,7 @@ export const autoData = async (searchData: string) => {
 export const drugSearch = async (searchInputValue: string) => {
   try {
     const response = await baseInstance.get(
-      `http://localhost:8080/api/v1/medicines/find-drug-info`,
+      `http://www.everycare.site/api/v1/medicines/find-drug-info`,
       {
         params: { drugName: searchInputValue },
       },

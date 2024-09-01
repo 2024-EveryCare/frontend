@@ -22,7 +22,7 @@ export const submitDrugData = async (
 
   try {
     const response = await baseInstance.post(
-      'http://localhost:8080/api/v1/medicines/direct-records',
+      'http://www.everycare.site/api/v1/medicines/direct-records',
       requestData,
       {
         headers: {
