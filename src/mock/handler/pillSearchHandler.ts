@@ -4,7 +4,7 @@ import pillSearchDummy2 from '../dummy/register/pillSearchDummy2.json';
 
 export const pillSearchHandler = [
   http.get(
-    'http://localhost:8080/api/v1/medicines/findName',
+    'http://www.everycare.site/api/v1/medicines/findName',
     async ({ request }) => {
       //.get(`http://127.0.0.1:8000/test/:${searchInputValue}`) url의 맨끝을 읽어 오므로 :도 포함되어서 옴.
       const url = new URL(request.url);
